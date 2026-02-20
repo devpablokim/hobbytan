@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "source": ".",
+    "site": "hobbytan-ai",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

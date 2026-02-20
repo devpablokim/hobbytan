@@ -2,26 +2,583 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================
+   HOBBYTAN AI - UI/UX Pro Max Design System
+   Based on: ui-ux-pro-max-skill guidelines
+   - 8px spacing grid
+   - 4.5:1+ contrast ratio (WCAG AA)
+   - 150-250ms transitions
+   - prefers-reduced-motion support
+   ============================================ */
 
-@media (prefers-color-scheme: dark) {
+/* ============================================
+   Design Tokens (CSS Variables)
+   ============================================ */
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Color System - Dark SaaS Theme */
+    --color-bg-primary: #0a0a0a;
+    --color-bg-secondary: #111111;
+    --color-bg-tertiary: #171717;
+    --color-bg-elevated: #1a1a1a;
+
+    --color-text-primary: #fafafa;
+    --color-text-secondary: #a3a3a3;
+    --color-text-muted: #737373;
+    --color-text-disabled: #525252;
+
+    --color-border-primary: #262626;
+    --color-border-secondary: #404040;
+    --color-border-hover: #525252;
+
+    /* Accent - Blue (Trust) */
+    --color-accent: #3b82f6;
+    --color-accent-hover: #2563eb;
+    --color-accent-muted: rgba(59, 130, 246, 0.15);
+
+    /* CTA - White on Dark (High Contrast) */
+    --color-cta-bg: #ffffff;
+    --color-cta-text: #0a0a0a;
+    --color-cta-hover: #e5e5e5;
+
+    /* Semantic Colors */
+    --color-success: #22c55e;
+    --color-warning: #f59e0b;
+    --color-error: #ef4444;
+
+    /* Spacing Scale (8px base) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-20: 80px;
+    --space-24: 96px;
+
+    /* Typography Scale */
+    --font-size-xs: 0.75rem;    /* 12px */
+    --font-size-sm: 0.875rem;   /* 14px */
+    --font-size-base: 1rem;     /* 16px */
+    --font-size-lg: 1.125rem;   /* 18px */
+    --font-size-xl: 1.25rem;    /* 20px */
+    --font-size-2xl: 1.5rem;    /* 24px */
+    --font-size-3xl: 1.875rem;  /* 30px */
+    --font-size-4xl: 2.25rem;   /* 36px */
+    --font-size-5xl: 3rem;      /* 48px */
+    --font-size-6xl: 3.75rem;   /* 60px */
+    --font-size-7xl: 4.5rem;    /* 72px */
+
+    /* Transitions (150-250ms standard) */
+    --transition-fast: 150ms ease-out;
+    --transition-base: 200ms ease-out;
+    --transition-slow: 300ms ease-out;
+
+    /* Border Radius */
+    --radius-none: 0px;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+
+    /* Shadows (Elevation System) */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.25);
+    --shadow-lg: 0 10px 20px rgba(0,0,0,0.3);
+    --shadow-xl: 0 20px 40px rgba(0,0,0,0.35);
+
+    /* shadcn/ui compatibility */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 217 91% 60%;
+    --radius: 0px;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================
+   Base Styles
+   ============================================ */
+@layer base {
+  * {
+    @apply border-neutral-800;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-[#0a0a0a] text-neutral-100;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    line-height: 1.6;
+  }
+
+  /* Selection - Brand Color */
+  ::selection {
+    @apply bg-blue-500/30 text-white;
+  }
+
+  /* Focus States - WCAG Compliant */
+  :focus-visible {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2 ring-offset-[#0a0a0a];
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
+/* ============================================
+   Typography System
+   - Line height: 1.1-1.2 for headings, 1.6 for body
+   - Letter spacing: -0.02em for large text
+   - Max width: 65ch for readable paragraphs
+   ============================================ */
+@layer base {
+  h1 {
+    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-white;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl font-semibold text-white;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl font-semibold text-white;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  h4 {
+    @apply text-lg font-semibold text-white;
+    line-height: 1.3;
+  }
+
+  p {
+    @apply text-neutral-400 leading-relaxed;
+    max-width: 65ch;
+  }
+
+  /* Small/Label Text */
+  small {
+    @apply text-sm text-neutral-500;
+  }
+}
+
+/* ============================================
+   Layout Components
+   ============================================ */
+@layer components {
+  /* Container - Max 1200px */
+  .container-wide {
+    @apply w-full max-w-[1200px] mx-auto px-6 lg:px-8;
+  }
+
+  /* Section Spacing (64px / 96px) */
+  .section-padding {
+    @apply py-16 lg:py-24;
+  }
+
+  .section-padding-lg {
+    @apply py-24 lg:py-32;
+  }
+
+  /* Section Label - Uppercase Tracking */
+  .section-label {
+    @apply inline-block text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500;
+    @apply mb-6;
+  }
+}
+
+/* ============================================
+   Button Components
+   - Padding: 1rem 2rem (16px 32px)
+   - Min height: 44px (touch target)
+   - Transition: 200ms ease-out
+   ============================================ */
+@layer components {
+  /* Primary CTA Button - White */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply px-8 py-4 min-h-[44px];
+    @apply text-sm font-semibold;
+    @apply bg-white text-black;
+    @apply transition-all duration-200 ease-out;
+    @apply cursor-pointer;
+  }
+
+  .btn-primary:hover {
+    @apply bg-neutral-200;
+    transform: scale(1.02);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  /* Secondary Button - Outline */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply px-8 py-4 min-h-[44px];
+    @apply text-sm font-semibold;
+    @apply bg-transparent text-white;
+    @apply border border-neutral-700;
+    @apply transition-all duration-200 ease-out;
+    @apply cursor-pointer;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-white/5 border-neutral-500;
+  }
+
+  /* Ghost Button */
+  .btn-ghost {
+    @apply inline-flex items-center gap-2;
+    @apply px-4 py-2 min-h-[44px];
+    @apply text-sm font-medium text-neutral-400;
+    @apply transition-colors duration-200;
+    @apply cursor-pointer;
+  }
+
+  .btn-ghost:hover {
+    @apply text-white;
+  }
+}
+
+/* ============================================
+   Card Components
+   - Padding: 32px (2rem)
+   - Border: 1px solid neutral-800
+   - Hover: border color change + subtle lift
+   ============================================ */
+@layer components {
+  /* Base Card */
+  .card {
+    @apply p-8;
+    @apply bg-[#111111] border border-neutral-800;
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .card:hover {
+    @apply border-neutral-700;
+  }
+
+  /* Feature Card - With gradient overlay on hover */
+  .card-feature {
+    @apply relative p-8 lg:p-10;
+    @apply bg-[#0f0f0f];
+    @apply border border-neutral-800;
+    @apply transition-all duration-200 ease-out;
+    @apply cursor-pointer overflow-hidden;
+  }
+
+  .card-feature::before {
+    content: '';
+    @apply absolute inset-0 opacity-0;
+    @apply bg-gradient-to-b from-blue-500/5 to-transparent;
+    @apply transition-opacity duration-200;
+    pointer-events: none;
+  }
+
+  .card-feature:hover {
+    @apply border-neutral-700;
+  }
+
+  .card-feature:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Glass Card */
+  .card-glass {
+    @apply p-8;
+    @apply bg-white/[0.02] backdrop-blur-sm;
+    @apply border border-white/[0.06];
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .card-glass:hover {
+    @apply bg-white/[0.04] border-white/[0.1];
+  }
+}
+
+/* ============================================
+   Stats Components
+   ============================================ */
+@layer components {
+  .stat-value {
+    @apply text-4xl lg:text-5xl font-semibold text-white;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-label {
+    @apply text-sm text-neutral-500 mt-2;
+  }
+
+  .stat-card {
+    @apply p-6 lg:p-8 text-center;
+    @apply transition-colors duration-200;
+  }
+
+  .stat-card:hover {
+    @apply bg-neutral-900/30;
+  }
+}
+
+/* ============================================
+   Navigation
+   ============================================ */
+@layer components {
+  .nav-link {
+    @apply text-sm text-neutral-400;
+    @apply transition-colors duration-200;
+    @apply cursor-pointer;
+  }
+
+  .nav-link:hover {
+    @apply text-white;
+  }
+}
+
+/* ============================================
+   Form Elements
+   - Min height: 44px (touch target)
+   - Padding: 12px 16px
+   - Focus: blue ring
+   ============================================ */
+@layer components {
+  .input {
+    @apply w-full min-h-[44px] px-4 py-3;
+    @apply bg-neutral-900 border border-neutral-800;
+    @apply text-white placeholder:text-neutral-600;
+    @apply transition-all duration-200;
+  }
+
+  .input:focus {
+    @apply border-blue-500 outline-none;
+    @apply ring-2 ring-blue-500/20;
+  }
+
+  .input:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+}
+
+/* ============================================
+   Icon Box Component
+   ============================================ */
+@layer components {
+  .icon-box {
+    @apply w-12 h-12 flex items-center justify-center flex-shrink-0;
+    @apply border border-neutral-800;
+    @apply transition-colors duration-200;
+  }
+
+  .icon-box-sm {
+    @apply w-10 h-10 flex items-center justify-center flex-shrink-0;
+    @apply border border-neutral-800;
+    @apply transition-colors duration-200;
+  }
+}
+
+/* ============================================
+   Animation Utilities
+   - Standard: 200ms ease-out
+   - Complex: 300-400ms ease-out
+   ============================================ */
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  /* Fade In */
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-in-down {
+    animation: fadeInDown 0.5s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Scale In */
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Stagger Animation Delays */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+  .delay-600 { animation-delay: 600ms; }
+
+  /* Hover Lift Effect */
+  .hover-lift {
+    @apply transition-transform duration-200 ease-out;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* ============================================
+   Visual Effects / Backgrounds
+   ============================================ */
+@layer utilities {
+  /* Grid Pattern */
+  .grid-pattern {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  /* Radial Gradients */
+  .gradient-radial {
+    background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
+  }
+
+  .gradient-radial-top {
+    background: radial-gradient(ellipse at top, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+  }
+
+  /* Divider */
+  .divider {
+    @apply h-px w-full bg-neutral-800;
+  }
+
+  .divider-gradient {
+    @apply h-px w-full;
+    background: linear-gradient(90deg, transparent, rgb(38 38 38), transparent);
+  }
+
+  /* Text Gradient */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-white to-neutral-400;
+  }
+}
+
+/* ============================================
+   Custom Scrollbar
+   ============================================ */
+@layer base {
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-neutral-950;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-800;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-700;
+  }
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+@layer utilities {
+  /* Touch Target - Min 44x44px */
+  .touch-target {
+    @apply min-w-[44px] min-h-[44px];
+  }
+
+  /* Readable Width */
+  .max-w-readable {
+    max-width: 65ch;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
