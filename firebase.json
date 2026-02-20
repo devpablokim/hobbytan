@@ -6,6 +6,10 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    "frameworksBackend": {
+      "region": "asia-northeast3",
+      "runtime": "nodejs20"
+    }
   }
 }
