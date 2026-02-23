@@ -29,7 +29,7 @@ export default function App() {
           <Route path="/curriculum" element={<CurriculumPage user={currentUser} role={role} />} />
           <Route path="/team/:id" element={<TeamDetailPage />} />
           <Route path="/submit" element={<SubmitPage />} />
-          <Route path="/community" element={<CommunityPage />} />
+          <Route path="/community" element={<CommunityPage user={currentUser} />} />
           {role === 'admin' && <Route path="/admin" element={<AdminPage />} />}
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
