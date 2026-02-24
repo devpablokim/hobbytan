@@ -238,7 +238,7 @@ export default function Curriculum() {
           {/* Header with Total Value */}
           <div className="p-5 sm:p-6 lg:p-10 border-b border-neutral-800 text-center">
             <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white mb-2">
-              <span className="text-neutral-500 line-through mr-3">₩730만 상당</span>
+              <span className="text-neutral-500 line-through mr-3">₩1,080만</span>
               <span className="text-blue-400">→ ₩160만/인</span>
             </h3>
             <p className="text-neutral-400">
