@@ -1,21 +1,16 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { useAuth } from '@/lib/super-wks/useAuth';
 import { LoginPage } from '@/components/super-wks/LoginPage';
 import { Layout } from '@/components/super-wks/Layout';
 import { SubmitPage } from '@/components/super-wks/SubmitPage';
 
 export default function SubmitRoute() {
-  const router = useRouter();
-  const { isLoggedIn, currentUser, role, login, logout, switchRole } = useAuth();
+  const { isLoggedIn, currentUser, role, loading, login, logout, switchRole } = useAuth();
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      router.push('/super-wks');
-    }
-  }, [isLoggedIn, router]);
+  if (loading) {
+    return <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center"><div className="text-neutral-500">로딩 중...</div></div>;
+  }
 
   if (!isLoggedIn || !currentUser) {
     return <LoginPage onLogin={login} />;
@@ -23,7 +18,7 @@ export default function SubmitRoute() {
 
   return (
     <Layout user={currentUser} role={role} onSwitchRole={switchRole} onLogout={logout}>
-      <SubmitPage />
+      <SubmitPage user={currentUser} role={role} />
     </Layout>
   );
 }

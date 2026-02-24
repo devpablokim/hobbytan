@@ -1,15 +1,12 @@
-// Components
+export { LoginPage } from './LoginPage';
+export { Layout } from './Layout';
+export { DashboardPage } from './DashboardPage';
+export { CurriculumPage } from './CurriculumPage';
+export { SubmitPage } from './SubmitPage';
+export { CommunityPage } from './CommunityPage';
+export { AdminPage } from './AdminPage';
+export { TeamDetailPage } from './TeamDetailPage';
 export { ProgressBar } from './ProgressBar';
 export { WeekBadge } from './WeekBadge';
 export { Modal } from './Modal';
 export { EmptyState } from './EmptyState';
-export { Layout } from './Layout';
-
-// Page Components
-export { LoginPage } from './LoginPage';
-export { DashboardPage } from './DashboardPage';
-export { CurriculumPage } from './CurriculumPage';
-export { TeamDetailPage } from './TeamDetailPage';
-export { SubmitPage } from './SubmitPage';
-export { CommunityPage } from './CommunityPage';
-export { AdminPage } from './AdminPage';

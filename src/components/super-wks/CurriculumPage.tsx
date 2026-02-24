@@ -1,138 +1,57 @@
 'use client';
 
 import { useState } from 'react';
-import type { Role, User, AssignmentType } from '@/lib/super-wks/types';
-import { curriculum } from '@/lib/super-wks/mockData';
+import type { Role, User, Curriculum } from '@/lib/super-wks/types';
+import { curriculum, submissions } from '@/lib/super-wks/mockData';
 import { WeekBadge } from './WeekBadge';
-import { Modal } from './Modal';
 
-export function CurriculumPage({ user, role }: { user: User; role: Role }) {
-  const [activeWeek, setActiveWeek] = useState(0);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [addAssignmentOpen, setAddAssignmentOpen] = useState(false);
-
-  // Edit form state
-  const [editTitle, setEditTitle] = useState('');
-  const [editDesc, setEditDesc] = useState('');
-  const [editObjectives, setEditObjectives] = useState('');
-
-  // Add assignment form state
-  const [newAssTitle, setNewAssTitle] = useState('');
-  const [newAssDesc, setNewAssDesc] = useState('');
-  const [newAssType, setNewAssType] = useState<AssignmentType>('text');
-  const [newAssDue, setNewAssDue] = useState(5);
-  const [newAssRequired, setNewAssRequired] = useState(true);
-
-  const cur = curriculum.find(c => c.weekNumber === activeWeek);
-  const weekKey = `week${activeWeek}` as keyof typeof user.progress;
-  const myStatus = user.progress[weekKey];
-
-  const openEditModal = () => {
-    if (cur) {
-      setEditTitle(cur.title);
-      setEditDesc(cur.description);
-      setEditObjectives(cur.objectives.join('\n'));
-      setEditModalOpen(true);
-    }
-  };
-
-  const handleSaveEdit = () => {
-    // In real implementation, calls dataService.updateCurriculum()
-    if (cur) {
-      cur.title = editTitle;
-      cur.description = editDesc;
-      cur.objectives = editObjectives.split('\n').filter(Boolean);
-    }
-    setEditModalOpen(false);
-  };
-
-  const handleAddAssignment = () => {
-    if (cur) {
-      cur.assignments.push({
-        assignmentId: `a${Date.now()}`,
-        title: newAssTitle,
-        description: newAssDesc,
-        type: newAssType,
-        dueOffsetDays: newAssDue,
-        required: newAssRequired,
-      });
-    }
-    setNewAssTitle('');
-    setNewAssDesc('');
-    setNewAssType('text');
-    setNewAssDue(5);
-    setNewAssRequired(true);
-    setAddAssignmentOpen(false);
-  };
-
-  const handleDeleteAssignment = (assignmentId: string) => {
-    if (cur && confirm('이 과제를 삭제하시겠습니까?')) {
-      cur.assignments = cur.assignments.filter(a => a.assignmentId !== assignmentId);
-    }
-  };
+function CurriculumCard({ week, user, role: _role }: { week: Curriculum; user: User; role: Role }) {
+  const [expanded, setExpanded] = useState(false);
+  const weekKey = `week${week.weekNumber}` as keyof typeof user.progress;
+  const status = user.progress[weekKey]?.status || 'not-started';
+  const mySubmissions = submissions.filter(s => s.userId === user.userId && s.weekNumber === week.weekNumber);
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">커리큘럼</h1>
-
-      {/* Week Tabs */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-        {[0,1,2,3,4,5].map(w => {
-          const wk = `week${w}` as keyof typeof user.progress;
-          const s = user.progress[wk].status;
-          return (
-            <button
-              key={w}
-              onClick={() => setActiveWeek(w)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                activeWeek === w
-                  ? 'bg-indigo-600 text-white'
-                  : s === 'completed' ? 'bg-emerald-100 text-emerald-700'
-                  : s === 'in-progress' ? 'bg-amber-100 text-amber-700'
-                  : 'bg-gray-100 text-gray-600'
-              }`}
-            >
-              {w}주차 {s === 'completed' && '✅'}
-            </button>
-          );
-        })}
-      </div>
-
-      {cur && (
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">{cur.title}</h2>
-            <div className="flex items-center gap-2">
-              <WeekBadge status={myStatus.status} />
-              {role === 'admin' && (
-                <button onClick={openEditModal} className="text-sm text-indigo-600 hover:text-indigo-800 border border-indigo-200 rounded-lg px-3 py-1">✏️ 수정</button>
-              )}
-            </div>
+    <div className="bg-[#111111] border border-[#262626] hover:border-[#404040] transition-colors">
+      <button onClick={() => setExpanded(!expanded)} className="w-full p-5 text-left flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-semibold text-sm shrink-0">
+            {week.weekNumber}
           </div>
-          <p className="text-gray-600 mb-6">{cur.description}</p>
+          <div>
+            <h3 className="text-sm font-medium text-white">{week.title}</h3>
+            <p className="text-xs text-neutral-500 mt-0.5">{week.description}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 shrink-0">
+          <WeekBadge status={status} />
+          <span className="text-neutral-500 text-sm">{expanded ? '▲' : '▼'}</span>
+        </div>
+      </button>
 
+      {expanded && (
+        <div className="border-t border-[#262626] p-5 space-y-4">
           {/* Objectives */}
-          <div className="mb-6">
-            <h3 className="font-bold text-gray-800 mb-2">🎯 학습 목표</h3>
+          <div>
+            <h4 className="text-xs text-neutral-500 uppercase tracking-wider mb-2">학습 목표</h4>
             <ul className="space-y-1">
-              {cur.objectives.map((obj, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                  <span className="text-indigo-500 mt-0.5">-</span>{obj}
+              {week.objectives.map((obj, i) => (
+                <li key={i} className="text-sm text-neutral-400 flex items-start gap-2">
+                  <span className="text-emerald-500 mt-0.5">✓</span> {obj}
                 </li>
               ))}
             </ul>
           </div>
 
           {/* Materials */}
-          {cur.materials.length > 0 && (
-            <div className="mb-6">
-              <h3 className="font-bold text-gray-800 mb-2">📖 학습 자료</h3>
-              <div className="space-y-2">
-                {cur.materials.map((m, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm bg-gray-50 rounded-lg p-3">
-                    <span>{m.type === 'video' ? '🎥' : m.type === 'doc' ? '📄' : '🔗'}</span>
-                    <span className="text-gray-700">{m.title}</span>
-                  </div>
+          {week.materials.length > 0 && (
+            <div>
+              <h4 className="text-xs text-neutral-500 uppercase tracking-wider mb-2">학습 자료</h4>
+              <div className="space-y-1">
+                {week.materials.map((mat, i) => (
+                  <a key={i} href={mat.url} className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                    {mat.type === 'video' ? '🎥' : mat.type === 'doc' ? '📄' : '🔗'} {mat.title}
+                  </a>
                 ))}
               </div>
             </div>
@@ -140,104 +59,48 @@ export function CurriculumPage({ user, role }: { user: User; role: Role }) {
 
           {/* Assignments */}
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-bold text-gray-800">📝 과제</h3>
-              {role === 'admin' && (
-                <button onClick={() => setAddAssignmentOpen(true)} className="text-sm bg-indigo-600 text-white rounded-lg px-3 py-1 hover:bg-indigo-700">+ 과제 추가</button>
-              )}
-            </div>
-            {cur.assignments.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">
-                <div className="text-3xl mb-2">📋</div>
-                <p className="text-sm">등록된 과제가 없습니다.</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {cur.assignments.map(a => (
-                  <div key={a.assignmentId} className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="font-medium text-gray-900">{a.title}</div>
-                      <div className="flex items-center gap-2">
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${a.required ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500'}`}>
-                          {a.required ? '필수' : '선택'}
-                        </span>
-                        {role === 'admin' && (
-                          <button onClick={() => handleDeleteAssignment(a.assignmentId)} className="text-xs text-red-400 hover:text-red-600">🗑️</button>
-                        )}
+            <h4 className="text-xs text-neutral-500 uppercase tracking-wider mb-2">과제 ({week.assignments.length}건)</h4>
+            <div className="space-y-2">
+              {week.assignments.map(a => {
+                const submitted = mySubmissions.find(s => s.assignmentId === a.assignmentId);
+                return (
+                  <div key={a.assignmentId} className="bg-[#0a0a0a] border border-[#1a1a1a] p-3 flex items-center justify-between">
+                    <div>
+                      <div className="text-sm text-white">{a.title}</div>
+                      <div className="text-xs text-neutral-500 mt-0.5">{a.description}</div>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] text-neutral-600">마감: {a.dueOffsetDays}일 후</span>
+                        <span className="text-[10px] text-neutral-600">·</span>
+                        <span className="text-[10px] text-neutral-600">{a.type === 'file' ? '📁 파일' : a.type === 'text' ? '✏️ 텍스트' : '🔗 링크'}</span>
+                        {a.required && <span className="text-[10px] text-red-400">필수</span>}
                       </div>
                     </div>
-                    <p className="text-sm text-gray-500 mt-1">{a.description}</p>
-                    <div className="flex gap-3 mt-2 text-xs text-gray-400">
-                      <span>📎 {a.type === 'file' ? '파일 업로드' : a.type === 'text' ? '텍스트 작성' : '링크 제출'}</span>
-                      <span>⏰ D+{a.dueOffsetDays}일</span>
-                    </div>
+                    {submitted ? (
+                      <span className="text-[10px] px-2 py-0.5 border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 shrink-0">제출 완료</span>
+                    ) : (
+                      <span className="text-[10px] px-2 py-0.5 border border-neutral-500/20 bg-neutral-500/10 text-neutral-400 shrink-0">미제출</span>
+                    )}
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
+    </div>
+  );
+}
 
-      {/* Edit Curriculum Modal */}
-      <Modal isOpen={editModalOpen} onClose={() => setEditModalOpen(false)} title="커리큘럼 수정">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">제목</label>
-            <input value={editTitle} onChange={e => setEditTitle(e.target.value)} className="w-full border rounded-lg px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">설명</label>
-            <textarea value={editDesc} onChange={e => setEditDesc(e.target.value)} rows={3} className="w-full border rounded-lg px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">학습 목표 (줄바꿈으로 구분)</label>
-            <textarea value={editObjectives} onChange={e => setEditObjectives(e.target.value)} rows={4} className="w-full border rounded-lg px-3 py-2 text-sm" />
-          </div>
-          <div className="flex gap-2 justify-end">
-            <button onClick={() => setEditModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm text-gray-600 hover:bg-gray-50">취소</button>
-            <button onClick={handleSaveEdit} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">저장</button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* Add Assignment Modal */}
-      <Modal isOpen={addAssignmentOpen} onClose={() => setAddAssignmentOpen(false)} title="과제 추가">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">과제명</label>
-            <input value={newAssTitle} onChange={e => setNewAssTitle(e.target.value)} className="w-full border rounded-lg px-3 py-2 text-sm" placeholder="과제 제목" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">설명</label>
-            <textarea value={newAssDesc} onChange={e => setNewAssDesc(e.target.value)} rows={3} className="w-full border rounded-lg px-3 py-2 text-sm" placeholder="과제 설명" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">제출 유형</label>
-            <select value={newAssType} onChange={e => setNewAssType(e.target.value as AssignmentType)} className="w-full border rounded-lg px-3 py-2 text-sm">
-              <option value="text">✏️ 텍스트</option>
-              <option value="file">📎 파일</option>
-              <option value="link">🔗 링크</option>
-            </select>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">마감 (D+일)</label>
-              <input type="number" value={newAssDue} onChange={e => setNewAssDue(Number(e.target.value))} min={1} className="w-full border rounded-lg px-3 py-2 text-sm" />
-            </div>
-            <div className="flex items-end">
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={newAssRequired} onChange={e => setNewAssRequired(e.target.checked)} className="rounded" />
-                필수 과제
-              </label>
-            </div>
-          </div>
-          <div className="flex gap-2 justify-end">
-            <button onClick={() => setAddAssignmentOpen(false)} className="px-4 py-2 border rounded-lg text-sm text-gray-600 hover:bg-gray-50">취소</button>
-            <button onClick={handleAddAssignment} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">추가</button>
-          </div>
-        </div>
-      </Modal>
+export function CurriculumPage({ user, role }: { user: User; role: Role }) {
+  return (
+    <div>
+      <h1 className="text-2xl font-semibold text-white mb-6">커리큘럼</h1>
+      <p className="text-neutral-500 text-sm mb-6">5주 파워워크샵 커리큘럼 — 각 주차를 클릭하여 상세 내용을 확인하세요</p>
+      <div className="space-y-3">
+        {curriculum.map(week => (
+          <CurriculumCard key={week.curriculumId} week={week} user={user} role={role} />
+        ))}
+      </div>
     </div>
   );
 }

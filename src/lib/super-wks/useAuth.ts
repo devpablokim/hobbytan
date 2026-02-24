@@ -1,61 +1,88 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { signInWithPopup, signOut, onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
+import { auth, googleProvider } from './firebase';
 import type { Role, User } from './types';
 import { users } from './mockData';
+
+const ADMIN_EMAILS = ['tanhyu.kim@gmail.com'];
 
 interface AuthState {
   isLoggedIn: boolean;
   currentUser: User | null;
+  firebaseUser: FirebaseUser | null;
   role: Role;
-  login: (role?: Role) => void;
-  logout: () => void;
+  loading: boolean;
+  login: () => Promise<void>;
+  logout: () => Promise<void>;
   switchRole: (role: Role) => void;
 }
 
-const ROLE_KEY = 'superworkshop_role';
-const LOGIN_KEY = 'superworkshop_loggedin';
-
-function getSavedRole(): Role {
-  if (typeof window === 'undefined') return 'student';
-  return (localStorage.getItem(ROLE_KEY) as Role) || 'student';
-}
-
-function getUserByRole(role: Role): User {
-  if (role === 'admin') return users.find(u => u.role === 'admin')!;
-  if (role === 'team_lead') return users.find(u => u.role === 'team_lead')!;
-  return users.find(u => u.role === 'student' && u.teamId === 'team-alpha')!;
+function buildUserFromFirebase(fbUser: FirebaseUser, role: Role): User {
+  const isAdmin = ADMIN_EMAILS.includes(fbUser.email || '');
+  const effectiveRole = isAdmin ? 'admin' : role;
+  
+  // Try to find matching mock user
+  const mockUser = users.find(u => u.email === fbUser.email) 
+    || users.find(u => u.role === effectiveRole)
+    || users[0];
+  
+  return {
+    ...mockUser,
+    userId: fbUser.uid,
+    displayName: fbUser.displayName || 'User',
+    email: fbUser.email || '',
+    photoURL: fbUser.photoURL,
+    role: effectiveRole,
+  };
 }
 
 export function useAuth(): AuthState {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return localStorage.getItem(LOGIN_KEY) === 'true';
-  });
-  const [role, setRole] = useState<Role>(getSavedRole);
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState<Role>('student');
 
-  const login = useCallback((r?: Role) => {
-    const selectedRole = r || getSavedRole();
-    localStorage.setItem(LOGIN_KEY, 'true');
-    localStorage.setItem(ROLE_KEY, selectedRole);
-    setRole(selectedRole);
-    setIsLoggedIn(true);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setFirebaseUser(user);
+      if (user && ADMIN_EMAILS.includes(user.email || '')) {
+        setRole('admin');
+      }
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem(LOGIN_KEY);
-    setIsLoggedIn(false);
+  const login = useCallback(async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
+    try {
+      await signOut(auth);
+      setRole('student');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   }, []);
 
   const switchRole = useCallback((newRole: Role) => {
-    localStorage.setItem(ROLE_KEY, newRole);
     setRole(newRole);
   }, []);
 
+  const currentUser = firebaseUser ? buildUserFromFirebase(firebaseUser, role) : null;
+
   return {
-    isLoggedIn,
-    currentUser: isLoggedIn ? getUserByRole(role) : null,
-    role,
+    isLoggedIn: !!firebaseUser,
+    currentUser,
+    firebaseUser,
+    role: currentUser?.role || 'student',
+    loading,
     login,
     logout,
     switchRole,

@@ -2,13 +2,17 @@
 
 import type { WeekStatus } from '@/lib/super-wks/types';
 
-const config: Record<WeekStatus, { bg: string; text: string; label: string }> = {
-  'completed': { bg: 'bg-emerald-100', text: 'text-emerald-700', label: '완료' },
-  'in-progress': { bg: 'bg-amber-100', text: 'text-amber-700', label: '진행 중' },
-  'not-started': { bg: 'bg-gray-100', text: 'text-gray-500', label: '미시작' },
+const statusConfig: Record<WeekStatus, { label: string; className: string }> = {
+  'completed': { label: '완료', className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+  'in-progress': { label: '진행중', className: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+  'not-started': { label: '대기', className: 'text-neutral-500 bg-neutral-500/10 border-neutral-500/20' },
 };
 
 export function WeekBadge({ status }: { status: WeekStatus }) {
-  const c = config[status];
-  return <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${c.bg} ${c.text}`}>{c.label}</span>;
+  const config = statusConfig[status];
+  return (
+    <span className={`inline-block text-[10px] px-2 py-0.5 border font-medium ${config.className}`}>
+      {config.label}
+    </span>
+  );
 }

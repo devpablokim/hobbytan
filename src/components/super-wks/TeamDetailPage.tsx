@@ -1,34 +1,46 @@
 'use client';
 
 import Link from 'next/link';
+import type { Role, User } from '@/lib/super-wks/types';
 import { teams, users, submissions } from '@/lib/super-wks/mockData';
 import { ProgressBar } from './ProgressBar';
 import { WeekBadge } from './WeekBadge';
 
-export function TeamDetailPage({ teamId }: { teamId: string }) {
+export function TeamDetailPage({ teamId, user: _user, role: _role }: { teamId: string; user: User; role: Role }) {
   const team = teams.find(t => t.teamId === teamId);
-  const members = users.filter(u => u.teamId === teamId);
+  const teamMembers = users.filter(u => u.teamId === teamId);
   const teamSubmissions = submissions.filter(s => s.teamId === teamId);
   const weekKeys = ['week0','week1','week2','week3','week4','week5'] as const;
 
-  if (!team) return (
-    <div className="text-center py-20">
-      <div className="text-5xl mb-4">🔍</div>
-      <h2 className="text-xl font-bold text-gray-900 mb-2">팀을 찾을 수 없습니다</h2>
-      <p className="text-gray-500 mb-4">요청한 팀 ID({teamId})가 존재하지 않습니다.</p>
-      <Link href="/super-wks/dashboard" className="text-indigo-600 hover:text-indigo-800 text-sm">← 대시보드로 돌아가기</Link>
-    </div>
-  );
+  if (!team) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-neutral-400">팀을 찾을 수 없습니다.</p>
+        <Link href="/super-wks/dashboard" className="text-emerald-400 hover:text-emerald-300 text-sm mt-2 inline-block">← 대시보드로 돌아가기</Link>
+      </div>
+    );
+  }
+
+  const lead = users.find(u => u.userId === team.teamLeadId);
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">{team.name}</h1>
-      <p className="text-gray-500 mb-6">현재 Week {team.currentWeek} 진행 중 - {members.length}명</p>
+      <Link href="/super-wks/dashboard" className="text-sm text-neutral-500 hover:text-emerald-400 transition-colors mb-4 inline-block">← 대시보드</Link>
+      
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold text-white">{team.name}</h1>
+          <p className="text-neutral-500 text-sm mt-1">리더: {lead?.displayName} · {teamMembers.length}명 · Week {team.currentWeek}</p>
+        </div>
+        <span className={`text-[10px] px-2 py-0.5 border ${team.status === 'active' ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400' : 'border-neutral-500/20 bg-neutral-500/10 text-neutral-400'}`}>
+          {team.status === 'active' ? '진행 중' : '수료 완료'}
+        </span>
+      </div>
 
       {/* Team Progress */}
-      <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-        <h2 className="font-bold text-gray-900 mb-4">팀 진행률</h2>
-        <div className="space-y-3">
+      <div className="bg-[#111111] border border-[#262626] p-6 mb-6">
+        <h2 className="text-sm font-medium text-white mb-4">팀 전체 진행률</h2>
+        <div className="space-y-2">
           {([0,1,2,3,4,5] as const).map(w => (
             <ProgressBar key={w} value={team.progress[`week${w}`]} label={`${w}주차`} />
           ))}
@@ -36,27 +48,36 @@ export function TeamDetailPage({ teamId }: { teamId: string }) {
       </div>
 
       {/* Members */}
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden mb-6">
-        <h2 className="font-bold text-gray-900 p-6 pb-3">팀원 현황</h2>
+      <h2 className="text-lg font-semibold text-white mb-4">팀원 상세</h2>
+      <div className="bg-[#111111] border border-[#262626] overflow-x-auto mb-6">
         <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="text-left px-6 py-3 text-sm font-medium text-gray-600">이름</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">역할</th>
-              {weekKeys.map((_, i) => <th key={i} className="text-center px-2 py-3 text-sm font-medium text-gray-600">{i}주</th>)}
+          <thead>
+            <tr className="border-b border-[#262626]">
+              <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase">이름</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase">역할</th>
+              {weekKeys.map((_, i) => (
+                <th key={i} className="text-center px-2 py-3 text-xs font-medium text-neutral-500">{i}주</th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {members.map(m => (
-              <tr key={m.userId} className="border-t">
-                <td className="px-6 py-3 text-sm font-medium text-gray-900">{m.displayName}</td>
-                <td className="px-4 py-3 text-xs">
-                  <span className={`px-2 py-0.5 rounded-full ${m.role === 'team_lead' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'}`}>
-                    {m.role === 'team_lead' ? '팀 리더' : '수강생'}
+            {teamMembers.map(member => (
+              <tr key={member.userId} className="border-b border-[#1a1a1a] hover:bg-[#1a1a1a]">
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-xs shrink-0">
+                      {member.displayName[0]}
+                    </div>
+                    <span className="text-sm text-white">{member.displayName}</span>
+                  </div>
+                </td>
+                <td className="px-4 py-3">
+                  <span className={`text-[10px] px-1.5 py-0.5 border ${member.role === 'team_lead' ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' : 'text-neutral-500 bg-neutral-500/10 border-neutral-500/20'}`}>
+                    {member.role === 'team_lead' ? '리더' : '수강생'}
                   </span>
                 </td>
-                {weekKeys.map((w, i) => (
-                  <td key={i} className="text-center px-2 py-3"><WeekBadge status={m.progress[w].status} /></td>
+                {weekKeys.map(w => (
+                  <td key={w} className="text-center px-2 py-3"><WeekBadge status={member.progress[w].status} /></td>
                 ))}
               </tr>
             ))}
@@ -65,31 +86,30 @@ export function TeamDetailPage({ teamId }: { teamId: string }) {
       </div>
 
       {/* Submissions */}
-      <div className="bg-white rounded-xl shadow-sm border p-6">
-        <h2 className="font-bold text-gray-900 mb-4">최근 제출물</h2>
+      <h2 className="text-lg font-semibold text-white mb-4">팀 제출물 ({teamSubmissions.length}건)</h2>
+      <div className="bg-[#111111] border border-[#262626]">
         {teamSubmissions.length === 0 ? (
-          <p className="text-gray-400 text-sm">아직 제출물이 없습니다.</p>
+          <div className="p-8 text-center text-neutral-500 text-sm">제출물이 없습니다.</div>
         ) : (
-          <div className="space-y-3">
+          <div className="divide-y divide-[#1a1a1a]">
             {teamSubmissions.map(s => {
-              const author = users.find(u => u.userId === s.userId);
+              const submitter = users.find(u => u.userId === s.userId);
               return (
-                <div key={s.submissionId} className="border rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="font-medium text-gray-900">{author?.displayName}</span>
-                      <span className="text-gray-400 mx-2">-</span>
-                      <span className="text-sm text-gray-500">{s.weekNumber}주차</span>
+                <div key={s.submissionId} className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-white">{submitter?.displayName}</span>
+                      <span className="text-xs text-neutral-500">{s.weekNumber}주차</span>
                     </div>
                     {s.feedback ? (
-                      <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">피드백 완료</span>
+                      <span className="text-[10px] px-2 py-0.5 border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">피드백 완료</span>
                     ) : (
-                      <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">리뷰 대기</span>
+                      <span className="text-[10px] px-2 py-0.5 border border-amber-500/20 bg-amber-500/10 text-amber-400">리뷰 대기</span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600 mt-2 line-clamp-2">{s.content}</p>
+                  <p className="text-sm text-neutral-400">{s.content}</p>
                   {s.feedback && (
-                    <div className="mt-2 bg-emerald-50 rounded p-2 text-sm text-emerald-700">
+                    <div className="mt-2 bg-emerald-500/5 border border-emerald-500/10 p-3 text-sm text-emerald-300">
                       💬 {s.feedback.comment} {s.feedback.score && `(${s.feedback.score}점)`}
                     </div>
                   )}
