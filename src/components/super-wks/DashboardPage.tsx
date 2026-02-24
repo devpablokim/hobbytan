@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import type { Role, User } from '@/lib/super-wks/types';
-import { teams, users, cohort, curriculum, submissions } from '@/lib/super-wks/mockData';
+import { teams, users, cohort, curriculum, submissions, goals } from '@/lib/super-wks/mockData';
 import { ProgressBar } from './ProgressBar';
 import { WeekBadge } from './WeekBadge';
 
@@ -139,6 +139,7 @@ function StudentDashboard({ user }: { user: User }) {
   const myTeam = teams.find(t => t.teamId === user.teamId);
   const weekKeys = ['week0','week1','week2','week3','week4','week5'] as const;
   const completedWeeks = weekKeys.filter(w => user.progress[w].status === 'completed').length;
+  const myTeamGoals = goals.filter(g => g.teamId === user.teamId);
 
   return (
     <div>
@@ -207,6 +208,24 @@ function StudentDashboard({ user }: { user: User }) {
         ))}
       </div>
 
+      {/* Team Goals */}
+      {myTeamGoals.length > 0 && (
+        <>
+          <h2 className="text-lg font-semibold text-white mt-6 mb-4">🎯 팀 공동 목표</h2>
+          <div className="bg-[#111111] border border-[#262626] p-5 space-y-3">
+            {myTeamGoals.map(g => (
+              <div key={g.goalId} className="bg-[#0a0a0a] border border-[#1a1a1a] p-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm text-white">{g.title}</span>
+                  <span className="text-xs text-emerald-400">{g.currentValue}/{g.targetValue} {g.unit}</span>
+                </div>
+                <ProgressBar value={Math.round((g.currentValue / g.targetValue) * 100)} size="sm" />
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
       {/* Team Progress */}
       {myTeam && (
         <>
@@ -228,6 +247,7 @@ function TeamLeadDashboard({ user }: { user: User }) {
   const myTeam = teams.find(t => t.teamId === user.teamId);
   const teamMembers = users.filter(u => u.teamId === user.teamId);
   const weekKeys = ['week0','week1','week2','week3','week4','week5'] as const;
+  const teamGoals = goals.filter(g => g.teamId === user.teamId);
 
   if (!myTeam) return <div className="text-neutral-400">팀 정보를 찾을 수 없습니다.</div>;
 
@@ -238,6 +258,24 @@ function TeamLeadDashboard({ user }: { user: User }) {
         <StatCard label="팀원 수" value={`${teamMembers.length}명`} />
         <StatCard label="현재 주차" value={`Week ${myTeam.currentWeek}`} accent />
       </div>
+
+      {/* Team Goals */}
+      {teamGoals.length > 0 && (
+        <>
+          <h2 className="text-lg font-semibold text-white mb-4">🎯 팀 공동 목표</h2>
+          <div className="bg-[#111111] border border-[#262626] p-5 mb-6 space-y-3">
+            {teamGoals.map(g => (
+              <div key={g.goalId} className="bg-[#0a0a0a] border border-[#1a1a1a] p-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm text-white">{g.title}</span>
+                  <span className="text-xs text-emerald-400">{g.currentValue}/{g.targetValue} {g.unit}</span>
+                </div>
+                <ProgressBar value={Math.round((g.currentValue / g.targetValue) * 100)} size="sm" />
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       <h2 className="text-lg font-semibold text-white mb-4">팀원별 진행 현황</h2>
       <div className="bg-[#111111] border border-[#262626] overflow-x-auto">
