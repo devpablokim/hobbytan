@@ -128,7 +128,7 @@ export default function Success() {
         >
           <a
             href="#pricing"
-            className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors duration-200"
+            className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors duration-200"
           >
             우리 회사도 시작하기
             <ArrowUpRight className="w-4 h-4" />

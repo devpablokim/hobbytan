@@ -49,7 +49,7 @@ export default function Footer() {
               <div className="flex items-center gap-4">
                 <a
                   href="mailto:pablo@hobbytan.com"
-                  className="text-xs text-neutral-600 hover:text-white transition-colors duration-200"
+                  className="text-xs text-neutral-500 hover:text-emerald-400 transition-colors duration-200"
                 >
                   pablo@hobbytan.com
                 </a>

@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { getFirebaseAdmin } from "@/lib/firebase-admin";
 
+// Rate limiting - simple in-memory store (use Redis in production)
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_REQUESTS = 5; // 5 requests per minute per IP
+
 interface ContactFormData {
   name: string;
   email: string;
@@ -11,15 +16,68 @@ interface ContactFormData {
   website?: string; // honeypot field
 }
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
-  },
-});
+// Validation helpers
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email) && email.length <= 254;
+};
+
+const isValidPhone = (phone: string): boolean => {
+  // Korean phone format or international
+  const phoneRegex = /^[\d\-\+\(\)\s]{8,20}$/;
+  return phoneRegex.test(phone);
+};
+
+const sanitizeInput = (input: string): string => {
+  return input
+    .replace(/[<>]/g, '') // Remove potential HTML tags
+    .trim()
+    .slice(0, 5000); // Limit length
+};
+
+// Rate limiting check
+const checkRateLimit = (ip: string): { allowed: boolean; retryAfter?: number } => {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return { allowed: true };
+  }
+
+  if (record.count >= MAX_REQUESTS) {
+    return {
+      allowed: false,
+      retryAfter: Math.ceil((record.resetTime - now) / 1000)
+    };
+  }
+
+  record.count++;
+  return { allowed: true };
+};
+
+// Lazy transporter initialization to avoid startup errors if env vars missing
+let transporter: nodemailer.Transporter | null = null;
+
+const getTransporter = () => {
+  if (!transporter) {
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+      throw new Error("SMTP configuration is incomplete");
+    }
+    transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: process.env.SMTP_SECURE === "true",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+      pool: true, // Use connection pooling for better performance
+      maxConnections: 5,
+    });
+  }
+  return transporter;
+};
 
 function getAdminEmailHTML(data: ContactFormData): string {
   return `
@@ -226,12 +284,71 @@ function getConfirmationEmailHTML(data: ContactFormData): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const data: ContactFormData = await request.json();
+    // Rate limiting
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+               request.headers.get("x-real-ip") ||
+               "unknown";
+
+    const rateCheck = checkRateLimit(ip);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(rateCheck.retryAfter),
+          },
+        }
+      );
+    }
+
+    // Parse and validate request body
+    let data: ContactFormData;
+    try {
+      data = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: "잘못된 요청 형식입니다." },
+        { status: 400 }
+      );
+    }
 
     // Validate required fields
     if (!data.name || !data.email || !data.phone || !data.message) {
       return NextResponse.json(
         { error: "필수 항목을 모두 입력해 주세요." },
+        { status: 400 }
+      );
+    }
+
+    // Validate email format
+    if (!isValidEmail(data.email)) {
+      return NextResponse.json(
+        { error: "올바른 이메일 주소를 입력해 주세요." },
+        { status: 400 }
+      );
+    }
+
+    // Validate phone format
+    if (!isValidPhone(data.phone)) {
+      return NextResponse.json(
+        { error: "올바른 연락처를 입력해 주세요." },
+        { status: 400 }
+      );
+    }
+
+    // Validate name length
+    if (data.name.length < 2 || data.name.length > 50) {
+      return NextResponse.json(
+        { error: "이름은 2자 이상 50자 이하로 입력해 주세요." },
+        { status: 400 }
+      );
+    }
+
+    // Validate message length
+    if (data.message.length < 10 || data.message.length > 5000) {
+      return NextResponse.json(
+        { error: "문의 내용은 10자 이상 5000자 이하로 입력해 주세요." },
         { status: 400 }
       );
     }
@@ -246,29 +363,57 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Sanitize inputs
+    const sanitizedData: ContactFormData = {
+      name: sanitizeInput(data.name),
+      email: data.email.toLowerCase().trim(),
+      phone: sanitizeInput(data.phone),
+      company: sanitizeInput(data.company || ""),
+      message: sanitizeInput(data.message),
+    };
+
     // Save to Firestore
     const db = getFirebaseAdmin();
     const docRef = await db.collection("inquiries").add({
-      ...data,
+      ...sanitizedData,
       createdAt: new Date().toISOString(),
       status: "new",
+      ipAddress: ip, // For audit/security purposes
+      userAgent: request.headers.get("user-agent") || "unknown",
     });
+
+    // Send emails (non-blocking for faster response)
+    const emailPromises: Promise<unknown>[] = [];
+    const mailTransporter = getTransporter();
 
     // Send email to admin
-    await transporter.sendMail({
-      from: `"하비탄 AI" <${process.env.SMTP_USER}>`,
-      to: process.env.ADMIN_EMAIL,
-      subject: `[문의] ${data.name}님이 문의를 남기셨습니다`,
-      html: getAdminEmailHTML(data),
-    });
+    emailPromises.push(
+      mailTransporter.sendMail({
+        from: `"하비탄 AI" <${process.env.SMTP_USER}>`,
+        to: process.env.ADMIN_EMAIL,
+        subject: `[문의] ${sanitizedData.name}님이 문의를 남기셨습니다`,
+        html: getAdminEmailHTML(sanitizedData),
+      }).catch(err => {
+        console.error("Failed to send admin email:", err);
+        // Don't throw - we still want to return success if Firestore save worked
+      })
+    );
 
     // Send confirmation email to user
-    await transporter.sendMail({
-      from: `"하비탄 AI" <${process.env.SMTP_USER}>`,
-      to: data.email,
-      subject: "[하비탄 AI] 문의해 주셔서 감사합니다",
-      html: getConfirmationEmailHTML(data),
-    });
+    emailPromises.push(
+      mailTransporter.sendMail({
+        from: `"하비탄 AI" <${process.env.SMTP_USER}>`,
+        to: sanitizedData.email,
+        subject: "[하비탄 AI] 문의해 주셔서 감사합니다",
+        html: getConfirmationEmailHTML(sanitizedData),
+      }).catch(err => {
+        console.error("Failed to send confirmation email:", err);
+        // Don't throw - we still want to return success if Firestore save worked
+      })
+    );
+
+    // Wait for emails but don't fail the request if they fail
+    await Promise.allSettled(emailPromises);
 
     return NextResponse.json({
       success: true,
@@ -277,6 +422,19 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Contact form error:", error);
+
+    // Differentiate error types for better debugging
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const isFirebaseError = errorMessage.includes("Firebase") || errorMessage.includes("firestore");
+    const isSmtpError = errorMessage.includes("SMTP") || errorMessage.includes("nodemailer");
+
+    if (isFirebaseError) {
+      console.error("Firebase error details:", errorMessage);
+    }
+    if (isSmtpError) {
+      console.error("SMTP error details:", errorMessage);
+    }
+
     return NextResponse.json(
       { error: "문의 접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요." },
       { status: 500 }
@@ -284,24 +442,144 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Check for admin authorization header
+    const authHeader = request.headers.get("authorization");
+    const adminToken = process.env.ADMIN_API_TOKEN;
+
+    // Simple token-based auth for admin endpoints
+    // In production, use proper JWT/session-based authentication
+    if (!adminToken || authHeader !== `Bearer ${adminToken}`) {
+      return NextResponse.json(
+        { error: "인증이 필요합니다." },
+        { status: 401 }
+      );
+    }
+
+    // Parse query parameters for pagination and filtering
+    const { searchParams } = new URL(request.url);
+    const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100);
+    const status = searchParams.get("status"); // "new" | "in-progress" | "completed"
+    const startAfter = searchParams.get("startAfter");
+
     const db = getFirebaseAdmin();
-    const snapshot = await db
+    let query = db
       .collection("inquiries")
       .orderBy("createdAt", "desc")
-      .get();
+      .limit(limit);
 
-    const inquiries = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    // Apply status filter if provided
+    if (status) {
+      query = query.where("status", "==", status);
+    }
 
-    return NextResponse.json({ inquiries });
+    // Apply pagination cursor if provided
+    if (startAfter) {
+      const startDoc = await db.collection("inquiries").doc(startAfter).get();
+      if (startDoc.exists) {
+        query = query.startAfter(startDoc);
+      }
+    }
+
+    const snapshot = await query.get();
+
+    const inquiries = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      // Remove sensitive fields from response
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { ipAddress, userAgent, ...safeData } = data;
+      return {
+        id: doc.id,
+        ...safeData,
+      };
+    });
+
+    // Get the last document for pagination
+    const lastDoc = snapshot.docs[snapshot.docs.length - 1];
+
+    return NextResponse.json({
+      inquiries,
+      pagination: {
+        count: inquiries.length,
+        hasMore: inquiries.length === limit,
+        nextCursor: lastDoc?.id || null,
+      },
+    });
   } catch (error) {
     console.error("Get inquiries error:", error);
     return NextResponse.json(
       { error: "문의 목록을 불러오는 중 오류가 발생했습니다." },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH endpoint for updating inquiry status
+export async function PATCH(request: NextRequest) {
+  try {
+    // Check for admin authorization
+    const authHeader = request.headers.get("authorization");
+    const adminToken = process.env.ADMIN_API_TOKEN;
+
+    if (!adminToken || authHeader !== `Bearer ${adminToken}`) {
+      return NextResponse.json(
+        { error: "인증이 필요합니다." },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const { id, status, notes } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "문의 ID가 필요합니다." },
+        { status: 400 }
+      );
+    }
+
+    const validStatuses = ["new", "in-progress", "completed", "archived"];
+    if (status && !validStatuses.includes(status)) {
+      return NextResponse.json(
+        { error: "올바르지 않은 상태값입니다." },
+        { status: 400 }
+      );
+    }
+
+    const db = getFirebaseAdmin();
+    const docRef = db.collection("inquiries").doc(id);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      return NextResponse.json(
+        { error: "문의를 찾을 수 없습니다." },
+        { status: 404 }
+      );
+    }
+
+    const updateData: Record<string, unknown> = {
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (status) {
+      updateData.status = status;
+    }
+
+    if (notes !== undefined) {
+      updateData.adminNotes = sanitizeInput(notes);
+    }
+
+    await docRef.update(updateData);
+
+    return NextResponse.json({
+      success: true,
+      message: "문의가 업데이트되었습니다.",
+    });
+  } catch (error) {
+    console.error("Update inquiry error:", error);
+    return NextResponse.json(
+      { error: "문의 업데이트 중 오류가 발생했습니다." },
       { status: 500 }
     );
   }

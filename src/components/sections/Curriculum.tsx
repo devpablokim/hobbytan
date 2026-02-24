@@ -132,7 +132,7 @@ export default function Curriculum() {
               {weeks.map((week, index) => (
                 <div
                   key={index}
-                  className="w-4 h-4 bg-blue-500 border-4 border-[#0a0a0a]"
+                  className="w-4 h-4 bg-emerald-500 border-4 border-[#0a0a0a]"
                   style={{ marginLeft: index === 0 ? "16.66%" : 0, marginRight: index === weeks.length - 1 ? "16.66%" : 0 }}
                 />
               ))}
@@ -165,7 +165,7 @@ export default function Curriculum() {
                     <ul className="space-y-3">
                       {week.items.map((item, idx) => (
                         <li key={idx} className="flex items-start gap-3">
-                          <Check className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+                          <Check className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
                           <span className="text-sm text-neutral-400">{item}</span>
                         </li>
                       ))}
@@ -179,13 +179,13 @@ export default function Curriculum() {
 
         {/* Special Events - Premium Section */}
         <div
-          className={`mb-24 py-16 -mx-4 px-4 md:-mx-8 md:px-8 lg:-mx-12 lg:px-12 bg-gradient-to-b from-blue-500/5 via-neutral-900/50 to-transparent ${
+          className={`mb-24 py-16 -mx-4 px-4 md:-mx-8 md:px-8 lg:-mx-12 lg:px-12 bg-gradient-to-b from-emerald-500/5 via-neutral-900/50 to-transparent ${
             isVisible ? "animate-fade-in-up delay-300" : "opacity-0"
           }`}
         >
           {/* Section Header */}
           <div className="text-center mb-12">
-            <span className="inline-block px-3 py-1 text-xs font-medium tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 uppercase mb-4">
+            <span className="inline-block px-3 py-1 text-xs font-medium tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 uppercase mb-4">
               Premium Exclusive
             </span>
             <h3 className="text-2xl md:text-3xl font-semibold text-white mb-3">
@@ -201,24 +201,24 @@ export default function Curriculum() {
             {specialEvents.map((event, index) => (
               <div
                 key={index}
-                className="relative bg-neutral-900/80 border border-neutral-800 p-4 sm:p-6 lg:p-8 group hover:border-blue-500/30 hover:bg-neutral-900 transition-all duration-300 hover:-translate-y-1"
+                className="relative bg-neutral-900/80 border border-neutral-800 p-4 sm:p-6 lg:p-8 group hover:border-emerald-500/30 hover:bg-neutral-900 transition-all duration-300 hover:-translate-y-1"
                 style={{ animationDelay: `${300 + index * 100}ms` }}
               >
                 {/* Highlight Badge */}
-                <span className="absolute top-4 right-4 text-[10px] font-medium text-blue-400 bg-blue-500/10 px-2 py-0.5 uppercase tracking-wider">
+                <span className="absolute top-4 right-4 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 uppercase tracking-wider">
                   {event.highlight}
                 </span>
 
                 {/* Icon */}
-                <div className="w-12 h-12 lg:w-14 lg:h-14 bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-5 group-hover:bg-blue-500/20 transition-colors duration-300">
-                  <event.icon className="w-5 h-5 lg:w-6 lg:h-6 text-blue-400 group-hover:scale-110 transition-transform duration-300" />
+                <div className="w-12 h-12 lg:w-14 lg:h-14 bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-5 group-hover:bg-emerald-500/20 transition-colors duration-300">
+                  <event.icon className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-400 group-hover:scale-110 transition-transform duration-300" />
                 </div>
 
                 {/* Content */}
                 <h4 className="text-base lg:text-lg font-semibold text-white mb-1">
                   {event.title}
                 </h4>
-                <span className="text-xs text-blue-400 font-medium mb-3 block">
+                <span className="text-xs text-emerald-400 font-medium mb-3 block">
                   {event.subtitle}
                 </span>
                 <p className="text-sm text-neutral-400 leading-relaxed">
@@ -238,8 +238,8 @@ export default function Curriculum() {
           {/* Header with Total Value */}
           <div className="p-5 sm:p-6 lg:p-10 border-b border-neutral-800 text-center">
             <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white mb-2">
-              <span className="text-neutral-500 line-through mr-3">₩730만</span>
-              <span className="text-blue-400">→ ₩160만/인</span>
+              <span className="text-emerald-400">₩800만</span>
+              <span className="text-neutral-400 text-lg ml-2">(5인 팀 기준 · 1인당 ₩160만)</span>
             </h3>
             <p className="text-neutral-400">
               모든 혜택이 포함된 올인원 패키지
@@ -254,12 +254,12 @@ export default function Curriculum() {
                   key={index}
                   className="flex items-start gap-4 p-4 bg-neutral-800/30 hover:bg-neutral-800/50 transition-colors duration-200 group"
                 >
-                  <div className="w-8 h-8 bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500/20 transition-colors duration-200">
-                    <Check className="w-4 h-4 text-blue-400" />
+                  <div className="w-8 h-8 bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500/20 transition-colors duration-200">
+                    <Check className="w-4 h-4 text-emerald-400" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-sm text-white block mb-1">{item.text}</span>
-                    <span className="text-xs text-blue-400 font-medium">시장가 {item.value}</span>
+                    <span className="text-xs text-emerald-400 font-medium">시장가 {item.value}</span>
                   </div>
                 </div>
               ))}
@@ -267,11 +267,11 @@ export default function Curriculum() {
           </div>
 
           {/* CTA - Prominent Position */}
-          <div className="p-5 sm:p-6 lg:p-10 border-t border-neutral-800 bg-gradient-to-r from-blue-500/5 to-transparent">
+          <div className="p-5 sm:p-6 lg:p-10 border-t border-neutral-800 bg-gradient-to-r from-emerald-500/5 to-transparent">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
               <div>
                 <p className="text-white font-medium mb-1">
-                  이번 분기 <span className="text-blue-400">잔여 2자리</span>
+                  소수정예 <span className="text-emerald-400">5인 1팀</span> 구성
                 </p>
                 <p className="text-sm text-neutral-500">
                   30분 무료 상담으로 우리 팀 ROI를 계산해보세요

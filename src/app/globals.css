@@ -31,10 +31,15 @@
     --color-border-secondary: #404040;
     --color-border-hover: #525252;
 
-    /* Accent - Blue (Trust) */
-    --color-accent: #3b82f6;
-    --color-accent-hover: #2563eb;
-    --color-accent-muted: rgba(59, 130, 246, 0.15);
+    /* Accent - Emerald (Primary Brand Color) */
+    --color-accent: #10b981;
+    --color-accent-hover: #059669;
+    --color-accent-muted: rgba(16, 185, 129, 0.15);
+
+    /* Secondary Accent - Blue (Trust/Info) */
+    --color-accent-secondary: #3b82f6;
+    --color-accent-secondary-hover: #2563eb;
+    --color-accent-secondary-muted: rgba(59, 130, 246, 0.15);
 
     /* CTA - White on Dark (High Contrast) */
     --color-cta-bg: #ffffff;
@@ -103,13 +108,13 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 64%;
-    --accent: 217 91% 60%;
+    --accent: 160 84% 39%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 15%;
     --input: 0 0% 15%;
-    --ring: 217 91% 60%;
+    --ring: 160 84% 39%;
     --radius: 0px;
   }
 }
@@ -137,12 +142,12 @@
 
   /* Selection - Brand Color */
   ::selection {
-    @apply bg-blue-500/30 text-white;
+    @apply bg-emerald-500/30 text-white;
   }
 
   /* Focus States - WCAG Compliant */
   :focus-visible {
-    @apply outline-none ring-2 ring-blue-500 ring-offset-2 ring-offset-[#0a0a0a];
+    @apply outline-none ring-2 ring-emerald-500 ring-offset-2 ring-offset-[#0a0a0a];
   }
 
   /* Reduced Motion Support */
@@ -222,6 +227,31 @@
     @apply inline-block text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500;
     @apply mb-6;
   }
+
+  /* Section Label Variants */
+  .section-label-accent {
+    @apply inline-block px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em];
+    @apply text-emerald-400 border border-emerald-500/30 bg-emerald-500/10;
+    @apply mb-6;
+  }
+
+  .section-label-purple {
+    @apply inline-block px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em];
+    @apply text-purple-400 border border-purple-500/30 bg-purple-500/10;
+    @apply mb-6;
+  }
+
+  .section-label-danger {
+    @apply inline-block px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em];
+    @apply text-red-400 border border-red-500/30 bg-red-500/10;
+    @apply mb-6;
+  }
+
+  .section-label-info {
+    @apply inline-block px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em];
+    @apply text-blue-400 border border-blue-500/30 bg-blue-500/10;
+    @apply mb-6;
+  }
 }
 
 /* ============================================
@@ -231,8 +261,27 @@
    - Transition: 200ms ease-out
    ============================================ */
 @layer components {
-  /* Primary CTA Button - White */
+  /* Primary CTA Button - Emerald */
   .btn-primary {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply px-8 py-4 min-h-[44px];
+    @apply text-sm font-semibold;
+    @apply bg-emerald-500 text-white;
+    @apply transition-all duration-200 ease-out;
+    @apply cursor-pointer;
+  }
+
+  .btn-primary:hover {
+    @apply bg-emerald-600;
+    transform: scale(1.02);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  /* Primary CTA Button Alt - White (for dark sections) */
+  .btn-primary-white {
     @apply inline-flex items-center justify-center gap-2;
     @apply px-8 py-4 min-h-[44px];
     @apply text-sm font-semibold;
@@ -241,12 +290,12 @@
     @apply cursor-pointer;
   }
 
-  .btn-primary:hover {
+  .btn-primary-white:hover {
     @apply bg-neutral-200;
     transform: scale(1.02);
   }
 
-  .btn-primary:active {
+  .btn-primary-white:active {
     transform: scale(0.98);
   }
 
@@ -309,7 +358,7 @@
   .card-feature::before {
     content: '';
     @apply absolute inset-0 opacity-0;
-    @apply bg-gradient-to-b from-blue-500/5 to-transparent;
+    @apply bg-gradient-to-b from-emerald-500/5 to-transparent;
     @apply transition-opacity duration-200;
     pointer-events: none;
   }
@@ -389,8 +438,8 @@
   }
 
   .input:focus {
-    @apply border-blue-500 outline-none;
-    @apply ring-2 ring-blue-500/20;
+    @apply border-emerald-500 outline-none;
+    @apply ring-2 ring-emerald-500/20;
   }
 
   .input:disabled {
@@ -483,11 +532,17 @@
 
   /* Stagger Animation Delays */
   .delay-100 { animation-delay: 100ms; }
+  .delay-150 { animation-delay: 150ms; }
   .delay-200 { animation-delay: 200ms; }
+  .delay-250 { animation-delay: 250ms; }
   .delay-300 { animation-delay: 300ms; }
+  .delay-350 { animation-delay: 350ms; }
   .delay-400 { animation-delay: 400ms; }
+  .delay-450 { animation-delay: 450ms; }
   .delay-500 { animation-delay: 500ms; }
   .delay-600 { animation-delay: 600ms; }
+  .delay-700 { animation-delay: 700ms; }
+  .delay-800 { animation-delay: 800ms; }
 
   /* Hover Lift Effect */
   .hover-lift {
@@ -513,11 +568,19 @@
 
   /* Radial Gradients */
   .gradient-radial {
-    background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
+    background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.08) 0%, transparent 60%);
   }
 
   .gradient-radial-top {
-    background: radial-gradient(ellipse at top, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+    background: radial-gradient(ellipse at top, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+  }
+
+  .gradient-radial-emerald {
+    background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.08) 0%, transparent 60%);
+  }
+
+  .gradient-radial-blue {
+    background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
   }
 
   /* Divider */
@@ -534,6 +597,21 @@
   .text-gradient {
     @apply bg-clip-text text-transparent;
     @apply bg-gradient-to-r from-white to-neutral-400;
+  }
+
+  /* Emerald Text Gradient (Primary) */
+  .text-gradient-emerald {
+    @apply bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-emerald-400 to-emerald-600;
+  }
+
+  /* Accent Link */
+  .link-accent {
+    @apply text-emerald-400 hover:text-emerald-300 transition-colors duration-200;
+  }
+
+  .link-accent-blue {
+    @apply text-blue-400 hover:text-blue-300 transition-colors duration-200;
   }
 }
 
