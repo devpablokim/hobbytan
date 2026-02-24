@@ -8,6 +8,7 @@ interface ContactFormData {
   phone: string;
   company: string;
   message: string;
+  website?: string; // honeypot field
 }
 
 const transporter = nodemailer.createTransport({
@@ -233,6 +234,16 @@ export async function POST(request: NextRequest) {
         { error: "필수 항목을 모두 입력해 주세요." },
         { status: 400 }
       );
+    }
+
+    // Honeypot spam check - bots fill this hidden field, humans don't see it
+    if (data.website) {
+      // Silently accept but don't process spam submissions
+      console.log("Spam detected via honeypot:", data.email);
+      return NextResponse.json({
+        success: true,
+        message: "문의가 성공적으로 접수되었습니다.",
+      });
     }
 
     // Save to Firestore

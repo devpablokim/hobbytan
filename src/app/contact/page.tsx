@@ -11,6 +11,7 @@ interface FormData {
   phone: string;
   company: string;
   message: string;
+  website: string; // honeypot field
 }
 
 interface FormErrors {
@@ -27,6 +28,7 @@ export default function ContactPage() {
     phone: "",
     company: "",
     message: "",
+    website: "", // honeypot
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -214,6 +216,20 @@ export default function ContactPage() {
             {/* Right Column - Form */}
             <div className="lg:pl-8 lg:border-l border-neutral-800">
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Honeypot - hidden from users, bots will fill this */}
+                <div className="absolute -left-[9999px] opacity-0 h-0 overflow-hidden" aria-hidden="true">
+                  <label htmlFor="website">Website</label>
+                  <input
+                    type="text"
+                    id="website"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleChange}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
+
                 {/* Name */}
                 <div>
                   <label
