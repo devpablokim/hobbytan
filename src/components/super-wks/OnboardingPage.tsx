@@ -17,15 +17,17 @@ export function OnboardingPage({ defaultName, defaultEmail, onComplete }: Onboar
   const [realName, setRealName] = useState(defaultName);
   const [organization, setOrganization] = useState('');
   const [jobRole, setJobRole] = useState('');
+  const [customJobRole, setCustomJobRole] = useState('');
 
   const handleSubmit = () => {
-    if (!participationStatus || !nickname.trim() || !realName.trim() || !jobRole) return;
+    const finalJobRole = jobRole === '기타 (직접 입력)' ? customJobRole.trim() : jobRole;
+    if (!participationStatus || !nickname.trim() || !realName.trim() || !finalJobRole) return;
     onComplete({
       participationStatus,
       nickname: nickname.trim(),
       realName: realName.trim(),
       organization: organization.trim(),
-      jobRole,
+      jobRole: finalJobRole,
     });
   };
 
@@ -173,10 +175,21 @@ export function OnboardingPage({ defaultName, defaultEmail, onComplete }: Onboar
                     <option key={role} value={role}>{role}</option>
                   ))}
                 </select>
+              {jobRole === '기타 (직접 입력)' && (
+                <div className="mt-3">
+                  <label className="block text-xs text-neutral-500 mb-1.5">직무 직접 입력</label>
+                  <input
+                    value={customJobRole}
+                    onChange={e => setCustomJobRole(e.target.value)}
+                    placeholder="직무를 입력해주세요"
+                    className="w-full border border-[#404040] bg-[#171717] text-white px-4 py-3 text-sm placeholder-neutral-600"
+                  />
+                </div>
+              )}
               </div>
 
               {/* Summary */}
-              {jobRole && (
+              {(jobRole && (jobRole !== '기타 (직접 입력)' || customJobRole.trim())) && (
                 <div className="mt-6 p-4 border border-[#262626] bg-[#0a0a0a]">
                   <div className="text-xs text-neutral-500 mb-2 uppercase">입력 정보 확인</div>
                   <div className="space-y-1 text-sm">
@@ -184,7 +197,7 @@ export function OnboardingPage({ defaultName, defaultEmail, onComplete }: Onboar
                     <div><span className="text-neutral-500">닉네임:</span> <span className="text-white">{nickname}</span></div>
                     <div><span className="text-neutral-500">실명:</span> <span className="text-white">{realName}</span></div>
                     <div><span className="text-neutral-500">소속:</span> <span className="text-white">{organization || '-'}</span></div>
-                    <div><span className="text-neutral-500">직무:</span> <span className="text-white">{jobRole}</span></div>
+                    <div><span className="text-neutral-500">직무:</span> <span className="text-white">{jobRole === '기타 (직접 입력)' ? customJobRole : jobRole}</span></div>
                   </div>
                 </div>
               )}
@@ -193,7 +206,7 @@ export function OnboardingPage({ defaultName, defaultEmail, onComplete }: Onboar
                 <button onClick={() => setStep(2)} className="px-6 py-3 border border-[#404040] text-neutral-400 text-sm hover:text-white transition-colors">이전</button>
                 <button
                   onClick={handleSubmit}
-                  disabled={!jobRole}
+                  disabled={!jobRole || (jobRole === '기타 (직접 입력)' && !customJobRole.trim())}
                   className="flex-1 py-3 bg-emerald-500 text-white font-medium text-sm hover:bg-emerald-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   ✅ 완료 — 승인 요청
