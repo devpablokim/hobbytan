@@ -40,3 +40,4 @@ next-env.d.ts
 hobbytan-council-open/
 .next/
 test-build/node_modules/
+.env.local
