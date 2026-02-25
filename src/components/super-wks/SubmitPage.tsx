@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import type { Role, User, UploadedFile, DeploymentUrl } from '@/lib/super-wks/types';
 import { curriculum, submissions } from '@/lib/super-wks/mockData';
+import { uploadFile } from '@/lib/super-wks/storage';
 
 export function SubmitPage({ user, role: _role }: { user: User; role: Role }) {
   const [selectedWeek, setSelectedWeek] = useState(0);
@@ -13,25 +14,56 @@ export function SubmitPage({ user, role: _role }: { user: User; role: Role }) {
   const [deployUrls, setDeployUrls] = useState<DeploymentUrl[]>([]);
   const [newUrlLabel, setNewUrlLabel] = useState('');
   const [newUrlValue, setNewUrlValue] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const weekCurriculum = curriculum.find(c => c.weekNumber === selectedWeek);
   const mySubmissions = submissions.filter(s => s.userId === user.userId);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) return;
-    Array.from(files).forEach(file => {
-      const newFile: UploadedFile = {
-        fileId: `f-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-        fileName: file.name,
-        fileSize: file.size,
-        fileUrl: URL.createObjectURL(file),
-        mimeType: file.type,
-        uploadedAt: new Date().toISOString(),
-      };
-      setUploadedFiles(prev => [...prev, newFile]);
-    });
+    if (!files || !user) return;
+    setUploading(true);
+    
+    for (const file of Array.from(files)) {
+      const tempId = `f-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      try {
+        setUploadProgress(prev => ({ ...prev, [tempId]: 0 }));
+        const result = await uploadFile(
+          file, user.userId, user.cohortId, selectedWeek,
+          (percent) => setUploadProgress(prev => ({ ...prev, [tempId]: percent }))
+        );
+        const newFile: UploadedFile = {
+          fileId: tempId,
+          fileName: result.fileName,
+          fileSize: result.fileSize,
+          fileUrl: result.fileUrl,
+          mimeType: result.mimeType,
+          uploadedAt: new Date().toISOString(),
+        };
+        setUploadedFiles(prev => [...prev, newFile]);
+      } catch (err) {
+        console.error('Upload failed:', err);
+        // Fallback to local preview
+        const newFile: UploadedFile = {
+          fileId: tempId,
+          fileName: file.name,
+          fileSize: file.size,
+          fileUrl: URL.createObjectURL(file),
+          mimeType: file.type,
+          uploadedAt: new Date().toISOString(),
+        };
+        setUploadedFiles(prev => [...prev, newFile]);
+      } finally {
+        setUploadProgress(prev => {
+          const next = { ...prev };
+          delete next[tempId];
+          return next;
+        });
+      }
+    }
+    setUploading(false);
     e.target.value = '';
   };
 
@@ -127,10 +159,16 @@ export function SubmitPage({ user, role: _role }: { user: User; role: Role }) {
           <input ref={fileInputRef} type="file" multiple onChange={handleFileSelect} className="hidden" />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="px-4 py-2 border border-dashed border-[#404040] text-neutral-400 text-sm hover:border-emerald-500/40 hover:text-emerald-400 transition-all w-full text-center"
+            disabled={uploading}
+            className="px-4 py-2 border border-dashed border-[#404040] text-neutral-400 text-sm hover:border-emerald-500/40 hover:text-emerald-400 transition-all w-full text-center disabled:opacity-50"
           >
-            클릭하여 파일 선택 (여러 개 가능)
+            {uploading ? '⏳ 업로드 중...' : '클릭하여 파일 선택 (여러 개 가능)'}
           </button>
+          {Object.entries(uploadProgress).map(([id, pct]) => (
+            <div key={id} className="mt-1 h-1.5 bg-[#1a1a1a] overflow-hidden">
+              <div className="h-full bg-emerald-500 transition-all" style={{ width: `${pct}%` }} />
+            </div>
+          ))}
           {uploadedFiles.length > 0 && (
             <div className="mt-2 space-y-1">
               {uploadedFiles.map(f => (
