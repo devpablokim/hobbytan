@@ -4,6 +4,39 @@ export type CohortStatus = 'recruiting' | 'active' | 'completed';
 export type TeamStatus = 'active' | 'completed';
 export type AssignmentType = 'file' | 'text' | 'link';
 export type UserStatus = 'pending' | 'active' | 'suspended';
+export type ParticipationStatus = 'participating' | 'completed' | 'not_participating';
+
+export interface OnboardingData {
+  participationStatus: ParticipationStatus;
+  nickname: string;
+  realName: string;
+  organization: string;
+  jobRole: string;
+}
+
+export const JOB_ROLES = [
+  '개발자 (Frontend)',
+  '개발자 (Backend)',
+  '개발자 (Fullstack)',
+  '디자이너 (UI/UX)',
+  '디자이너 (그래픽)',
+  '기획자 (서비스/프로덕트)',
+  '프로젝트 매니저 (PM)',
+  '마케터',
+  '데이터 분석가',
+  '경영/전략',
+  '영업/세일즈',
+  '인사/HR',
+  '재무/회계',
+  '법무',
+  '콘텐츠 크리에이터',
+  '교육/강사',
+  '연구원',
+  '대학생/대학원생',
+  '프리랜서',
+  '창업자/대표',
+  '기타',
+] as const;
 
 export interface Cohort {
   cohortId: string;
@@ -66,6 +99,13 @@ export interface User {
   cohortId: string;
   teamId: string | null;
   progress: UserProgress;
+  // Onboarding fields
+  onboarded?: boolean;
+  nickname?: string;
+  realName?: string;
+  organization?: string;
+  jobRole?: string;
+  participationStatus?: ParticipationStatus;
 }
 
 export interface Goal {

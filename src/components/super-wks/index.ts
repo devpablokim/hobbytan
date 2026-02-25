@@ -10,3 +10,4 @@ export { ProgressBar } from './ProgressBar';
 export { WeekBadge } from './WeekBadge';
 export { Modal } from './Modal';
 export { EmptyState } from './EmptyState';
+export { OnboardingPage } from './OnboardingPage';

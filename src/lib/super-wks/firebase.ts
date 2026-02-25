@@ -2,12 +2,13 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDhVaaonY2dmpb6HQGG2jMMP7Y_nI6kwcY",
+  apiKey: "AIzaSyDVvBkrQlgH4l-3Ub1Zj0YAYjgHM-46xOc",
   authDomain: "hobbytan-ai.firebaseapp.com",
   projectId: "hobbytan-ai",
   storageBucket: "hobbytan-ai.firebasestorage.app",
-  messagingSenderId: "605948498053",
-  appId: "1:605948498053:web:d7e06d6c0b0e0a2a3b4c5d",
+  messagingSenderId: "1012886362558",
+  appId: "1:1012886362558:web:4efbed66e629a653b8c1ef",
+  measurementId: "G-QPKC3C593X",
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
