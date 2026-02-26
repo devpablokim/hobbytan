@@ -6,19 +6,19 @@ import { Layout } from '@/components/super-wks/Layout';
 import { SubmitPage } from '@/components/super-wks/SubmitPage';
 
 export default function SubmitRoute() {
-  const { isLoggedIn, currentUser, role, loading, login, logout, switchRole } = useAuth();
+  const { isLoggedIn, firebaseUser, appUser, role, loading, login, logout } = useAuth();
 
   if (loading) {
     return <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center"><div className="text-neutral-500">로딩 중...</div></div>;
   }
 
-  if (!isLoggedIn || !currentUser) {
+  if (!isLoggedIn || !firebaseUser || !appUser) {
     return <LoginPage onLogin={login} />;
   }
 
   return (
-    <Layout user={currentUser} role={role} onSwitchRole={switchRole} onLogout={logout}>
-      <SubmitPage user={currentUser} role={role} />
+    <Layout user={firebaseUser} role={role} onLogout={logout}>
+      <SubmitPage user={appUser} role={role} />
     </Layout>
   );
 }

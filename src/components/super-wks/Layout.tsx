@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import type { Role, User } from '@/lib/super-wks/types';
+import type { Role } from '@/lib/super-wks/types';
 
 const navItems = [
   { to: '/super-wks/dashboard', label: '대시보드', icon: '📊' },
@@ -28,15 +28,20 @@ const roleColors: Record<Role, string> = {
   student: 'text-neutral-400 bg-neutral-500/10 border-neutral-500/20',
 };
 
+interface LayoutUser {
+  displayName: string | null;
+  email: string | null;
+  photoURL: string | null;
+}
+
 interface LayoutProps {
-  user: User;
+  user: LayoutUser;
   role: Role;
-  onSwitchRole: (role: Role) => void;
   onLogout: () => void;
   children: React.ReactNode;
 }
 
-export function Layout({ user, role, onSwitchRole, onLogout, children }: LayoutProps) {
+export function Layout({ user, role, onLogout, children }: LayoutProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const allNav = role === 'admin' ? [...navItems, ...adminNavItems] : navItems;
@@ -78,7 +83,7 @@ export function Layout({ user, role, onSwitchRole, onLogout, children }: LayoutP
               <img src={user.photoURL} alt="" className="w-8 h-8 rounded-full" />
             ) : (
               <div className="w-8 h-8 bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm font-medium">
-                {user.displayName[0]}
+                {(user.displayName || '?')[0]}
               </div>
             )}
             <div className="flex-1 min-w-0">
@@ -88,18 +93,7 @@ export function Layout({ user, role, onSwitchRole, onLogout, children }: LayoutP
               </span>
             </div>
           </div>
-          {/* Role switcher for admin */}
-          {role === 'admin' && (
-            <select
-              value={role}
-              onChange={e => onSwitchRole(e.target.value as Role)}
-              className="w-full text-xs border border-[#404040] bg-[#171717] text-neutral-400 px-2 py-1.5 mb-2"
-            >
-              <option value="admin">🔧 관리자 뷰</option>
-              <option value="team_lead">👥 팀리더 뷰</option>
-              <option value="student">📖 수강생 뷰</option>
-            </select>
-          )}
+          {/* Role badge */}
           <button onClick={onLogout} className="w-full text-xs text-neutral-500 hover:text-red-400 transition-colors py-1">
             로그아웃
           </button>
