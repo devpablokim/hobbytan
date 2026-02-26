@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import type { Role, User, Curriculum } from '@/lib/super-wks/types';
-import { curriculum, submissions } from '@/lib/super-wks/mockData';
+import { useCurriculum, useSubmissions } from '@/lib/super-wks/useFirestoreData';
 import { WeekBadge } from './WeekBadge';
 
-function CurriculumCard({ week, user, role: _role }: { week: Curriculum; user: User; role: Role }) {
+function CurriculumCard({ week, user, role: _role, allSubmissions }: { week: Curriculum; user: User; role: Role; allSubmissions: import('@/lib/super-wks/types').Submission[] }) {
   const [expanded, setExpanded] = useState(false);
   const weekKey = `week${week.weekNumber}` as keyof typeof user.progress;
   const status = user.progress[weekKey]?.status || 'not-started';
-  const mySubmissions = submissions.filter(s => s.userId === user.userId && s.weekNumber === week.weekNumber);
+  const mySubmissions = allSubmissions.filter(s => s.userId === user.userId && s.weekNumber === week.weekNumber);
 
   return (
     <div className="bg-[#111111] border border-[#262626] hover:border-[#404040] transition-colors">
@@ -92,13 +92,20 @@ function CurriculumCard({ week, user, role: _role }: { week: Curriculum; user: U
 }
 
 export function CurriculumPage({ user, role }: { user: User; role: Role }) {
+  const { data: curriculum, loading: curLoading } = useCurriculum();
+  const { data: submissions } = useSubmissions({ userId: user.userId });
+
+  if (curLoading) {
+    return <div className="text-neutral-500 text-sm py-8 text-center">로딩 중...</div>;
+  }
+
   return (
     <div>
       <h1 className="text-2xl font-semibold text-white mb-6">커리큘럼</h1>
       <p className="text-neutral-500 text-sm mb-6">5주 파워워크샵 커리큘럼 — 각 주차를 클릭하여 상세 내용을 확인하세요</p>
       <div className="space-y-3">
-        {curriculum.map(week => (
-          <CurriculumCard key={week.curriculumId} week={week} user={user} role={role} />
+        {(curriculum || []).map(week => (
+          <CurriculumCard key={week.curriculumId} week={week} user={user} role={role} allSubmissions={submissions || []} />
         ))}
       </div>
     </div>

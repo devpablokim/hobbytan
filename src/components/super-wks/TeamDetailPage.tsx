@@ -2,15 +2,21 @@
 
 import Link from 'next/link';
 import type { Role, User } from '@/lib/super-wks/types';
-import { teams, users, submissions } from '@/lib/super-wks/mockData';
+import { useTeams, useAllUsers, useSubmissions } from '@/lib/super-wks/useFirestoreData';
 import { ProgressBar } from './ProgressBar';
-import { WeekBadge } from './WeekBadge';
 
 export function TeamDetailPage({ teamId, user: _user, role: _role }: { teamId: string; user: User; role: Role }) {
-  const team = teams.find(t => t.teamId === teamId);
-  const teamMembers = users.filter(u => u.teamId === teamId);
-  const teamSubmissions = submissions.filter(s => s.teamId === teamId);
-  const weekKeys = ['week0','week1','week2','week3','week4','week5'] as const;
+  const { data: teamsData, loading: teamsLoading } = useTeams();
+  const { data: usersData } = useAllUsers();
+  const { data: subsData } = useSubmissions({ teamId });
+
+  const team = (teamsData || []).find(t => t.teamId === teamId);
+  const teamMembers = (usersData || []).filter(u => u.teamId === teamId);
+  const teamSubmissions = (subsData || []);
+
+  if (teamsLoading) {
+    return <div className="text-neutral-500 text-sm py-8 text-center">로딩 중...</div>;
+  }
 
   if (!team) {
     return (
@@ -21,7 +27,7 @@ export function TeamDetailPage({ teamId, user: _user, role: _role }: { teamId: s
     );
   }
 
-  const lead = users.find(u => u.userId === team.teamLeadId);
+  const lead = (usersData || []).find(u => u.uid === team.teamLeadId);
 
   return (
     <div>
@@ -30,7 +36,7 @@ export function TeamDetailPage({ teamId, user: _user, role: _role }: { teamId: s
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-semibold text-white">{team.name}</h1>
-          <p className="text-neutral-500 text-sm mt-1">리더: {lead?.displayName} · {teamMembers.length}명 · Week {team.currentWeek}</p>
+          <p className="text-neutral-500 text-sm mt-1">리더: {lead?.nickname || lead?.displayName || '-'} · {teamMembers.length}명 · Week {team.currentWeek}</p>
         </div>
         <span className={`text-[10px] px-2 py-0.5 border ${team.status === 'active' ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400' : 'border-neutral-500/20 bg-neutral-500/10 text-neutral-400'}`}>
           {team.status === 'active' ? '진행 중' : '수료 완료'}
@@ -55,20 +61,19 @@ export function TeamDetailPage({ teamId, user: _user, role: _role }: { teamId: s
             <tr className="border-b border-[#262626]">
               <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase">이름</th>
               <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase">역할</th>
-              {weekKeys.map((_, i) => (
-                <th key={i} className="text-center px-2 py-3 text-xs font-medium text-neutral-500">{i}주</th>
-              ))}
+              <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase">직무</th>
+              <th className="text-center px-4 py-3 text-xs font-medium text-neutral-500 uppercase">상태</th>
             </tr>
           </thead>
           <tbody>
             {teamMembers.map(member => (
-              <tr key={member.userId} className="border-b border-[#1a1a1a] hover:bg-[#1a1a1a]">
+              <tr key={member.uid} className="border-b border-[#1a1a1a] hover:bg-[#1a1a1a]">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-xs shrink-0">
-                      {member.displayName[0]}
+                      {(member.nickname || member.displayName || '?')[0]}
                     </div>
-                    <span className="text-sm text-white">{member.displayName}</span>
+                    <span className="text-sm text-white">{member.nickname || member.displayName}</span>
                   </div>
                 </td>
                 <td className="px-4 py-3">
@@ -76,9 +81,12 @@ export function TeamDetailPage({ teamId, user: _user, role: _role }: { teamId: s
                     {member.role === 'team_lead' ? '리더' : '수강생'}
                   </span>
                 </td>
-                {weekKeys.map(w => (
-                  <td key={w} className="text-center px-2 py-3"><WeekBadge status={member.progress[w].status} /></td>
-                ))}
+                <td className="px-4 py-3 text-xs text-neutral-400">{member.jobRole || '-'}</td>
+                <td className="text-center px-4 py-3">
+                  <span className={`text-[10px] px-2 py-0.5 border ${member.status === 'active' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-amber-400 bg-amber-500/10 border-amber-500/20'}`}>
+                    {member.status}
+                  </span>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -93,12 +101,12 @@ export function TeamDetailPage({ teamId, user: _user, role: _role }: { teamId: s
         ) : (
           <div className="divide-y divide-[#1a1a1a]">
             {teamSubmissions.map(s => {
-              const submitter = users.find(u => u.userId === s.userId);
+              const submitter = (usersData || []).find(u => u.uid === s.userId);
               return (
                 <div key={s.submissionId} className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-white">{submitter?.displayName}</span>
+                      <span className="text-sm text-white">{submitter?.nickname || submitter?.displayName || '알 수 없음'}</span>
                       <span className="text-xs text-neutral-500">{s.weekNumber}주차</span>
                     </div>
                     {s.feedback ? (

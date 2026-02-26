@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import type { Role, User } from '@/lib/super-wks/types';
-import { posts } from '@/lib/super-wks/mockData';
+import { usePosts } from '@/lib/super-wks/useFirestoreData';
 
 export function CommunityPage({ user: _user, role: _role }: { user: User; role: Role }) {
+  const { data: posts, loading: postsLoading } = usePosts();
   const [showCompose, setShowCompose] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newContent, setNewContent] = useState('');
@@ -52,8 +53,9 @@ export function CommunityPage({ user: _user, role: _role }: { user: User; role: 
       )}
 
       {/* Posts */}
+      {postsLoading && <div className="text-neutral-500 text-sm py-8 text-center">로딩 중...</div>}
       <div className="space-y-3">
-        {posts.map(post => (
+        {(posts || []).map(post => (
           <div key={post.postId} className={`bg-[#111111] border ${post.pinned ? 'border-emerald-500/30' : 'border-[#262626]'} p-5 hover:border-[#404040] transition-colors`}>
             {post.pinned && (
               <span className="text-[10px] px-2 py-0.5 border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 mb-3 inline-block">📌 고정</span>

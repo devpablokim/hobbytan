@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import type { Role, User, UploadedFile, DeploymentUrl } from '@/lib/super-wks/types';
-import { curriculum, submissions } from '@/lib/super-wks/mockData';
+import { useCurriculum, useSubmissions } from '@/lib/super-wks/useFirestoreData';
 import { uploadFile } from '@/lib/super-wks/storage';
 
 export function SubmitPage({ user, role: _role }: { user: User; role: Role }) {
@@ -17,9 +17,11 @@ export function SubmitPage({ user, role: _role }: { user: User; role: Role }) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { data: curriculum } = useCurriculum();
+  const { data: allSubmissions } = useSubmissions({ userId: user.userId });
 
-  const weekCurriculum = curriculum.find(c => c.weekNumber === selectedWeek);
-  const mySubmissions = submissions.filter(s => s.userId === user.userId);
+  const weekCurriculum = (curriculum || []).find(c => c.weekNumber === selectedWeek);
+  const mySubmissions = (allSubmissions || []).filter(s => s.userId === user.userId);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -121,7 +123,7 @@ export function SubmitPage({ user, role: _role }: { user: User; role: Role }) {
               onChange={e => { setSelectedWeek(Number(e.target.value)); setSelectedAssignment(''); }}
               className="w-full border border-[#404040] bg-[#171717] text-white px-3 py-2 text-sm"
             >
-              {curriculum.map(c => (
+              {(curriculum || []).map(c => (
                 <option key={c.weekNumber} value={c.weekNumber}>{c.title}</option>
               ))}
             </select>
