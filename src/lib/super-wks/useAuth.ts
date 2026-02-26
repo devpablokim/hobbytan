@@ -3,56 +3,77 @@
 import { useState, useEffect, useCallback } from 'react';
 import { signInWithPopup, signOut, onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth, googleProvider } from './firebase';
+import { getUserDoc, isAdminEmail, type FirestoreUser } from './firestoreService';
+import { toAppUser } from './userAdapter';
 import type { Role, User } from './types';
-import { users } from './mockData';
 
-const ADMIN_EMAILS = ['tanhyu.kim@gmail.com'];
+export type UserState = 'loading' | 'logged_out' | 'needs_onboarding' | 'pending_approval' | 'active' | 'suspended';
 
 interface AuthState {
   isLoggedIn: boolean;
-  currentUser: User | null;
+  userState: UserState;
+  firestoreUser: FirestoreUser | null;
   firebaseUser: FirebaseUser | null;
+  /** Legacy User object for child components (bridge adapter) */
+  appUser: User | null;
   role: Role;
   loading: boolean;
+  isAdmin: boolean;
   login: () => Promise<void>;
   logout: () => Promise<void>;
-  switchRole: (role: Role) => void;
-}
-
-function buildUserFromFirebase(fbUser: FirebaseUser, role: Role): User {
-  const isAdmin = ADMIN_EMAILS.includes(fbUser.email || '');
-  const effectiveRole = isAdmin ? 'admin' : role;
-  
-  // Try to find matching mock user
-  const mockUser = users.find(u => u.email === fbUser.email) 
-    || users.find(u => u.role === effectiveRole)
-    || users[0];
-  
-  return {
-    ...mockUser,
-    userId: fbUser.uid,
-    displayName: fbUser.displayName || 'User',
-    email: fbUser.email || '',
-    photoURL: fbUser.photoURL,
-    role: effectiveRole,
-  };
+  refreshUser: () => Promise<void>;
 }
 
 export function useAuth(): AuthState {
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+  const [firestoreUser, setFirestoreUser] = useState<FirestoreUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [role, setRole] = useState<Role>('student');
+  const [userState, setUserState] = useState<UserState>('loading');
+
+  const checkUserState = useCallback(async (fbUser: FirebaseUser | null) => {
+    if (!fbUser) {
+      setFirestoreUser(null);
+      setUserState('logged_out');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const fsUser = await getUserDoc(fbUser.uid);
+      setFirestoreUser(fsUser);
+
+      if (!fsUser) {
+        // No Firestore doc → needs onboarding
+        setUserState('needs_onboarding');
+      } else if (fsUser.status === 'pending') {
+        setUserState('pending_approval');
+      } else if (fsUser.status === 'suspended') {
+        setUserState('suspended');
+      } else if (fsUser.status === 'active' || isAdminEmail(fbUser.email || '')) {
+        setUserState('active');
+      } else {
+        setUserState('needs_onboarding');
+      }
+    } catch (error) {
+      console.error('Error checking user state:', error);
+      // Fallback: if Firestore fails, check if admin
+      if (isAdminEmail(fbUser.email || '')) {
+        setUserState('active');
+      } else {
+        setUserState('needs_onboarding');
+      }
+    }
+
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setFirebaseUser(user);
-      if (user && ADMIN_EMAILS.includes(user.email || '')) {
-        setRole('admin');
-      }
-      setLoading(false);
+      checkUserState(user);
     });
     return () => unsubscribe();
-  }, []);
+  }, [checkUserState]);
 
   const login = useCallback(async () => {
     try {
@@ -65,26 +86,34 @@ export function useAuth(): AuthState {
   const logout = useCallback(async () => {
     try {
       await signOut(auth);
-      setRole('student');
+      setFirestoreUser(null);
+      setUserState('logged_out');
     } catch (error) {
       console.error('Logout failed:', error);
     }
   }, []);
 
-  const switchRole = useCallback((newRole: Role) => {
-    setRole(newRole);
-  }, []);
+  const refreshUser = useCallback(async () => {
+    if (firebaseUser) {
+      await checkUserState(firebaseUser);
+    }
+  }, [firebaseUser, checkUserState]);
 
-  const currentUser = firebaseUser ? buildUserFromFirebase(firebaseUser, role) : null;
+  const isAdmin = isAdminEmail(firebaseUser?.email || '');
+  const role: Role = isAdmin ? 'admin' : (firestoreUser?.role || 'student');
+  const appUser = firebaseUser ? toAppUser(firebaseUser, firestoreUser) : null;
 
   return {
     isLoggedIn: !!firebaseUser,
-    currentUser,
+    userState,
+    firestoreUser,
     firebaseUser,
-    role: currentUser?.role || 'student',
+    appUser,
+    role,
     loading,
+    isAdmin,
     login,
     logout,
-    switchRole,
+    refreshUser,
   };
 }

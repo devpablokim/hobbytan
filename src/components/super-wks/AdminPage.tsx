@@ -41,43 +41,41 @@ function ParticipationChart({ data }: { data: ReturnType<typeof calculatePartici
   );
 }
 
-// ─── Onboarding Approval Queue ───
-interface OnboardingRequest {
-  uid: string;
-  email: string;
-  displayName: string;
-  photoURL: string | null;
-  participationStatus: string;
-  nickname: string;
-  realName: string;
-  organization: string;
-  jobRole: string;
-  requestedAt: string;
-  status: string;
-}
+// ─── Onboarding Approval Queue (Firestore) ───
+import { getPendingUsers, approveUser, rejectUser, type FirestoreUser } from '@/lib/super-wks/firestoreService';
+import { useAuth } from '@/lib/super-wks/useAuth';
 
 function OnboardingApprovalQueue() {
-  const [requests, setRequests] = useState<OnboardingRequest[]>([]);
+  const [requests, setRequests] = useState<FirestoreUser[]>([]);
+  const [processing, setProcessing] = useState<string | null>(null);
+  const { firebaseUser } = useAuth();
 
   useEffect(() => {
-    const stored = localStorage.getItem('swks_pending_approvals');
-    if (stored) {
-      setRequests(JSON.parse(stored).filter((r: OnboardingRequest) => r.status === 'pending'));
-    }
+    getPendingUsers().then(setRequests).catch(console.error);
   }, []);
 
-  const handleApprove = (uid: string) => {
-    const stored = JSON.parse(localStorage.getItem('swks_pending_approvals') || '[]');
-    const updated = stored.map((r: OnboardingRequest) => r.uid === uid ? { ...r, status: 'approved' } : r);
-    localStorage.setItem('swks_pending_approvals', JSON.stringify(updated));
-    setRequests(prev => prev.filter(r => r.uid !== uid));
+  const handleApprove = async (uid: string) => {
+    if (!firebaseUser) return;
+    setProcessing(uid);
+    try {
+      // 승인 시 기본 팀 미배치 (관리자가 나중에 팀 배정)
+      await approveUser(uid, firebaseUser.uid, '');
+      setRequests(prev => prev.filter(r => r.uid !== uid));
+    } catch (err) {
+      console.error('Approve failed:', err);
+    }
+    setProcessing(null);
   };
 
-  const handleReject = (uid: string) => {
-    const stored = JSON.parse(localStorage.getItem('swks_pending_approvals') || '[]');
-    const updated = stored.map((r: OnboardingRequest) => r.uid === uid ? { ...r, status: 'rejected' } : r);
-    localStorage.setItem('swks_pending_approvals', JSON.stringify(updated));
-    setRequests(prev => prev.filter(r => r.uid !== uid));
+  const handleReject = async (uid: string) => {
+    setProcessing(uid);
+    try {
+      await rejectUser(uid);
+      setRequests(prev => prev.filter(r => r.uid !== uid));
+    } catch (err) {
+      console.error('Reject failed:', err);
+    }
+    setProcessing(null);
   };
 
   if (requests.length === 0) return null;
@@ -101,12 +99,12 @@ function OnboardingApprovalQueue() {
                   {r.email} · {r.organization || '소속 없음'} · {r.jobRole}
                 </div>
                 <div className="text-[10px] text-neutral-600">
-                  {new Date(r.requestedAt).toLocaleString('ko-KR')}
+                  {r.onboardedAt ? new Date(r.onboardedAt).toLocaleString('ko-KR') : '-'}
                 </div>
               </div>
               <div className="flex gap-2 shrink-0">
-                <button onClick={() => handleApprove(r.uid)} className="px-4 py-2 bg-emerald-500 text-white text-xs hover:bg-emerald-600 transition-colors">✅ 승인</button>
-                <button onClick={() => handleReject(r.uid)} className="px-4 py-2 bg-red-500/20 text-red-400 text-xs hover:bg-red-500/30 border border-red-500/20 transition-colors">❌ 거절</button>
+                <button onClick={() => handleApprove(r.uid)} disabled={processing === r.uid} className="px-4 py-2 bg-emerald-500 text-white text-xs hover:bg-emerald-600 transition-colors disabled:opacity-50">✅ 승인</button>
+                <button onClick={() => handleReject(r.uid)} disabled={processing === r.uid} className="px-4 py-2 bg-red-500/20 text-red-400 text-xs hover:bg-red-500/30 border border-red-500/20 transition-colors disabled:opacity-50">❌ 거절</button>
               </div>
             </div>
           </div>
