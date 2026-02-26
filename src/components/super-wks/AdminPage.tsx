@@ -5,6 +5,7 @@ import { useCohort, useTeams, useAllUsers, useCurriculum, useGoals } from '@/lib
 import type { Curriculum } from '@/lib/super-wks/types';
 import { Modal } from './Modal';
 import { ProgressBar } from './ProgressBar';
+import { UserListingTable } from './UserListingTable';
 
 // ─── Onboarding Approval Queue (Firestore) ───
 import { getPendingUsers, approveUser, rejectUser, type FirestoreUser } from '@/lib/super-wks/firestoreService';
@@ -315,53 +316,12 @@ export function AdminPage() {
             </div>
           </div>
 
-          {/* Students Table */}
-          <div className="bg-[#111111] border border-[#262626]">
-            <div className="flex items-center justify-between p-5 border-b border-[#262626]">
-              <h2 className="font-semibold text-white">수강생 관리 ({allUsers.filter(u => u.role !== 'admin').length}명)</h2>
-              <button onClick={() => { setEditingStudent(null); setShowStudentModal(true); }} className="px-3 py-1.5 bg-emerald-500 text-white text-sm hover:bg-emerald-600 transition-colors">+ 수강생 추가</button>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead><tr className="border-b border-[#262626]">
-                  <th className="text-left px-5 py-3 text-xs font-medium text-neutral-500 uppercase">이름</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase">이메일</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase">팀</th>
-                  <th className="text-center px-4 py-3 text-xs font-medium text-neutral-500 uppercase">상태</th>
-                  <th className="text-center px-4 py-3 text-xs font-medium text-neutral-500 uppercase">역할</th>
-                  <th className="text-center px-4 py-3 text-xs font-medium text-neutral-500 uppercase">작업</th>
-                </tr></thead>
-                <tbody>
-                  {allUsers.filter(u => u.role !== 'admin').map(u => (
-                    <tr key={u.uid} className="border-b border-[#1a1a1a] hover:bg-[#1a1a1a]">
-                      <td className="px-5 py-3 text-sm text-white">{u.nickname || u.displayName}</td>
-                      <td className="px-4 py-3 text-sm text-neutral-500">{u.email}</td>
-                      <td className="px-4 py-3">
-                        <select className="text-xs border border-[#404040] bg-[#171717] text-neutral-400 px-2 py-1" defaultValue={u.teamId || ''}>
-                          <option value="">미배치</option>
-                          {allTeams.map(t => <option key={t.teamId} value={t.teamId}>{t.name}</option>)}
-                        </select>
-                      </td>
-                      <td className="text-center px-4 py-3">
-                        <span className={`text-[10px] px-2 py-0.5 border ${u.status === 'active' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : u.status === 'pending' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' : 'text-red-400 bg-red-500/10 border-red-500/20'}`}>
-                          {u.status}
-                        </span>
-                      </td>
-                      <td className="text-center px-4 py-3">
-                        <span className={`text-[10px] px-2 py-0.5 border ${u.role === 'team_lead' ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' : 'text-neutral-500 bg-neutral-500/10 border-neutral-500/20'}`}>
-                          {u.role === 'team_lead' ? '팀 리더' : '수강생'}
-                        </span>
-                      </td>
-                      <td className="text-center px-4 py-3">
-                        <button onClick={() => { setEditingStudent(u.uid); setShowStudentModal(true); }} className="text-xs text-emerald-400 hover:text-emerald-300 mr-2">수정</button>
-                        <button className="text-xs text-red-400 hover:text-red-300">삭제</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          {/* Students Table — Full Listing with Filter/Sort */}
+          <UserListingTable
+            users={allUsers}
+            teams={allTeams}
+            onEdit={(uid) => { setEditingStudent(uid); setShowStudentModal(true); }}
+          />
         </>
       )}
 
