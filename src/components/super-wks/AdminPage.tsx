@@ -10,9 +10,10 @@ import { ProgressBar } from './ProgressBar';
 import { getPendingUsers, approveUser, rejectUser, type FirestoreUser } from '@/lib/super-wks/firestoreService';
 import { useAuth } from '@/lib/super-wks/useAuth';
 
-function OnboardingApprovalQueue() {
+function OnboardingApprovalQueue({ teams }: { teams: import('@/lib/super-wks/types').Team[] }) {
   const [requests, setRequests] = useState<FirestoreUser[]>([]);
   const [processing, setProcessing] = useState<string | null>(null);
+  const [selectedTeams, setSelectedTeams] = useState<Record<string, string>>({});
   const { firebaseUser } = useAuth();
 
   useEffect(() => {
@@ -23,7 +24,8 @@ function OnboardingApprovalQueue() {
     if (!firebaseUser) return;
     setProcessing(uid);
     try {
-      await approveUser(uid, firebaseUser.uid, '');
+      const teamId = selectedTeams[uid] || '';
+      await approveUser(uid, firebaseUser.uid, teamId);
       setRequests(prev => prev.filter(r => r.uid !== uid));
     } catch (err) {
       console.error('Approve failed:', err);
@@ -66,7 +68,15 @@ function OnboardingApprovalQueue() {
                   {r.onboardedAt ? new Date(r.onboardedAt).toLocaleString('ko-KR') : '-'}
                 </div>
               </div>
-              <div className="flex gap-2 shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
+                <select
+                  value={selectedTeams[r.uid] || ''}
+                  onChange={e => setSelectedTeams(prev => ({ ...prev, [r.uid]: e.target.value }))}
+                  className="text-xs border border-[#404040] bg-[#171717] text-neutral-400 px-2 py-1.5"
+                >
+                  <option value="">팀 미배치</option>
+                  {teams.map(t => <option key={t.teamId} value={t.teamId}>{t.name}</option>)}
+                </select>
                 <button onClick={() => handleApprove(r.uid)} disabled={processing === r.uid} className="px-4 py-2 bg-emerald-500 text-white text-xs hover:bg-emerald-600 transition-colors disabled:opacity-50">✅ 승인</button>
                 <button onClick={() => handleReject(r.uid)} disabled={processing === r.uid} className="px-4 py-2 bg-red-500/20 text-red-400 text-xs hover:bg-red-500/30 border border-red-500/20 transition-colors disabled:opacity-50">❌ 거절</button>
               </div>
@@ -222,7 +232,7 @@ export function AdminPage() {
       </div>
 
       {/* Onboarding Approval Queue (always visible) */}
-      <OnboardingApprovalQueue />
+      <OnboardingApprovalQueue teams={allTeams} />
 
       {/* Tab: Overview */}
       {activeTab === 'overview' && (

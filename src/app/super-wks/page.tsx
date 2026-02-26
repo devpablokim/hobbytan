@@ -9,7 +9,7 @@ import { createUserFromOnboarding } from '@/lib/super-wks/firestoreService';
 
 export default function SuperWksHome() {
   const router = useRouter();
-  const { isLoggedIn, userState, firebaseUser, loading, login, refreshUser } = useAuth();
+  const { isLoggedIn, userState, firebaseUser, loading, login, logout, refreshUser } = useAuth();
 
   useEffect(() => {
     if (userState === 'active') {
@@ -54,7 +54,25 @@ export default function SuperWksHome() {
         <div className="text-center p-8 border border-amber-500/20 bg-amber-500/5 max-w-md">
           <div className="text-3xl mb-3">⏳</div>
           <h2 className="text-lg font-semibold text-white mb-2">승인 대기 중</h2>
-          <p className="text-sm text-neutral-400">관리자의 승인을 기다리고 있습니다.</p>
+          <p className="text-sm text-neutral-400 mb-1">관리자의 승인을 기다리고 있습니다.</p>
+          <p className="text-xs text-neutral-600 mb-4">{firebaseUser?.email}</p>
+          <div className="flex gap-3 justify-center">
+            <button onClick={() => refreshUser()} className="text-xs text-emerald-400 border border-emerald-500/20 px-3 py-1.5 hover:bg-emerald-500/10 transition-colors">🔄 상태 확인</button>
+            <button onClick={logout} className="text-xs text-neutral-500 border border-[#404040] px-3 py-1.5 hover:text-white transition-colors">로그아웃</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (userState === 'suspended') {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="text-center p-8 border border-red-500/20 bg-red-500/5 max-w-md">
+          <div className="text-3xl mb-3">🚫</div>
+          <h2 className="text-lg font-semibold text-white mb-2">접근이 제한되었습니다</h2>
+          <p className="text-sm text-neutral-400 mb-4">관리자에 의해 접근이 제한되었습니다. 문의사항은 운영진에게 연락해주세요.</p>
+          <button onClick={logout} className="text-xs text-neutral-500 border border-[#404040] px-3 py-1.5 hover:text-white transition-colors">로그아웃</button>
         </div>
       </div>
     );
