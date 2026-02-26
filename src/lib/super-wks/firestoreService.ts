@@ -1,11 +1,14 @@
 'use client';
 
 import {
-  doc, getDoc, setDoc, updateDoc, deleteDoc,
-  collection, query, where, getDocs, serverTimestamp,
+  doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc,
+  collection, query, where, getDocs, orderBy, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import type { Role, UserStatus, ParticipationStatus, OnboardingData } from './types';
+import type {
+  Role, UserStatus, ParticipationStatus, OnboardingData,
+  Cohort, Curriculum, Team, Submission, Post, Goal,
+} from './types';
 
 // ─── Firestore User Document Schema ───
 export interface FirestoreUser {
@@ -133,4 +136,166 @@ const ADMIN_EMAILS = ['tanhyu.kim@gmail.com'];
 
 export function isAdminEmail(email: string): boolean {
   return ADMIN_EMAILS.includes(email);
+}
+
+// ─── Collection Names ───
+const COHORTS_COL = 'swks_cohorts';
+const TEAMS_COL = 'swks_teams';
+const CURRICULUM_COL = 'swks_curriculum';
+const SUBMISSIONS_COL = 'swks_submissions';
+const POSTS_COL = 'swks_posts';
+const GOALS_COL = 'swks_goals';
+
+// ─── Cohort Operations ───
+
+export async function getCohort(cohortId: string): Promise<Cohort | null> {
+  const snap = await getDoc(doc(db, COHORTS_COL, cohortId));
+  if (!snap.exists()) return null;
+  return { cohortId: snap.id, ...snap.data() } as Cohort;
+}
+
+export async function getActiveCohort(): Promise<Cohort | null> {
+  const q = query(collection(db, COHORTS_COL), where('status', '==', 'active'));
+  const snap = await getDocs(q);
+  if (snap.empty) return null;
+  const d = snap.docs[0];
+  return { cohortId: d.id, ...d.data() } as Cohort;
+}
+
+export async function setCohort(cohort: Cohort): Promise<void> {
+  await setDoc(doc(db, COHORTS_COL, cohort.cohortId), cohort);
+}
+
+// ─── Team Operations ───
+
+export async function getTeams(cohortId?: string): Promise<Team[]> {
+  let q;
+  if (cohortId) {
+    q = query(collection(db, TEAMS_COL), where('cohortId', '==', cohortId));
+  } else {
+    q = query(collection(db, TEAMS_COL));
+  }
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ teamId: d.id, ...d.data() }) as Team);
+}
+
+export async function getTeam(teamId: string): Promise<Team | null> {
+  const snap = await getDoc(doc(db, TEAMS_COL, teamId));
+  if (!snap.exists()) return null;
+  return { teamId: snap.id, ...snap.data() } as Team;
+}
+
+export async function setTeam(team: Team): Promise<void> {
+  await setDoc(doc(db, TEAMS_COL, team.teamId), team);
+}
+
+export async function updateTeamProgress(teamId: string, progress: Partial<Team['progress']>): Promise<void> {
+  const updates: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(progress)) {
+    updates[`progress.${k}`] = v;
+  }
+  await updateDoc(doc(db, TEAMS_COL, teamId), updates);
+}
+
+// ─── Curriculum Operations ───
+
+export async function getCurriculum(cohortId?: string): Promise<Curriculum[]> {
+  let q;
+  if (cohortId) {
+    q = query(collection(db, CURRICULUM_COL), where('cohortId', '==', cohortId), orderBy('order'));
+  } else {
+    q = query(collection(db, CURRICULUM_COL), orderBy('order'));
+  }
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ curriculumId: d.id, ...d.data() }) as Curriculum);
+}
+
+export async function setCurriculum(cur: Curriculum): Promise<void> {
+  await setDoc(doc(db, CURRICULUM_COL, cur.curriculumId), cur);
+}
+
+// ─── Submission Operations ───
+
+export async function getSubmissions(filters?: { userId?: string; teamId?: string; cohortId?: string; weekNumber?: number }): Promise<Submission[]> {
+  let q = query(collection(db, SUBMISSIONS_COL));
+  const constraints = [];
+  if (filters?.userId) constraints.push(where('userId', '==', filters.userId));
+  if (filters?.teamId) constraints.push(where('teamId', '==', filters.teamId));
+  if (filters?.cohortId) constraints.push(where('cohortId', '==', filters.cohortId));
+  if (filters?.weekNumber !== undefined) constraints.push(where('weekNumber', '==', filters.weekNumber));
+  if (constraints.length > 0) {
+    q = query(collection(db, SUBMISSIONS_COL), ...constraints);
+  }
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ submissionId: d.id, ...d.data() }) as Submission);
+}
+
+export async function createSubmission(sub: Omit<Submission, 'submissionId'>): Promise<string> {
+  const ref = await addDoc(collection(db, SUBMISSIONS_COL), {
+    ...sub,
+    submittedAt: sub.submittedAt || new Date().toISOString(),
+  });
+  return ref.id;
+}
+
+export async function updateSubmission(submissionId: string, data: Partial<Submission>): Promise<void> {
+  await updateDoc(doc(db, SUBMISSIONS_COL, submissionId), data as Record<string, unknown>);
+}
+
+// ─── Post Operations ───
+
+export async function getPosts(filters?: { cohortId?: string; teamId?: string }): Promise<Post[]> {
+  let q = query(collection(db, POSTS_COL), orderBy('createdAt', 'desc'));
+  const constraints = [];
+  if (filters?.cohortId) constraints.push(where('cohortId', '==', filters.cohortId));
+  if (filters?.teamId) constraints.push(where('teamId', '==', filters.teamId));
+  if (constraints.length > 0) {
+    q = query(collection(db, POSTS_COL), ...constraints, orderBy('createdAt', 'desc'));
+  }
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ postId: d.id, ...d.data() }) as Post);
+}
+
+export async function createPost(post: Omit<Post, 'postId'>): Promise<string> {
+  const ref = await addDoc(collection(db, POSTS_COL), {
+    ...post,
+    createdAt: post.createdAt || new Date().toISOString(),
+  });
+  return ref.id;
+}
+
+// ─── Goal Operations ───
+
+export async function getGoals(filters?: { teamId?: string; cohortId?: string }): Promise<Goal[]> {
+  const constraints = [];
+  if (filters?.teamId) constraints.push(where('teamId', '==', filters.teamId));
+  if (filters?.cohortId) constraints.push(where('cohortId', '==', filters.cohortId));
+  let q;
+  if (constraints.length > 0) {
+    q = query(collection(db, GOALS_COL), ...constraints);
+  } else {
+    q = query(collection(db, GOALS_COL));
+  }
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ goalId: d.id, ...d.data() }) as Goal);
+}
+
+export async function createGoal(goal: Omit<Goal, 'goalId'>): Promise<string> {
+  const ref = await addDoc(collection(db, GOALS_COL), goal);
+  return ref.id;
+}
+
+export async function updateGoal(goalId: string, data: Partial<Goal>): Promise<void> {
+  await updateDoc(doc(db, GOALS_COL, goalId), data as Record<string, unknown>);
+}
+
+// ─── Seed Data (초기 데이터 투입용) ───
+
+export async function seedCollectionIfEmpty(colName: string, items: Array<{ id: string; data: Record<string, unknown> }>): Promise<boolean> {
+  const snap = await getDocs(collection(db, colName));
+  if (!snap.empty) return false; // already has data
+  for (const item of items) {
+    await setDoc(doc(db, colName, item.id), item.data);
+  }
+  return true;
 }
