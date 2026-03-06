@@ -13,7 +13,7 @@ export default function SuperWksHome() {
 
   useEffect(() => {
     if (userState === 'active') {
-      router.push('/super-wks/dashboard');
+      router.replace('/super-wks/dashboard');
     }
   }, [userState, router]);
 

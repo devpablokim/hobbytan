@@ -45,6 +45,9 @@ export function useAuth(): AuthState {
       if (!fsUser) {
         // No Firestore doc → needs onboarding
         setUserState('needs_onboarding');
+      } else if (isAdminEmail(fbUser.email || '')) {
+        // Admin emails always get active state regardless of Firestore status
+        setUserState('active');
       } else if (fsUser.status === 'pending') {
         setUserState('pending_approval');
       } else if (fsUser.status === 'suspended') {
