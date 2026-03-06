@@ -7,7 +7,7 @@ import { JOB_ROLES } from '@/lib/super-wks/types';
 interface OnboardingPageProps {
   defaultName: string;
   defaultEmail: string;
-  onComplete: (data: OnboardingData) => void;
+  onComplete: (data: OnboardingData) => Promise<void>;
 }
 
 export function OnboardingPage({ defaultName, defaultEmail, onComplete }: OnboardingPageProps) {
@@ -18,17 +18,30 @@ export function OnboardingPage({ defaultName, defaultEmail, onComplete }: Onboar
   const [organization, setOrganization] = useState('');
   const [jobRole, setJobRole] = useState('');
   const [customJobRole, setCustomJobRole] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const finalJobRole = jobRole === '기타 (직접 입력)' ? customJobRole.trim() : jobRole;
     if (!participationStatus || !nickname.trim() || !realName.trim() || !finalJobRole) return;
-    onComplete({
-      participationStatus,
-      nickname: nickname.trim(),
-      realName: realName.trim(),
-      organization: organization.trim(),
-      jobRole: finalJobRole,
-    });
+    setSubmitting(true);
+    setError(null);
+    try {
+      await onComplete({
+        participationStatus,
+        nickname: nickname.trim(),
+        realName: realName.trim(),
+        organization: organization.trim(),
+        jobRole: finalJobRole,
+      });
+      setSubmitted(true);
+    } catch (e) {
+      console.error('Onboarding submit error:', e);
+      setError('제출 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const blocked = participationStatus === 'not_participating';
@@ -53,8 +66,21 @@ export function OnboardingPage({ defaultName, defaultEmail, onComplete }: Onboar
         </div>
 
         <div className="border border-[#262626] bg-[#111111] p-6 md:p-8">
+          {/* Submitted Success */}
+          {submitted && (
+            <div className="text-center py-8">
+              <div className="text-4xl mb-4">✅</div>
+              <h2 className="text-lg font-semibold text-white mb-2">가입 신청이 완료되었습니다!</h2>
+              <p className="text-sm text-neutral-400 mb-1">관리자의 승인을 기다려주세요.</p>
+              <p className="text-xs text-neutral-600 mb-4">승인이 완료되면 대시보드에 접근할 수 있습니다.</p>
+              <div className="inline-block px-4 py-2 border border-amber-500/20 bg-amber-500/5 text-amber-400 text-sm">
+                ⏳ 승인 대기 중
+              </div>
+            </div>
+          )}
+
           {/* Step 0: Participation Status */}
-          {step === 0 && (
+          {!submitted && step === 0 && (
             <div>
               <h2 className="text-lg font-medium text-white mb-2">워크샵 참여 상태</h2>
               <p className="text-sm text-neutral-500 mb-6">현재 AI 슈퍼워크샵 참여 상태를 선택해주세요.</p>
@@ -94,7 +120,7 @@ export function OnboardingPage({ defaultName, defaultEmail, onComplete }: Onboar
           )}
 
           {/* Step 1: Name */}
-          {step === 1 && (
+          {!submitted && step === 1 && (
             <div>
               <h2 className="text-lg font-medium text-white mb-2">이름 설정</h2>
               <p className="text-sm text-neutral-500 mb-6">워크샵에서 사용할 닉네임과 실명을 입력해주세요.</p>
@@ -133,7 +159,7 @@ export function OnboardingPage({ defaultName, defaultEmail, onComplete }: Onboar
           )}
 
           {/* Step 2: Organization */}
-          {step === 2 && (
+          {!submitted && step === 2 && (
             <div>
               <h2 className="text-lg font-medium text-white mb-2">소속</h2>
               <p className="text-sm text-neutral-500 mb-6">현재 소속을 입력해주세요. (회사, 학교, 팀 등)</p>
@@ -159,7 +185,7 @@ export function OnboardingPage({ defaultName, defaultEmail, onComplete }: Onboar
           )}
 
           {/* Step 3: Job Role */}
-          {step === 3 && (
+          {!submitted && step === 3 && (
             <div>
               <h2 className="text-lg font-medium text-white mb-2">직무</h2>
               <p className="text-sm text-neutral-500 mb-6">현재 직무를 선택해주세요.</p>
@@ -202,14 +228,18 @@ export function OnboardingPage({ defaultName, defaultEmail, onComplete }: Onboar
                 </div>
               )}
 
+              {error && (
+                <div className="mt-4 p-3 border border-red-500/20 bg-red-500/5 text-sm text-red-400">{error}</div>
+              )}
+
               <div className="flex gap-3 mt-6">
-                <button onClick={() => setStep(2)} className="px-6 py-3 border border-[#404040] text-neutral-400 text-sm hover:text-white transition-colors">이전</button>
+                <button onClick={() => setStep(2)} disabled={submitting} className="px-6 py-3 border border-[#404040] text-neutral-400 text-sm hover:text-white transition-colors disabled:opacity-30">이전</button>
                 <button
                   onClick={handleSubmit}
-                  disabled={!jobRole || (jobRole === '기타 (직접 입력)' && !customJobRole.trim())}
+                  disabled={submitting || !jobRole || (jobRole === '기타 (직접 입력)' && !customJobRole.trim())}
                   className="flex-1 py-3 bg-emerald-500 text-white font-medium text-sm hover:bg-emerald-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  ✅ 완료 — 승인 요청
+                  {submitting ? '제출 중...' : '✅ 완료 — 승인 요청'}
                 </button>
               </div>
             </div>

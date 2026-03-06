@@ -42,6 +42,18 @@ export default function SuperWksHome() {
             firebaseUser.photoURL,
             data
           );
+          // Send admin notification email (fire-and-forget)
+          fetch('/api/workshop/onboarding-notify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: data.realName || data.nickname,
+              email: firebaseUser.email,
+              organization: data.organization,
+              jobRole: data.jobRole,
+              participationStatus: data.participationStatus,
+            }),
+          }).catch(() => {}); // Don't block on email failure
           await refreshUser();
         }}
       />
