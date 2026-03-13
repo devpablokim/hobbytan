@@ -5,9 +5,18 @@ import { NextResponse } from 'next/server';
  * Client calls this → server uses secret API key → returns signed URL
  * API key never exposed to client
  */
-export async function POST() {
+export async function POST(request: Request) {
   const apiKey = process.env.ELEVENLABS_API_KEY;
-  const agentId = process.env.ELEVENLABS_AGENT_ID;
+  const defaultAgentId = process.env.ELEVENLABS_AGENT_ID;
+
+  // Allow client to specify agent_id (for different services like ForPeople)
+  let agentId = defaultAgentId;
+  try {
+    const body = await request.json();
+    if (body.agent_id) agentId = body.agent_id;
+  } catch {
+    // No body or invalid JSON — use default
+  }
 
   if (!apiKey || !agentId) {
     return NextResponse.json(
