@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dchoi09 AI 고객센터</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#e5e5e5;font-family:'Pretendard',-apple-system,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.container{width:100%;max-width:520px;padding:24px}
+.phone{border:1px solid #262626;background:#111;overflow:hidden}
+.phone-header{background:linear-gradient(135deg,#1a0a2e 0%,#0d0d0d 100%);padding:20px;border-bottom:1px solid #262626;text-align:center}
+.phone-header .brand{font-size:10px;color:#f472b6;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.phone-header h1{font-size:16px;color:#fff;font-weight:700}
+.phone-header p{font-size:11px;color:#737373;margin-top:4px}
+.status-bar{padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:8px;border-bottom:1px solid #1a1a1a}
+.status-dot{width:10px;height:10px;border-radius:50%}
+.status-dot.offline{background:#525252}
+.status-dot.connecting{background:#f59e0b;animation:pulse 1s infinite}
+.status-dot.online{background:#f472b6;animation:pulse 2s infinite}
+.status-dot.speaking{background:#3b82f6;animation:pulse .5s infinite}
+.status-text{font-size:12px;color:#737373}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.transcript{padding:16px 20px;min-height:340px;max-height:420px;overflow-y:auto}
+.msg{margin-bottom:12px;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.bot{text-align:left}
+.msg.user{text-align:right}
+.msg .bubble{display:inline-block;max-width:85%;padding:10px 14px;font-size:13px;line-height:1.5}
+.msg.bot .bubble{background:rgba(244,114,182,.08);border:1px solid rgba(244,114,182,.2);color:#d4d4d4}
+.msg.user .bubble{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);color:#d4d4d4}
+.msg .label{font-size:10px;color:#525252;margin-bottom:4px}
+.msg .time{font-size:9px;color:#404040;margin-top:2px}
+.controls{padding:16px 20px;border-top:1px solid #262626;display:flex;align-items:center;justify-content:center;gap:16px}
+.btn-mic{width:64px;height:64px;border-radius:50%;border:2px solid #333;background:transparent;color:#737373;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;font-size:24px}
+.btn-mic.active{border-color:#ef4444;background:rgba(239,68,68,.1);color:#ef4444;animation:pulse-ring 1.5s infinite}
+@keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(239,68,68,.3)}70%{box-shadow:0 0 0 12px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+.btn-end{padding:10px 20px;border:1px solid #333;background:transparent;color:#737373;cursor:pointer;font-size:12px}
+.btn-end:hover{border-color:#ef4444;color:#ef4444}
+.btn-start{padding:14px 32px;border:1px solid #f472b6;background:rgba(244,114,182,.1);color:#f472b6;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s}
+.btn-start:hover{background:rgba(244,114,182,.2)}
+.volume-bar{height:3px;background:#1a1a1a;margin:0 20px}
+.volume-level{height:100%;background:#f472b6;width:0%;transition:width .1s}
+.nav-links{padding:10px 20px;border-top:1px solid #1a1a1a;display:flex;justify-content:center;gap:12px}
+.nav-links a{font-size:11px;color:#f472b6;text-decoration:none;border:1px solid rgba(244,114,182,.3);padding:5px 12px;transition:all .2s}
+.nav-links a:hover{background:rgba(244,114,182,.1)}
+.info{padding:10px 20px;border-top:1px solid #1a1a1a;font-size:10px;color:#404040;text-align:center}
+.debug{padding:6px 20px;font-size:9px;color:#333;max-height:50px;overflow-y:auto;border-top:1px solid #1a1a1a;font-family:monospace}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="phone">
+    <div class="phone-header">
+      <div class="brand">dchoi09</div>
+      <h1>👩‍💼 디초이공구 고객센터</h1>
+      <p>AI 상담원이 도와드립니다</p>
+    </div>
+    <div class="status-bar">
+      <div class="status-dot offline" id="statusDot"></div>
+      <span class="status-text" id="statusText">대기 중</span>
+    </div>
+    <div class="volume-bar"><div class="volume-level" id="volumeLevel"></div></div>
+    <div class="transcript" id="transcript">
+      <div style="text-align:center;padding:60px 20px;color:#404040;font-size:13px">
+        👩‍💼 디초이공구 AI 고객센터<br><br>
+        <span style="font-size:11px;color:#525252">주문확인 · 배송조회 · 교환/반품 · 사이즈 문의<br>아래 버튼을 눌러 상담을 시작하세요</span>
+      </div>
+    </div>
+    <div id="typingIndicator" style="color:#737373;font-size:12px;font-style:italic;padding:0 20px 8px;display:none">상담원이 답변 중...</div>
+    <div class="controls" id="controls">
+      <button class="btn-start" onclick="startConversation()">📞 상담 시작</button>
+    </div>
+    <div class="nav-links">
+      <a href="/dchoi09-callcenter/dashboard/">📊 상담 기록</a>
+    </div>
+    <div class="info">마이크 권한이 필요합니다 · dchoi09 AI Call</div>
+    <div class="debug" id="debugLog"></div>
+  </div>
+</div>
+
+<script>
+const AGENT_ID = 'agent_5101kkkq3nb6fvkbsxn6cb5vwsm2';
+let audioContext = null;
+let conversationLog = []; // Store transcript for dashboard
+
+function debugLog(msg) {
+  document.getElementById('debugLog').textContent = msg;
+  console.log('[dchoi09]', msg);
+}
+
+function setStatus(state, text) {
+  document.getElementById('statusDot').className = 'status-dot ' + state;
+  document.getElementById('statusText').textContent = text;
+}
+
+function getTime() {
+  const d = new Date();
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0') + ':' + d.getSeconds().toString().padStart(2,'0');
+}
+
+function addMessage(role, text) {
+  if (!text || text === 'undefined') return;
+  const transcript = document.getElementById('transcript');
+  if (transcript.querySelector('div[style]')) transcript.innerHTML = '';
+  const time = getTime();
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'agent' ? 'bot' : 'user');
+  div.innerHTML = '<div class="label">' + (role === 'agent' ? '👩‍💼 dchoi09 상담원' : '👤 고객') + '</div><div class="bubble">' + text + '</div><div class="time">' + time + '</div>';
+  transcript.appendChild(div);
+  transcript.scrollTop = transcript.scrollHeight;
+  
+  // Save to log
+  conversationLog.push({ role, text, time });
+}
+
+function showControls(mode) {
+  const c = document.getElementById('controls');
+  if (mode === 'active') {
+    c.innerHTML = '<button class="btn-mic active" id="btnMic" onclick="toggleMute()">🎤</button><button class="btn-end" onclick="endConversation()">상담 종료</button>';
+  } else {
+    c.innerHTML = '<button class="btn-start" onclick="startConversation()">📞 상담 시작</button>';
+  }
+}
+
+function extractText(msg, ...keys) {
+  for (const key of keys) {
+    if (typeof msg[key] === 'string' && msg[key]) return msg[key];
+    const ek = key + '_event';
+    if (msg[ek] && typeof msg[ek][key] === 'string') return msg[ek][key];
+  }
+  for (const k of ['text','message','content','transcript']) {
+    if (typeof msg[k] === 'string' && msg[k]) return msg[k];
+  }
+  return null;
+}
+
+// Save conversation to localStorage for dashboard
+function saveConversation() {
+  if (conversationLog.length === 0) return;
+  const history = JSON.parse(localStorage.getItem('dchoi09_calls') || '[]');
+  const entry = {
+    id: 'C-' + String(history.length + 1).padStart(4, '0'),
+    date: new Date().toISOString(),
+    messages: conversationLog,
+    duration: conversationLog.length > 0 ? Math.round((Date.now() - callStartTime) / 1000) : 0,
+    status: conversationLog.some(m => m.text.includes('상담원에게 연결')) ? 'escalated' : 'resolved'
+  };
+  history.unshift(entry);
+  // Keep last 100
+  if (history.length > 100) history.length = 100;
+  localStorage.setItem('dchoi09_calls', JSON.stringify(history));
+  debugLog('상담 기록 저장: ' + entry.id);
+}
+
+let callStartTime = 0;
+
+async function startConversation() {
+  try {
+    setStatus('connecting', '연결 중...');
+    conversationLog = [];
+    callStartTime = Date.now();
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+    });
+
+    const response = await fetch('/api/callcenter/signed-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agent_id: AGENT_ID })
+    });
+
+    if (!response.ok) {
+      debugLog('Signed URL 실패, 직접 연결...');
+      connectWS(stream, 'wss://api.elevenlabs.io/v1/convai/conversation?agent_id=' + AGENT_ID);
+      return;
+    }
+
+    const data = await response.json();
+    connectWS(stream, data.signedUrl);
+  } catch (err) {
+    setStatus('offline', '오류: ' + err.message);
+    debugLog('오류: ' + err.message);
+  }
+}
+
+function connectWS(stream, wsUrl) {
+  const ws = new WebSocket(wsUrl);
+  let isMuted = false;
+  audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const source = audioContext.createMediaStreamSource(stream);
+  const processor = audioContext.createScriptProcessor(4096, 1, 1);
+  let audioQueue = [], isPlaying = false;
+
+  function playNext() {
+    if (!audioQueue.length) { isPlaying = false; setStatus('online', '연결됨 — 말씀하세요'); return; }
+    isPlaying = true;
+    const buf = audioQueue.shift();
+    try {
+      const pcm = new Int16Array(buf);
+      const f32 = new Float32Array(pcm.length);
+      for (let i = 0; i < pcm.length; i++) f32[i] = pcm[i] / 32768;
+      const ab = audioContext.createBuffer(1, f32.length, 16000);
+      ab.getChannelData(0).set(f32);
+      const src = audioContext.createBufferSource();
+      src.buffer = ab;
+      src.connect(audioContext.destination);
+      src.onended = playNext;
+      src.start();
+    } catch(e) { playNext(); }
+  }
+
+  ws.onopen = () => {
+    setStatus('online', '연결됨 — 말씀하세요');
+    showControls('active');
+    ws.send(JSON.stringify({
+      type: 'conversation_initiation_client_data',
+      conversation_initiation_client_data: {
+        conversation_config_override: {
+          agent: { prompt: { prompt: '' }, first_message: '안녕하세요! 디초이공구 고객센터입니다. 무엇을 도와드릴까요?', language: 'ko' }
+        }
+      }
+    }));
+    source.connect(processor);
+    processor.connect(audioContext.destination);
+    processor.onaudioprocess = (e) => {
+      if (isMuted || ws.readyState !== WebSocket.OPEN) return;
+      const input = e.inputBuffer.getChannelData(0);
+      const srcRate = audioContext.sampleRate, dstRate = 16000;
+      let samples = input;
+      if (srcRate !== dstRate) {
+        const ratio = srcRate / dstRate, len = Math.floor(input.length / ratio);
+        samples = new Float32Array(len);
+        for (let i = 0; i < len; i++) samples[i] = input[Math.floor(i * ratio)];
+      }
+      const pcm = new Int16Array(samples.length);
+      for (let i = 0; i < samples.length; i++) pcm[i] = Math.max(-32768, Math.min(32767, samples[i] * 32768));
+      const bytes = new Uint8Array(pcm.buffer);
+      let bin = '';
+      for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      ws.send(JSON.stringify({ user_audio_chunk: btoa(bin) }));
+      let sum = 0;
+      for (let i = 0; i < input.length; i++) sum += Math.abs(input[i]);
+      document.getElementById('volumeLevel').style.width = Math.min(100, (sum / input.length) * 500) + '%';
+    };
+  };
+
+  ws.onmessage = (event) => {
+    try {
+      const msg = JSON.parse(event.data);
+      debugLog('WS: ' + msg.type);
+      switch (msg.type) {
+        case 'conversation_initiation_metadata': break;
+        case 'user_transcript': {
+          const t = extractText(msg, 'user_transcript');
+          if (t) addMessage('user', t);
+          break;
+        }
+        case 'agent_response': {
+          const t = extractText(msg, 'agent_response');
+          if (t) addMessage('agent', t);
+          break;
+        }
+        case 'agent_response_correction': {
+          const t = extractText(msg, 'agent_response_correction', 'agent_response');
+          const bs = document.querySelectorAll('.msg.bot .bubble');
+          if (bs.length && t) bs[bs.length - 1].textContent = t;
+          break;
+        }
+        case 'audio': {
+          const chunk = (msg.audio_event && msg.audio_event.audio_base_64)
+            || (msg.audio && msg.audio.chunk) || msg.audio_base_64 || msg.audio_chunk
+            || (typeof msg.audio === 'string' ? msg.audio : null);
+          if (chunk) {
+            const bin = atob(chunk);
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            audioQueue.push(bytes.buffer);
+            if (!isPlaying) playNext();
+          }
+          setStatus('speaking', '상담원 응답 중...');
+          break;
+        }
+        case 'interruption': audioQueue = []; isPlaying = false; setStatus('online', '연결됨 — 말씀하세요'); break;
+        case 'ping': ws.send(JSON.stringify({ type: 'pong', event_id: msg.ping_event?.event_id || msg.event_id })); break;
+      }
+    } catch(e) {}
+  };
+
+  ws.onclose = () => {
+    setStatus('offline', '상담 종료');
+    showControls('start');
+    stream.getTracks().forEach(t => t.stop());
+    try { processor.disconnect(); source.disconnect(); } catch(e) {}
+    saveConversation();
+  };
+  ws.onerror = () => { setStatus('offline', '연결 오류'); };
+
+  window._ws = ws;
+  window._stream = stream;
+  window.toggleMute = () => {
+    isMuted = !isMuted;
+    const btn = document.getElementById('btnMic');
+    if (isMuted) { btn.classList.remove('active'); btn.textContent = '🔇'; btn.style.borderColor = '#525252'; btn.style.color = '#525252'; }
+    else { btn.classList.add('active'); btn.textContent = '🎤'; btn.style.borderColor = ''; btn.style.color = ''; }
+  };
+  window.endConversation = () => {
+    ws.close();
+    stream.getTracks().forEach(t => t.stop());
+    if (audioContext) audioContext.close();
+    setStatus('offline', '상담 종료');
+    showControls('start');
+    saveConversation();
+  };
+}
+</script>
+</body>
+</html>
