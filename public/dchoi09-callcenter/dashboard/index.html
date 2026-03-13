@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dchoi09 상담 기록 대시보드</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#e5e5e5;font-family:'Pretendard',-apple-system,sans-serif;min-height:100vh}
+.header{padding:24px 32px;border-bottom:1px solid #262626;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:18px;color:#fff;font-weight:700}
+.header .brand{font-size:10px;color:#f472b6;text-transform:uppercase;letter-spacing:2px}
+.header a{font-size:12px;color:#f472b6;text-decoration:none;border:1px solid rgba(244,114,182,.3);padding:8px 16px}
+.header a:hover{background:rgba(244,114,182,.1)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:24px 32px}
+.stat{border:1px solid #262626;background:#111;padding:16px}
+.stat-label{font-size:11px;color:#737373;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.stat-value{font-size:24px;font-weight:700;color:#fff}
+.stat-sub{font-size:11px;margin-top:4px;color:#737373}
+.main{padding:0 32px 32px}
+.card{border:1px solid #262626;background:#111;margin-bottom:16px}
+.card-header{padding:14px 20px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;justify-content:space-between}
+.card-header h3{font-size:14px;font-weight:600;color:#fff}
+.table{width:100%;border-collapse:collapse}
+.table th{text-align:left;font-size:11px;color:#737373;text-transform:uppercase;letter-spacing:.05em;padding:10px 12px;border-bottom:1px solid #262626}
+.table td{padding:10px 12px;font-size:13px;color:#a3a3a3;border-bottom:1px solid #1a1a1a;cursor:pointer}
+.table tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border:1px solid}
+.badge-green{border-color:rgba(16,185,129,.3);color:#10b981;background:rgba(16,185,129,.05)}
+.badge-amber{border-color:rgba(245,158,11,.3);color:#f59e0b;background:rgba(245,158,11,.05)}
+.detail{border:1px solid #262626;background:#0d0d0d;margin:16px 32px;padding:20px;display:none}
+.detail h4{font-size:14px;color:#fff;margin-bottom:12px}
+.detail-msg{padding:8px 12px;margin-bottom:4px}
+.detail-msg.bot{background:rgba(244,114,182,.05);border-left:2px solid #f472b6}
+.detail-msg.user{background:rgba(59,130,246,.05);border-left:2px solid #3b82f6}
+.detail-msg .sender{font-size:10px;color:#525252;margin-bottom:2px}
+.detail-msg .text{font-size:13px;color:#d4d4d4}
+.detail-msg .time{font-size:9px;color:#404040;margin-top:2px}
+.empty{text-align:center;padding:60px;color:#404040;font-size:13px}
+.btn-clear{font-size:11px;color:#ef4444;border:1px solid rgba(239,68,68,.3);padding:6px 12px;background:transparent;cursor:pointer}
+.btn-clear:hover{background:rgba(239,68,68,.1)}
+@media(max-width:768px){.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="brand">dchoi09</div>
+    <h1>📊 상담 기록 대시보드</h1>
+  </div>
+  <a href="/dchoi09-callcenter/">📞 상담 페이지로</a>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-label">총 상담</div>
+    <div class="stat-value" id="totalCalls">0</div>
+    <div class="stat-sub">전체 기간</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">오늘 상담</div>
+    <div class="stat-value" id="todayCalls">0</div>
+    <div class="stat-sub" id="todayDate"></div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">AI 해결</div>
+    <div class="stat-value" id="resolvedCalls">0</div>
+    <div class="stat-sub" id="resolveRate">-</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">상담원 연결</div>
+    <div class="stat-value" id="escalatedCalls">0</div>
+    <div class="stat-sub" id="escalateRate">-</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="card">
+    <div class="card-header">
+      <h3>상담 내역</h3>
+      <button class="btn-clear" onclick="clearAll()">전체 삭제</button>
+    </div>
+    <div id="callList"></div>
+  </div>
+</div>
+
+<div class="detail" id="detail"></div>
+
+<script>
+function load() {
+  const calls = JSON.parse(localStorage.getItem('dchoi09_calls') || '[]');
+  const today = new Date().toISOString().slice(0, 10);
+  
+  // Stats
+  const todayCalls = calls.filter(c => c.date.slice(0, 10) === today);
+  const resolved = calls.filter(c => c.status === 'resolved');
+  const escalated = calls.filter(c => c.status === 'escalated');
+  
+  document.getElementById('totalCalls').textContent = calls.length;
+  document.getElementById('todayCalls').textContent = todayCalls.length;
+  document.getElementById('todayDate').textContent = today;
+  document.getElementById('resolvedCalls').textContent = resolved.length;
+  document.getElementById('escalatedCalls').textContent = escalated.length;
+  
+  if (calls.length > 0) {
+    document.getElementById('resolveRate').textContent = Math.round(resolved.length / calls.length * 100) + '%';
+    document.getElementById('escalateRate').textContent = Math.round(escalated.length / calls.length * 100) + '%';
+  }
+  
+  // Table
+  const list = document.getElementById('callList');
+  if (calls.length === 0) {
+    list.innerHTML = '<div class="empty">상담 기록이 없습니다.<br><br><span style="font-size:11px">상담 페이지에서 통화 후 종료하면 자동 기록됩니다.</span></div>';
+    return;
+  }
+  
+  let html = '<table class="table"><thead><tr><th>ID</th><th>일시</th><th>메시지</th><th>시간(초)</th><th>상태</th></tr></thead><tbody>';
+  calls.forEach((c, i) => {
+    const d = new Date(c.date);
+    const dateStr = d.getMonth()+1 + '/' + d.getDate() + ' ' + d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+    const statusBadge = c.status === 'resolved' 
+      ? '<span class="badge badge-green">AI 해결</span>' 
+      : '<span class="badge badge-amber">상담원</span>';
+    html += '<tr onclick="showDetail(' + i + ')"><td style="font-family:monospace;font-size:11px;color:#525252">' + c.id + '</td><td>' + dateStr + '</td><td>' + c.messages.length + '건</td><td>' + (c.duration || '-') + '</td><td>' + statusBadge + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  list.innerHTML = html;
+}
+
+function showDetail(idx) {
+  const calls = JSON.parse(localStorage.getItem('dchoi09_calls') || '[]');
+  const c = calls[idx];
+  if (!c) return;
+  
+  const detail = document.getElementById('detail');
+  let html = '<h4>' + c.id + ' — ' + new Date(c.date).toLocaleString('ko-KR') + ' (' + (c.duration || 0) + '초)</h4>';
+  c.messages.forEach(m => {
+    const cls = m.role === 'agent' ? 'bot' : 'user';
+    const sender = m.role === 'agent' ? '👩‍💼 상담원' : '👤 고객';
+    html += '<div class="detail-msg ' + cls + '"><div class="sender">' + sender + '</div><div class="text">' + m.text + '</div><div class="time">' + m.time + '</div></div>';
+  });
+  detail.innerHTML = html;
+  detail.style.display = 'block';
+  detail.scrollIntoView({ behavior: 'smooth' });
+}
+
+function clearAll() {
+  if (confirm('모든 상담 기록을 삭제하시겠습니까?')) {
+    localStorage.removeItem('dchoi09_calls');
+    load();
+    document.getElementById('detail').style.display = 'none';
+  }
+}
+
+load();
+</script>
+</body>
+</html>
