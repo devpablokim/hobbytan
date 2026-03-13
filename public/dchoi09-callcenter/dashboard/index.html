@@ -120,7 +120,7 @@ function load() {
     const dateStr = d.getMonth()+1 + '/' + d.getDate() + ' ' + d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
     const statusBadge = c.status === 'resolved' 
       ? '<span class="badge badge-green">AI 해결</span>' 
-      : '<span class="badge badge-amber">상담원</span>';
+      : '<span class="badge badge-amber">Monica 연결</span>';
     html += '<tr onclick="showDetail(' + i + ')"><td style="font-family:monospace;font-size:11px;color:#525252">' + c.id + '</td><td>' + dateStr + '</td><td>' + c.messages.length + '건</td><td>' + (c.duration || '-') + '</td><td>' + statusBadge + '</td></tr>';
   });
   html += '</tbody></table>';
@@ -133,7 +133,7 @@ function showDetail(idx) {
   if (!c) return;
   
   const detail = document.getElementById('detail');
-  let html = '<h4>' + c.id + ' — ' + new Date(c.date).toLocaleString('ko-KR') + ' (' + (c.duration || 0) + '초)</h4>';
+  let html = '<h4>' + c.id + ' — ' + new Date(c.date).toLocaleString('ko-KR') + ' (' + (c.duration || 0) + '초)' + (c.escalatedTo ? ' | 🔔 ' + c.escalatedTo : '') + '</h4>';
   c.messages.forEach(m => {
     const cls = m.role === 'agent' ? 'bot' : 'user';
     const sender = m.role === 'agent' ? '👩‍💼 상담원' : '👤 고객';

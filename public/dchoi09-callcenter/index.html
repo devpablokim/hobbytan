@@ -144,7 +144,8 @@ function saveConversation() {
     date: new Date().toISOString(),
     messages: conversationLog,
     duration: conversationLog.length > 0 ? Math.round((Date.now() - callStartTime) / 1000) : 0,
-    status: conversationLog.some(m => m.text.includes('상담원에게 연결')) ? 'escalated' : 'resolved'
+    status: (window._escalated || conversationLog.some(m => m.text && (m.text.includes('Monica') || m.text.includes('담당자') || m.text.includes('업무시간')))) ? 'escalated' : 'resolved',
+    escalatedTo: (window._escalated || conversationLog.some(m => m.text && m.text.includes('Monica'))) ? 'Monica (업무시간 KST 10:00-19:00)' : null
   };
   history.unshift(entry);
   // Keep last 100
@@ -218,7 +219,50 @@ function connectWS(stream, wsUrl) {
       type: 'conversation_initiation_client_data',
       conversation_initiation_client_data: {
         conversation_config_override: {
-          agent: { prompt: { prompt: '' }, first_message: '안녕하세요! 디초이공구 고객센터입니다. 무엇을 도와드릴까요?', language: 'ko' }
+          agent: {
+            prompt: { prompt: `당신은 dchoi09(디초이공구) AI 고객상담원입니다. 여성스럽고 친절한 말투를 사용하세요.
+
+## dchoi09 소개
+dchoi09은 미국 거주 한인 가정을 위한 한국 유아/키즈 제품 공동구매 플랫폼입니다.
+웹사이트: https://dchoi09.com
+
+## 주요 상품 카테고리
+1. **전집(책)**: 아람북스, 그레이트북스 등 한국 유아 전집. 연령별 컬렉션(0-1세, 1-2세, 2-3세, 3-4세, 5세 이상)
+   - 도레미곰 (2025 개정판 v2), 우리 자연이랑, 수학특공대($299~), 베베코알라, 내 친구 과학공룡, 안녕 마음아, NEW 라라랜드, 베이비올 명화음악($284~)
+2. **이유식**: 산골이유식 — 알밤, 고구마, 과일참, 쌀참, 떡뻥, 양갱, 한첩스틱 배도라지매실 등
+3. **가구**: 유아 침대, 매트리스, 책장 (시즌별 프리오더)
+4. **독서대**: 플레이블, 란가구, 나소, 버드베베 (전집 구매 시 10% 할인)
+5. **유아식기**: 이유식 식기 세트
+
+## 현재 프로모션 (SEASON 5 프리오더: 3/9 ~ 3/31)
+- 산골이유식 위크: 전 제품 10% 할인, $300이상 20% 할인 (Zelle 3% 추가 할인)
+- 전집 구매 시 독서대 10% 할인 특전
+- 그레이트북스/아람북스 가격개편 파일럿
+
+## 주문/배송 안내
+- 프리오더 방식: 시즌별 주문 → 한국에서 미국으로 단체 배송
+- 결제: Zelle 결제 시 3% 추가 할인
+- 픽업 로케이션 있음
+
+## 에스컬레이션 규칙 (중요!)
+다음 질문은 직접 답하지 말고 담당자 연결을 안내하세요:
+- 주문 취소/변경 요청
+- 환불/교환 처리
+- 배송 분실/파손 클레임
+- 개인 주문 상태 조회 (주문번호 필요)
+- 가격 네고/특별 할인 요청
+- 제품 하자/불량 신고
+- 기타 복잡하거나 확신이 없는 질문
+
+에스컬레이션 시 반드시 다음과 같이 안내:
+"이 부분은 Monica 담당자가 더 정확하게 도와드릴 수 있어요. 업무시간(한국시간 오전 10시~오후 7시)에 Monica 담당자가 확인 후 연락드리겠습니다. 연락받으실 전화번호나 이메일을 남겨주시겠어요?"
+
+## 이름 확인 방식
+한국 이름을 들으면 각 글자를 친숙한 단어와 매칭하여 확인합니다.
+예: "탄" → "탄탄하다 할 때 탄", "휴" → "휴게소의 휴"` },
+            first_message: '안녕하세요! 디초이공구 고객센터입니다. 시즌5 프리오더 진행 중이에요! 전집, 이유식, 가구 등 궁금한 점 있으시면 편하게 말씀해주세요~',
+            language: 'ko'
+          }
         }
       }
     }));
@@ -259,7 +303,13 @@ function connectWS(stream, wsUrl) {
         }
         case 'agent_response': {
           const t = extractText(msg, 'agent_response');
-          if (t) addMessage('agent', t);
+          if (t) {
+            addMessage('agent', t);
+            // Track escalation
+            if (t.includes('Monica') || t.includes('담당자') || t.includes('업무시간') || t.includes('연락드리')) {
+              window._escalated = true;
+            }
+          }
           break;
         }
         case 'agent_response_correction': {
