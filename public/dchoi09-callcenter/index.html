@@ -364,6 +364,11 @@ dchoi09은 미국 거주 한인 가정을 위한 한국 유아/키즈 제품 공
           if (t) { addMessage('user', t); extractFromUserMsg(t); }
           break;
         }
+        case 'user_transcript_event': {
+          const t = (msg.user_transcript_event && msg.user_transcript_event.user_transcript) || extractText(msg, 'user_transcript');
+          if (t) { addMessage('user', t); extractFromUserMsg(t); }
+          break;
+        }
         case 'agent_response': {
           const t = extractText(msg, 'agent_response');
           if (t) {
