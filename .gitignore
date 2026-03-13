@@ -41,3 +41,4 @@ hobbytan-council-open/
 .next/
 test-build/node_modules/
 .env.local
+config.js
