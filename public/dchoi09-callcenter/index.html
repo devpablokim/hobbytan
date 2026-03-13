@@ -135,6 +135,35 @@ function extractText(msg, ...keys) {
   return null;
 }
 
+// Customer info tracking
+window._customerName = '';
+window._customerPhone = '';
+window._escalated = false;
+
+function extractCustomerInfo(text) {
+  // Extract phone numbers (Korean format: 010-XXXX-XXXX or 01012345678)
+  const phoneMatch = text.match(/(\d{2,3}[-.\s]?\d{3,4}[-.\s]?\d{4})/);
+  if (phoneMatch) window._customerPhone = phoneMatch[1];
+  // Extract name patterns like "김탄휴" after confirmation
+  const namePatterns = [/성함[은이가]?\s*(.{2,4})\s*(님|이시|맞으)/,
+    /(.{2,4})\s*님\s*(맞으시|이시|확인)/,
+    /이름[은이가]?\s*(.{2,4})/];
+  for (const p of namePatterns) {
+    const m = text.match(p);
+    if (m) { window._customerName = m[1]; break; }
+  }
+}
+
+// Also extract from user messages
+function extractFromUserMsg(text) {
+  if (!text) return;
+  const phoneMatch = text.match(/(\d{2,3}[-.\s]?\d{3,4}[-.\s]?\d{4})/);
+  if (phoneMatch) window._customerPhone = phoneMatch[1];
+  // Simple Korean name (2-4 chars after common patterns)
+  const nameMatch = text.match(/(?:저는|제\s*이름은?|성함은?)\s*(.{2,4})(?:입니다|이에요|예요|이요)/);
+  if (nameMatch) window._customerName = nameMatch[1];
+}
+
 // Save conversation to localStorage for dashboard
 function saveConversation() {
   if (conversationLog.length === 0) return;
@@ -145,7 +174,9 @@ function saveConversation() {
     messages: conversationLog,
     duration: conversationLog.length > 0 ? Math.round((Date.now() - callStartTime) / 1000) : 0,
     status: (window._escalated || conversationLog.some(m => m.text && (m.text.includes('Monica') || m.text.includes('담당자') || m.text.includes('업무시간')))) ? 'escalated' : 'resolved',
-    escalatedTo: (window._escalated || conversationLog.some(m => m.text && m.text.includes('Monica'))) ? 'Monica (업무시간 KST 10:00-19:00)' : null
+    escalatedTo: (window._escalated || conversationLog.some(m => m.text && m.text.includes('Monica'))) ? 'Monica (업무시간 KST 10:00-19:00)' : null,
+    customerName: window._customerName || null,
+    customerPhone: window._customerPhone || null
   };
   history.unshift(entry);
   // Keep last 100
@@ -330,7 +361,7 @@ dchoi09은 미국 거주 한인 가정을 위한 한국 유아/키즈 제품 공
         case 'conversation_initiation_metadata': break;
         case 'user_transcript': {
           const t = extractText(msg, 'user_transcript');
-          if (t) addMessage('user', t);
+          if (t) { addMessage('user', t); extractFromUserMsg(t); }
           break;
         }
         case 'agent_response': {
@@ -341,6 +372,8 @@ dchoi09은 미국 거주 한인 가정을 위한 한국 유아/키즈 제품 공
             if (t.includes('Monica') || t.includes('담당자') || t.includes('업무시간') || t.includes('연락드리')) {
               window._escalated = true;
             }
+            // Extract customer info from agent confirmation messages
+            extractCustomerInfo(t);
           }
           break;
         }
