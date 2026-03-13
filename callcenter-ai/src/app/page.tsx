@@ -19,6 +19,17 @@ export default function CallCenterPage() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // P1-1 fix: useRef for isMuted so onaudioprocess always reads current value
+  const isMutedRef = useRef(false);
+  const callStateRef = useRef<CallState>('idle');
+
+  useEffect(() => {
+    isMutedRef.current = isMuted;
+  }, [isMuted]);
+
+  useEffect(() => {
+    callStateRef.current = callState;
+  }, [callState]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -30,26 +41,58 @@ export default function CallCenterPage() {
     setMessages([]);
 
     try {
-      // Request microphone access
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaStreamRef.current = stream;
 
-      // Get signed URL from our API
       const res = await fetch('/callcenter-ai/api/conversation', { method: 'POST' });
       if (!res.ok) throw new Error('Failed to start conversation');
       const { signedUrl } = await res.json();
 
-      // Connect WebSocket to ElevenLabs
       const ws = new WebSocket(signedUrl);
       wsRef.current = ws;
 
       const audioContext = new AudioContext({ sampleRate: 16000 });
       audioContextRef.current = audioContext;
 
+      // Audio playback queue for agent responses
+      const audioQueue: ArrayBuffer[] = [];
+      let isPlaying = false;
+
+      const playNextInQueue = async () => {
+        if (isPlaying || audioQueue.length === 0) return;
+        isPlaying = true;
+        const buffer = audioQueue.shift()!;
+        try {
+          // P1-7 fix: handle both encoded audio and raw PCM
+          let audioBuffer: AudioBuffer;
+          try {
+            audioBuffer = await audioContext.decodeAudioData(buffer.slice(0));
+          } catch {
+            // If decodeAudioData fails, treat as raw 16-bit PCM mono @ 16kHz
+            const pcm16 = new Int16Array(buffer);
+            audioBuffer = audioContext.createBuffer(1, pcm16.length, 16000);
+            const channel = audioBuffer.getChannelData(0);
+            for (let i = 0; i < pcm16.length; i++) {
+              channel[i] = pcm16[i] / 32768;
+            }
+          }
+          const source = audioContext.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(audioContext.destination);
+          source.onended = () => {
+            isPlaying = false;
+            playNextInQueue();
+          };
+          source.start(0);
+        } catch {
+          isPlaying = false;
+          playNextInQueue();
+        }
+      };
+
       ws.onopen = () => {
         setCallState('connected');
 
-        // Send audio from microphone
         const source = audioContext.createMediaStreamSource(stream);
         const processor = audioContext.createScriptProcessor(4096, 1, 1);
 
@@ -57,7 +100,8 @@ export default function CallCenterPage() {
         processor.connect(audioContext.destination);
 
         processor.onaudioprocess = (e) => {
-          if (ws.readyState === WebSocket.OPEN && !isMuted) {
+          // P1-1 fix: read from ref, not closure
+          if (ws.readyState === WebSocket.OPEN && !isMutedRef.current) {
             const inputData = e.inputBuffer.getChannelData(0);
             const pcm16 = new Int16Array(inputData.length);
             for (let i = 0; i < inputData.length; i++) {
@@ -79,9 +123,15 @@ export default function CallCenterPage() {
             { role: data.role, text: data.text, timestamp: Date.now() },
           ]);
         }
-        if (data.type === 'audio') {
-          // Play agent audio
-          playAudio(data.audio, audioContext);
+        if (data.type === 'audio' && data.audio) {
+          // P1-7 fix: queue audio buffers for sequential playback
+          const binaryStr = atob(data.audio);
+          const bytes = new Uint8Array(binaryStr.length);
+          for (let i = 0; i < binaryStr.length; i++) {
+            bytes[i] = binaryStr.charCodeAt(i);
+          }
+          audioQueue.push(bytes.buffer);
+          playNextInQueue();
         }
       };
 
@@ -91,13 +141,14 @@ export default function CallCenterPage() {
       };
 
       ws.onclose = () => {
-        if (callState === 'connected') setCallState('ended');
+        // P1-1 fix: read from ref
+        if (callStateRef.current === 'connected') setCallState('ended');
       };
     } catch (err) {
       setError(err instanceof Error ? err.message : '통화 시작에 실패했습니다.');
       setCallState('error');
     }
-  }, [callState, isMuted]);
+  }, []);
 
   const endCall = useCallback(() => {
     wsRef.current?.close();
@@ -108,7 +159,6 @@ export default function CallCenterPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      {/* Header */}
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
           🤖 HOBBYTAN AI 콜센터
@@ -116,9 +166,7 @@ export default function CallCenterPage() {
         <p className="text-gray-400 mt-2">ElevenLabs Conversational AI 기반 자동 응대 시스템</p>
       </div>
 
-      {/* Call UI */}
       <div className="w-full max-w-lg bg-slate-800 rounded-2xl shadow-2xl overflow-hidden">
-        {/* Status Bar */}
         <div className={`px-4 py-3 text-center text-sm font-medium ${
           callState === 'connected' ? 'bg-green-600' :
           callState === 'connecting' ? 'bg-yellow-600' :
@@ -132,7 +180,6 @@ export default function CallCenterPage() {
           {callState === 'error' && `❌ ${error}`}
         </div>
 
-        {/* Transcript */}
         <div className="h-80 overflow-y-auto p-4 space-y-3">
           {messages.length === 0 && callState === 'idle' && (
             <div className="text-center text-gray-500 mt-20">
@@ -155,7 +202,6 @@ export default function CallCenterPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Controls */}
         <div className="px-4 py-4 bg-slate-900 flex items-center justify-center gap-4">
           {callState === 'idle' || callState === 'ended' || callState === 'error' ? (
             <button
@@ -183,28 +229,10 @@ export default function CallCenterPage() {
         </div>
       </div>
 
-      {/* Info */}
       <div className="mt-6 text-center text-gray-500 text-sm max-w-md">
         <p>🔒 브라우저 마이크 권한이 필요합니다</p>
         <p className="mt-1">ElevenLabs Conversational AI + Twilio 연동</p>
       </div>
     </div>
   );
-}
-
-async function playAudio(base64Audio: string, audioContext: AudioContext) {
-  try {
-    const binaryStr = atob(base64Audio);
-    const bytes = new Uint8Array(binaryStr.length);
-    for (let i = 0; i < binaryStr.length; i++) {
-      bytes[i] = binaryStr.charCodeAt(i);
-    }
-    const audioBuffer = await audioContext.decodeAudioData(bytes.buffer);
-    const source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
-    source.start(0);
-  } catch {
-    // Audio decode error — skip
-  }
 }

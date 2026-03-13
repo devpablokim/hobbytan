@@ -42,7 +42,7 @@ export class ElevenLabsClient {
             language: config.language,
           },
           tts: {
-            voice_id: config.voiceId || 'pNInz6obpgDQGcFmaJgB', // Default Korean-friendly voice
+            voice_id: config.voiceId || process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB',
           },
         },
         name: config.name,
