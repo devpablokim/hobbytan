@@ -266,7 +266,16 @@ function connectWS(url) {
         case 'agent_response': {
           showTyping(false);
           const t = extractText(msg, 'agent_response');
-          if (t) addMsg('agent', t);
+          if (t) {
+            // If streaming already rendered this response, update last bubble instead of adding new
+            if (window._streamingText) {
+              const bs = document.querySelectorAll('.msg.bot .bubble');
+              if (bs.length) bs[bs.length - 1].textContent = t;
+              window._streamingText = '';
+            } else {
+              addMsg('agent', t);
+            }
+          }
           break;
         }
         case 'agent_response_correction': {
@@ -306,7 +315,7 @@ function connectWS(url) {
             const bs = document.querySelectorAll('.msg.bot .bubble');
             if (bs.length) bs[bs.length - 1].textContent = window._streamingText;
           } else if (part.type === 'stop') {
-            // Final text already set via delta
+            // Keep _streamingText set so agent_response knows to update instead of add
           }
           break;
         }
