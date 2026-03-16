@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dchoi09 AI 고객센터 — 기능 소개</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0a; color: #e5e5e5; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.7; }
+  .container { max-width: 960px; margin: 0 auto; padding: 60px 32px; }
+  .accent-bar { height: 2px; background: linear-gradient(to right, transparent, #ec4899, transparent); margin-bottom: 60px; }
+
+  .header { text-align: center; margin-bottom: 80px; padding: 60px 0; border-bottom: 1px solid #262626; }
+  .header .tag { display: inline-block; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #ec4899; border: 1px solid rgba(236,72,153,0.3); padding: 4px 16px; margin-bottom: 24px; }
+  .header h1 { font-size: 36px; font-weight: 700; color: #fff; margin-bottom: 16px; line-height: 1.3; }
+  .header .subtitle { font-size: 18px; color: #737373; }
+  .header .meta { font-size: 12px; color: #525252; margin-top: 24px; }
+
+  .section { margin-bottom: 64px; }
+  .section-number { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #ec4899; margin-bottom: 8px; }
+  .section h2 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #1a1a1a; }
+  .section h3 { font-size: 18px; font-weight: 600; color: #fff; margin: 32px 0 12px; }
+  .section p { color: #a3a3a3; margin-bottom: 16px; }
+
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 24px 0; }
+  @media (max-width: 768px) { .card-grid { grid-template-columns: 1fr; } }
+  .card { border: 1px solid #262626; background: #111; padding: 24px; }
+  .card .icon { font-size: 32px; margin-bottom: 12px; }
+  .card h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+  .card p { font-size: 13px; color: #737373; margin: 0; }
+  .card.pink { border-color: rgba(236,72,153,0.3); }
+  .card.blue { border-color: rgba(59,130,246,0.3); }
+  .card.emerald { border-color: rgba(16,185,129,0.3); }
+  .card.amber { border-color: rgba(245,158,11,0.3); }
+
+  .feature-list { list-style: none; padding: 0; }
+  .feature-list li { padding: 10px 0; padding-left: 28px; position: relative; color: #a3a3a3; font-size: 14px; border-bottom: 1px solid #1a1a1a; }
+  .feature-list li::before { content: "→"; position: absolute; left: 0; color: #ec4899; font-weight: 700; }
+
+  .flow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 24px 0; }
+  .flow-step { background: #111; border: 1px solid #262626; padding: 12px 20px; font-size: 13px; color: #e5e5e5; }
+  .flow-arrow { color: #ec4899; font-size: 18px; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0; }
+  @media (max-width: 640px) { .stats { grid-template-columns: 1fr 1fr; } }
+  .stat { border: 1px solid #262626; background: #111; padding: 20px; text-align: center; }
+  .stat .number { font-size: 28px; font-weight: 700; color: #ec4899; }
+  .stat .label { font-size: 12px; color: #737373; margin-top: 4px; }
+
+  .url-box { background: #111; border: 1px solid rgba(236,72,153,0.3); padding: 16px 20px; margin: 8px 0; font-size: 13px; }
+  .url-box .label { color: #737373; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .url-box .url { color: #ec4899; font-weight: 500; margin-top: 4px; }
+
+  .divider { height: 1px; background: linear-gradient(to right, transparent, #262626, transparent); margin: 48px 0; }
+
+  .footer { text-align: center; padding-top: 40px; border-top: 1px solid #262626; margin-top: 80px; }
+  .footer p { font-size: 11px; color: #404040; }
+
+  .highlight-box { border: 1px solid rgba(236,72,153,0.4); padding: 32px; text-align: center; margin: 24px 0; }
+  .highlight-box p.main { font-size: 20px; color: #fff; font-weight: 600; margin-bottom: 12px; }
+  .highlight-box p.sub { font-size: 14px; color: #ec4899; margin: 0; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="accent-bar"></div>
+<div class="container">
+
+<!-- SLIDE 1: 표지 -->
+<div class="header">
+  <div class="tag">AI Customer Center</div>
+  <h1>dchoi09 AI 고객센터</h1>
+  <div class="subtitle">AI 음성 + 텍스트 통합 상담 솔루션</div>
+  <div class="meta">HOBBYTAN AI | 2026.03</div>
+</div>
+
+<!-- SLIDE 2: 서비스 개요 -->
+<div class="section">
+  <div class="section-number">01</div>
+  <h2>서비스 개요 — 24시간 AI 상담</h2>
+  <div class="card-grid">
+    <div class="card pink">
+      <div class="icon">🎤</div>
+      <h4>음성 상담</h4>
+      <p>AI가 전화를 받아 자연스러운 음성으로 대화합니다. 제품 안내, 프로모션, 추천까지 자동 처리.</p>
+    </div>
+    <div class="card pink">
+      <div class="icon">💬</div>
+      <h4>텍스트 상담</h4>
+      <p>채팅으로 빠르고 정확한 안내. 음성 안내가 필요하면 버튼 하나로 전환.</p>
+    </div>
+    <div class="card pink">
+      <div class="icon">📊</div>
+      <h4>관리 대시보드</h4>
+      <p>모든 상담 기록을 한눈에. 고객 정보, 상담 유형, 에스컬레이션 현황 실시간 확인.</p>
+    </div>
+  </div>
+  <p><strong>핵심 원리:</strong> 정해진 룰에 해당하는 질문은 AI가 즉시 응답 (80%+ 처리). 복잡하거나 룰에 없는 건은 담당자에게 즉시 연결합니다.</p>
+</div>
+
+<div class="divider"></div>
+
+<!-- SLIDE 3: 음성 상담 -->
+<div class="section">
+  <div class="section-number">02</div>
+  <h2>음성 상담 — AI가 전화를 받습니다</h2>
+  <ul class="feature-list">
+    <li>ElevenLabs Conversational AI 기반 — 자연스러운 한국어 음성 대화</li>
+    <li>제품 카탈로그 자동 안내 (제품명, 가격, 특징, 성분)</li>
+    <li>진행 중인 프로모션 자동 안내</li>
+    <li>고객 연령에 따른 맞춤 제품 추천</li>
+    <li>실시간 트랜스크립트 — 대화 내용이 화면에 실시간 표시</li>
+    <li>룰에 없는 질문 → "담당자 Monica에게 연결해 드리겠습니다"</li>
+  </ul>
+  <div class="url-box">
+    <div class="label">음성 상담 URL</div>
+    <div class="url">hobbytan-ai.web.app/dchoi09-callcenter/</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SLIDE 4: 텍스트 상담 -->
+<div class="section">
+  <div class="section-number">03</div>
+  <h2>텍스트 상담 — 채팅 + 음성 토글</h2>
+  <div class="two-col">
+    <div>
+      <h3>인테이크 폼</h3>
+      <p>상담 시작 전 4가지 정보를 수집하여 개인화된 상담을 제공합니다:</p>
+      <ul class="feature-list">
+        <li>성함 (필수) — "ㅇㅇㅇ 고객님"으로 호칭</li>
+        <li>전화번호 (필수)</li>
+        <li>이메일 (필수)</li>
+        <li>거주 지역 (선택) — 미국 거주 시 입력</li>
+      </ul>
+    </div>
+    <div>
+      <h3>채팅 기능</h3>
+      <ul class="feature-list">
+        <li>텍스트 입력 → AI 즉시 응답</li>
+        <li>🔊 음성 안내 토글 — AI 답변을 음성으로 읽어줌</li>
+        <li>대화 기록 자동 저장</li>
+        <li>이전 상담 이력 확인 가능</li>
+      </ul>
+    </div>
+  </div>
+  <div class="url-box">
+    <div class="label">텍스트 상담 URL</div>
+    <div class="url">hobbytan-ai.web.app/dchoi09-callcenter/chat/</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SLIDE 5: 개인화 -->
+<div class="section">
+  <div class="section-number">04</div>
+  <h2>개인화 상담 — 이름을 불러주는 AI</h2>
+  <div class="highlight-box">
+    <p class="main">"김철수 고객님, 무엇을 도와드릴까요?"</p>
+    <p class="sub">인테이크 폼에서 입력한 이름으로 자연스럽게 호칭합니다</p>
+  </div>
+  <ul class="feature-list">
+    <li>폼 입력 → AI 프롬프트에 고객 이름 자동 주입</li>
+    <li>대화 전체에서 "ㅇㅇㅇ 고객님" 형태로 일관된 호칭</li>
+    <li>수집된 고객 정보(이름, 연락처, 이메일, 지역)는 대시보드에 자동 기록</li>
+    <li>재방문 시 상담 이력과 고객 정보 즉시 확인 가능</li>
+  </ul>
+</div>
+
+<div class="divider"></div>
+
+<!-- SLIDE 6: 연령별 추천 -->
+<div class="section">
+  <div class="section-number">05</div>
+  <h2>연령별 맞춤 제품 추천</h2>
+  <div class="card-grid">
+    <div class="card blue">
+      <div class="icon">🧑</div>
+      <h4>10대~20대</h4>
+      <p>입문용 제품, 가벼운 텍스처, 합리적 가격대 중심 추천</p>
+    </div>
+    <div class="card emerald">
+      <div class="icon">👩</div>
+      <h4>30대~40대</h4>
+      <p>안티에이징 + 기능성 제품, 성분 기반 맞춤 추천</p>
+    </div>
+    <div class="card amber">
+      <div class="icon">👵</div>
+      <h4>50대 이상</h4>
+      <p>고보습, 민감 피부 라인, 순한 성분 중심 추천</p>
+    </div>
+  </div>
+  <p>AI가 대화 중 고객의 연령대를 자연스럽게 파악하여 가장 적합한 제품을 추천합니다. 진행 중인 프로모션 제품은 우선적으로 안내합니다.</p>
+</div>
+
+<div class="divider"></div>
+
+<!-- SLIDE 7: 에스컬레이션 -->
+<div class="section">
+  <div class="section-number">06</div>
+  <h2>에스컬레이션 — AI가 못 답하면, 사람이 답합니다</h2>
+  <div class="flow">
+    <div class="flow-step">고객 질문</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">룰 매칭</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">자동 응답 (80%+)</div>
+  </div>
+  <div class="flow">
+    <div class="flow-step">룰 외 질문 감지</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">"Monica 담당자 연결"</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">상담 기록 전달</div>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="number">6</div>
+      <div class="label">응답 룰</div>
+    </div>
+    <div class="stat">
+      <div class="number">16</div>
+      <div class="label">에스컬레이션 트리거</div>
+    </div>
+    <div class="stat">
+      <div class="number">80%+</div>
+      <div class="label">자동 처리율 목표</div>
+    </div>
+    <div class="stat">
+      <div class="number">24/7</div>
+      <div class="label">운영 시간</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SLIDE 8: 대시보드 -->
+<div class="section">
+  <div class="section-number">07</div>
+  <h2>관리 대시보드 — 모든 상담을 한눈에</h2>
+  <ul class="feature-list">
+    <li>💬 텍스트 / 🎤 음성 상담 유형 구분 표시</li>
+    <li>고객 정보: 이름, 이메일, 전화번호, 거주 지역</li>
+    <li>상담 일시, 소요 시간, 상담 내용 요약</li>
+    <li>에스컬레이션 건 별도 표시 및 추적</li>
+    <li>날짜별, 유형별, 상태별 필터 + 검색</li>
+    <li>상담 통계: 일별/주별 상담 건수, 처리율, 평균 소요 시간</li>
+  </ul>
+  <div class="url-box">
+    <div class="label">대시보드 URL</div>
+    <div class="url">hobbytan-ai.web.app/dchoi09-callcenter/dashboard/</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SLIDE 9: 기술 스택 -->
+<div class="section">
+  <div class="section-number">08</div>
+  <h2>기술 스택</h2>
+  <div class="two-col">
+    <div class="card" style="border-color: rgba(236,72,153,0.3);">
+      <h4>AI & 음성</h4>
+      <ul class="feature-list">
+        <li>ElevenLabs Conversational AI</li>
+        <li>ElevenLabs TTS (자연어 음성 합성)</li>
+        <li>WebSocket 실시간 스트리밍</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color: rgba(59,130,246,0.3);">
+      <h4>인프라 & 보안</h4>
+      <ul class="feature-list">
+        <li>Firebase Hosting (글로벌 CDN)</li>
+        <li>Cloud Functions (서버사이드)</li>
+        <li>API 키 서버사이드 처리 — 노출 없음</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SLIDE 10: 로드맵 -->
+<div class="section">
+  <div class="section-number">09</div>
+  <h2>확장 로드맵</h2>
+  <ul class="feature-list">
+    <li><strong>Phase 2:</strong> Twilio 연동 — 실제 전화번호로 수신. 고객이 전화를 걸면 AI가 직접 응답</li>
+    <li><strong>Phase 3:</strong> 상담 데이터 분석 — FAQ 자동 생성, 응답률 최적화, 트렌드 리포트</li>
+    <li><strong>Phase 4:</strong> 다국어 지원 — 영어/한국어 자동 전환, 고객 언어 감지</li>
+    <li><strong>Phase 5:</strong> CRM 연동 — 고객 이력 통합 관리, 구매 내역 기반 추천</li>
+  </ul>
+</div>
+
+<div class="divider"></div>
+
+<!-- SLIDE 11: 마무리 -->
+<div class="section">
+  <div class="highlight-box">
+    <p class="main">"AI가 일하는 고객센터"</p>
+    <p class="sub">24시간, 놓치는 전화 없이, 모든 고객에게 응답합니다</p>
+  </div>
+  <div class="url-box">
+    <div class="label">🎤 음성 상담</div>
+    <div class="url">hobbytan-ai.web.app/dchoi09-callcenter/</div>
+  </div>
+  <div class="url-box">
+    <div class="label">💬 텍스트 상담</div>
+    <div class="url">hobbytan-ai.web.app/dchoi09-callcenter/chat/</div>
+  </div>
+  <div class="url-box">
+    <div class="label">📊 대시보드</div>
+    <div class="url">hobbytan-ai.web.app/dchoi09-callcenter/dashboard/</div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>HOBBYTAN AI | dchoi09 AI 고객센터 | 2026.03</p>
+  <p style="margin-top: 8px;">Prepared by PM-TAN ⏱️ | HOBBYTAN-COUNCIL</p>
+</div>
+
+</div>
+</body>
+</html>
