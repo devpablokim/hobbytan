@@ -82,9 +82,10 @@ export async function POST(request: NextRequest) {
 
     // Bulk import: { rules: QARule[] }
     if (body.rules && Array.isArray(body.rules)) {
-      const batch = db.batch();
       let count = 0;
       const rules = body.rules as QARule[];
+      let batch = db.batch();
+      let batchCount = 0;
 
       for (const rule of rules) {
         const ref = db.collection(COLLECTION).doc();
@@ -101,12 +102,15 @@ export async function POST(request: NextRequest) {
           updated_at: new Date().toISOString(),
         });
         count++;
-        // Firestore batch limit = 500
-        if (count % 500 === 0) {
+        batchCount++;
+        // Firestore batch limit = 500, create new batch
+        if (batchCount === 500) {
           await batch.commit();
+          batch = db.batch();
+          batchCount = 0;
         }
       }
-      if (count % 500 !== 0) {
+      if (batchCount > 0) {
         await batch.commit();
       }
 
