@@ -190,13 +190,47 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// DELETE: Q&A 비활성화 (soft delete)
+// DELETE: Q&A 삭제
+// ?id=xxx → 단건 soft delete
+// ?hard=true&before=ISO_DATE → 해당 시각 이전 문서 hard delete (v1 정리용)
 export async function DELETE(request: NextRequest) {
   try {
     const db = getFirebaseAdmin();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
+    const hard = searchParams.get("hard") === "true";
+    const before = searchParams.get("before");
 
+    // Bulk hard delete by created_at
+    if (hard && before) {
+      const snapshot = await db
+        .collection(COLLECTION)
+        .where("created_at", "<", before)
+        .limit(500)
+        .get();
+
+      if (snapshot.empty) {
+        return NextResponse.json({ deleted: 0, remaining: 0 });
+      }
+
+      const batch = db.batch();
+      snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+      await batch.commit();
+
+      // Check if more remain
+      const remaining = await db
+        .collection(COLLECTION)
+        .where("created_at", "<", before)
+        .limit(1)
+        .get();
+
+      return NextResponse.json({
+        deleted: snapshot.size,
+        remaining: remaining.size,
+      });
+    }
+
+    // Single soft delete
     if (!id) {
       return NextResponse.json({ error: "id is required" }, { status: 400 });
     }
