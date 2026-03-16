@@ -326,18 +326,46 @@ function connectWS(url) {
   };
 }
 
-function sendMessage() {
+async function sendMessage() {
   const input = document.getElementById('userInput');
   const text = input.value.trim();
   if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
 
   addMsg('user', text);
   showTyping(true);
-  // ElevenLabs ConvAI text message protocol (from official SDK)
-  ws.send(JSON.stringify({ type: 'user_message', text: text }));
-
   input.value = '';
   input.style.height = 'auto';
+
+  // RAG: Search Q&A database for relevant answers
+  try {
+    const searchRes = await fetch('/api/dchoi09/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: text, limit: 3 }),
+    });
+    if (searchRes.ok) {
+      const searchData = await searchRes.json();
+      if (searchData.matched && searchData.results.length > 0) {
+        // Send contextual update with RAG results
+        const context = searchData.results.map(r =>
+          '질문: ' + r.question + '\n답변: ' + r.answer
+        ).join('\n---\n');
+        ws.send(JSON.stringify({
+          type: 'contextual_update',
+          text: '다음은 고객 질문과 관련된 기존 Q&A 데이터입니다. 이 정보를 참고하여 답변하세요. 정보가 부족하면 Monica 담당자 연결을 안내하세요.\n\n' + context,
+        }));
+      } else if (searchData.escalate) {
+        // No match — send escalation hint
+        ws.send(JSON.stringify({
+          type: 'contextual_update',
+          text: '이 질문에 대한 기존 Q&A 데이터가 없습니다. 확실한 정보가 없으면 Monica 담당자에게 연결을 안내하세요.',
+        }));
+      }
+    }
+  } catch(e) { /* RAG search failed, proceed without context */ }
+
+  // Send user message to ElevenLabs
+  ws.send(JSON.stringify({ type: 'user_message', text: text }));
 }
 
 function handleKey(e) {
