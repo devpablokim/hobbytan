@@ -239,11 +239,12 @@ function connectWS(url) {
 
   ws.onopen = () => {
     setStatus('online', '상담 연결됨');
-    // Send conversation init with customer context
+    // Send conversation init with text-only mode + customer context
     ws.send(JSON.stringify({
       type: 'conversation_initiation_client_data',
       conversation_initiation_client_data: {
         conversation_config_override: {
+          conversation: { text_only: true },
           agent: {
             prompt: {
               prompt: "현재 상담 중인 고객 정보:\n- 성함: " + customer.name + "\n- 전화번호: " + customer.phone + "\n- 이메일: " + customer.email + (customer.region ? "\n- 거주지역: " + customer.region : "") + "\n\n이 고객을 '" + customer.name + " 고객님'으로 호칭하세요. 첫 인사에 고객 이름을 포함하세요."
@@ -293,6 +294,22 @@ function connectWS(url) {
           }
           break;
         }
+        case 'agent_chat_response_part': {
+          // Streaming text response in text-only mode
+          const part = msg.text_response_part || msg.agent_chat_response_part_event || {};
+          if (part.type === 'start') {
+            showTyping(false);
+            window._streamingText = '';
+            addMsg('agent', '');
+          } else if (part.type === 'delta' && part.text) {
+            window._streamingText = (window._streamingText || '') + part.text;
+            const bs = document.querySelectorAll('.msg.bot .bubble');
+            if (bs.length) bs[bs.length - 1].textContent = window._streamingText;
+          } else if (part.type === 'stop') {
+            // Final text already set via delta
+          }
+          break;
+        }
         case 'interruption': audioQueue = []; isPlaying = false; break;
         case 'ping': ws.send(JSON.stringify({ type: 'pong', event_id: msg.ping_event?.event_id || msg.event_id })); break;
       }
@@ -316,9 +333,8 @@ function sendMessage() {
 
   addMsg('user', text);
   showTyping(true);
-  ws.send(JSON.stringify({ user_audio_chunk: '' })); // Signal end of "turn"
-  // Send text message
-  ws.send(JSON.stringify({ type: 'user_message', user_message: { text: text } }));
+  // ElevenLabs ConvAI text message protocol (from official SDK)
+  ws.send(JSON.stringify({ type: 'user_message', text: text }));
 
   input.value = '';
   input.style.height = 'auto';
