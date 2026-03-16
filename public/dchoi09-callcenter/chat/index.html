@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dchoi09 AI 텍스트 상담</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#e5e5e5;font-family:'Pretendard',-apple-system,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.container{width:100%;max-width:520px;padding:24px}
+.phone{border:1px solid #262626;background:#111;overflow:hidden;display:flex;flex-direction:column;height:90vh;max-height:740px}
+.phone-header{background:linear-gradient(135deg,#1a0a2e 0%,#0d0d0d 100%);padding:16px 20px;border-bottom:1px solid #262626;text-align:center;flex-shrink:0}
+.phone-header .brand{font-size:10px;color:#f472b6;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.phone-header h1{font-size:15px;color:#fff;font-weight:700}
+.phone-header p{font-size:11px;color:#737373;margin-top:3px}
+.nav-bar{display:flex;gap:0;border-bottom:1px solid #262626;flex-shrink:0}
+.nav-bar a{flex:1;text-align:center;padding:10px;font-size:12px;color:#737373;text-decoration:none;border-bottom:2px solid transparent;transition:.2s}
+.nav-bar a.active{color:#f472b6;border-bottom-color:#f472b6}
+.nav-bar a:hover{color:#e5e5e5}
+
+/* Intake Form */
+.intake{padding:24px 20px;flex:1;overflow-y:auto}
+.intake h2{font-size:14px;color:#fff;margin-bottom:4px}
+.intake p.sub{font-size:12px;color:#737373;margin-bottom:20px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;color:#a3a3a3;margin-bottom:6px}
+.field input{width:100%;padding:10px 14px;background:#1a1a1a;border:1px solid #333;color:#e5e5e5;font-size:13px;outline:none;transition:.2s}
+.field input:focus{border-color:#f472b6}
+.field input::placeholder{color:#525252}
+.field .hint{font-size:10px;color:#525252;margin-top:4px}
+.field.optional label::after{content:' (선택)';color:#525252;font-size:10px}
+.btn-start{width:100%;padding:12px;background:linear-gradient(135deg,#f472b6,#a855f7);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;transition:.2s}
+.btn-start:hover{opacity:.9}
+.btn-start:disabled{opacity:.4;cursor:not-allowed}
+
+/* Chat */
+.chat-area{flex:1;display:none;flex-direction:column;overflow:hidden}
+.messages{flex:1;overflow-y:auto;padding:16px 20px}
+.msg{margin-bottom:12px;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg.bot{text-align:left}
+.msg.user{text-align:right}
+.msg .label{font-size:10px;color:#525252;margin-bottom:3px}
+.msg .bubble{display:inline-block;max-width:85%;padding:10px 14px;font-size:13px;line-height:1.5;white-space:pre-wrap}
+.msg.bot .bubble{background:rgba(244,114,182,.08);border:1px solid rgba(244,114,182,.2);color:#d4d4d4}
+.msg.user .bubble{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);color:#d4d4d4}
+.msg .time{font-size:9px;color:#404040;margin-top:2px}
+.typing{padding:4px 20px 12px;font-size:11px;color:#737373;display:none}
+.typing.show{display:block}
+.input-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid #262626;flex-shrink:0;align-items:flex-end}
+.input-bar textarea{flex:1;padding:10px 14px;background:#1a1a1a;border:1px solid #333;color:#e5e5e5;font-size:13px;outline:none;resize:none;min-height:40px;max-height:120px;line-height:1.4;font-family:inherit}
+.input-bar textarea:focus{border-color:#f472b6}
+.input-bar textarea::placeholder{color:#525252}
+.input-bar button{padding:10px 16px;background:#f472b6;color:#fff;border:none;font-size:13px;cursor:pointer;flex-shrink:0;height:40px}
+.input-bar button:hover{opacity:.9}
+.input-bar button:disabled{opacity:.4;cursor:not-allowed}
+.voice-toggle{padding:8px 16px;text-align:center;border-top:1px solid #1a1a1a;flex-shrink:0}
+.voice-toggle button{background:none;border:1px solid #333;color:#737373;padding:6px 16px;font-size:11px;cursor:pointer}
+.voice-toggle button:hover{border-color:#f472b6;color:#f472b6}
+.voice-toggle button.active{border-color:#f472b6;color:#f472b6;background:rgba(244,114,182,.08)}
+
+/* Status */
+.status-bar{padding:8px 20px;display:flex;align-items:center;justify-content:center;gap:8px;border-bottom:1px solid #1a1a1a;flex-shrink:0}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#525252}
+.status-dot.online{background:#f472b6;animation:pulse 2s infinite}
+.status-dot.speaking{background:#3b82f6;animation:pulse .5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.status-text{font-size:11px;color:#737373}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="phone">
+  <div class="phone-header">
+    <div class="brand">dchoi09 · 디초이공구</div>
+    <h1>💬 AI 고객 상담</h1>
+    <p>텍스트로 편하게 물어보세요</p>
+  </div>
+  <div class="nav-bar">
+    <a href="/dchoi09-callcenter/chat/" class="active">💬 텍스트 상담</a>
+    <a href="/dchoi09-callcenter/">🎤 음성 상담</a>
+    <a href="/dchoi09-callcenter/dashboard/">📊 대시보드</a>
+  </div>
+
+  <!-- Intake Form -->
+  <div class="intake" id="intakeForm">
+    <h2>상담을 시작하기 전에</h2>
+    <p class="sub">아래 정보를 입력해주시면, 맞춤 상담을 도와드릴게요.</p>
+    <div class="field">
+      <label>성함</label>
+      <input type="text" id="inName" placeholder="홍길동" required>
+    </div>
+    <div class="field">
+      <label>전화번호</label>
+      <input type="tel" id="inPhone" placeholder="010-1234-5678" required>
+    </div>
+    <div class="field">
+      <label>이메일</label>
+      <input type="email" id="inEmail" placeholder="example@email.com" required>
+    </div>
+    <div class="field optional">
+      <label>거주 지역</label>
+      <input type="text" id="inRegion" placeholder="예: CA, NY (미국 거주 시 입력)">
+      <div class="hint">미국 거주 시 주(State)를 입력해주세요</div>
+    </div>
+    <button class="btn-start" id="btnStart" onclick="startChat()">상담 시작하기</button>
+  </div>
+
+  <!-- Chat Area -->
+  <div class="chat-area" id="chatArea">
+    <div class="status-bar">
+      <div class="status-dot" id="statusDot"></div>
+      <span class="status-text" id="statusText">연결 중...</span>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="typing" id="typing">👩‍💼 상담원이 입력 중...</div>
+    <div class="input-bar">
+      <textarea id="userInput" placeholder="메시지를 입력하세요..." rows="1" onkeydown="handleKey(event)"></textarea>
+      <button id="btnSend" onclick="sendMessage()">전송</button>
+    </div>
+    <div class="voice-toggle">
+      <button id="btnVoice" onclick="toggleVoice()">🔊 음성 안내 켜기</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const AGENT_ID = 'agent_5101kkkq3nb6fvkbsxn6cb5vwsm2';
+let ws = null;
+let customer = {};
+let conversationLog = [];
+let callStartTime = 0;
+let voiceEnabled = false;
+let audioContext = null;
+let audioQueue = [];
+let isPlaying = false;
+
+function getTime() {
+  const d = new Date();
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+}
+
+function addMsg(role, text) {
+  if (!text || text === 'undefined') return;
+  const el = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'agent' ? 'bot' : 'user');
+  const sender = role === 'agent' ? '👩‍💼 dchoi09 상담원' : '👤 ' + (customer.name || '고객');
+  div.innerHTML = '<div class="label">' + sender + '</div><div class="bubble">' + escapeHtml(text) + '</div><div class="time">' + getTime() + '</div>';
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+  conversationLog.push({ role, text, time: getTime() });
+}
+
+function escapeHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function setStatus(state, text) {
+  document.getElementById('statusDot').className = 'status-dot ' + state;
+  document.getElementById('statusText').textContent = text;
+}
+
+function showTyping(show) {
+  document.getElementById('typing').className = 'typing' + (show ? ' show' : '');
+}
+
+function extractText(msg, ...keys) {
+  for (const key of keys) {
+    if (typeof msg[key] === 'string' && msg[key]) return msg[key];
+    const ek = key + '_event';
+    if (msg[ek] && typeof msg[ek][key] === 'string') return msg[ek][key];
+  }
+  for (const k of ['text','message','content','transcript']) {
+    if (typeof msg[k] === 'string' && msg[k]) return msg[k];
+  }
+  return null;
+}
+
+// Audio playback for voice mode
+function playNext() {
+  if (audioQueue.length === 0) { isPlaying = false; return; }
+  isPlaying = true;
+  const buf = audioQueue.shift();
+  try {
+    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+    const ab = audioContext.createBuffer(1, buf.byteLength / 2, 16000);
+    const ch = ab.getChannelData(0);
+    const view = new Int16Array(buf);
+    for (let i = 0; i < view.length; i++) ch[i] = view[i] / 32768;
+    const src = audioContext.createBufferSource();
+    src.buffer = ab;
+    src.connect(audioContext.destination);
+    src.onended = playNext;
+    src.start();
+  } catch(e) { playNext(); }
+}
+
+async function startChat() {
+  const name = document.getElementById('inName').value.trim();
+  const phone = document.getElementById('inPhone').value.trim();
+  const email = document.getElementById('inEmail').value.trim();
+  const region = document.getElementById('inRegion').value.trim();
+
+  if (!name || !phone || !email) {
+    alert('성함, 전화번호, 이메일은 필수 항목입니다.');
+    return;
+  }
+
+  customer = { name, phone, email, region };
+
+  document.getElementById('intakeForm').style.display = 'none';
+  document.getElementById('chatArea').style.display = 'flex';
+  callStartTime = Date.now();
+
+  // Connect to ElevenLabs
+  setStatus('', '연결 중...');
+
+  try {
+    const resp = await fetch('/api/callcenter/signed-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agent_id: AGENT_ID })
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      connectWS(data.signed_url || ('wss://api.elevenlabs.io/v1/convai/conversation?agent_id=' + AGENT_ID));
+    } else {
+      connectWS('wss://api.elevenlabs.io/v1/convai/conversation?agent_id=' + AGENT_ID);
+    }
+  } catch(e) {
+    connectWS('wss://api.elevenlabs.io/v1/convai/conversation?agent_id=' + AGENT_ID);
+  }
+}
+
+function connectWS(url) {
+  ws = new WebSocket(url);
+
+  ws.onopen = () => {
+    setStatus('online', '상담 연결됨');
+    // Send conversation init with customer context
+    ws.send(JSON.stringify({
+      type: 'conversation_initiation_client_data',
+      conversation_initiation_client_data: {
+        conversation_config_override: {
+          agent: {
+            prompt: {
+              prompt: "현재 상담 중인 고객 정보:\n- 성함: " + customer.name + "\n- 전화번호: " + customer.phone + "\n- 이메일: " + customer.email + (customer.region ? "\n- 거주지역: " + customer.region : "") + "\n\n이 고객을 '" + customer.name + " 고객님'으로 호칭하세요. 첫 인사에 고객 이름을 포함하세요."
+            },
+            first_message: customer.name + " 고객님, 안녕하세요! 디초이공구 고객센터입니다~ 지금 Season 5 프리오더가 진행 중이에요! 산골이유식 위크 최대 20% 할인, 전집 구매 시 독서대 10% 할인 혜택이 있답니다. 궁금한 점 편하게 물어봐주세요~",
+            language: "ko"
+          }
+        }
+      }
+    }));
+    document.getElementById('userInput').focus();
+  };
+
+  ws.onmessage = (event) => {
+    try {
+      const msg = JSON.parse(event.data);
+      switch (msg.type) {
+        case 'conversation_initiation_metadata': break;
+        case 'agent_response': {
+          showTyping(false);
+          const t = extractText(msg, 'agent_response');
+          if (t) addMsg('agent', t);
+          break;
+        }
+        case 'agent_response_correction': {
+          const t = extractText(msg, 'agent_response_correction', 'agent_response');
+          const bs = document.querySelectorAll('.msg.bot .bubble');
+          if (bs.length && t) bs[bs.length - 1].textContent = t;
+          break;
+        }
+        case 'user_transcript':
+        case 'user_transcript_event': {
+          // In text mode, user messages are already shown. Skip duplicates.
+          break;
+        }
+        case 'audio': {
+          if (!voiceEnabled) break;
+          const chunk = (msg.audio_event && msg.audio_event.audio_base_64)
+            || (msg.audio && msg.audio.chunk) || msg.audio_base_64 || msg.audio_chunk
+            || (typeof msg.audio === 'string' ? msg.audio : null);
+          if (chunk) {
+            const bin = atob(chunk);
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            audioQueue.push(bytes.buffer);
+            if (!isPlaying) playNext();
+          }
+          break;
+        }
+        case 'interruption': audioQueue = []; isPlaying = false; break;
+        case 'ping': ws.send(JSON.stringify({ type: 'pong', event_id: msg.ping_event?.event_id || msg.event_id })); break;
+      }
+    } catch(e) {}
+  };
+
+  ws.onclose = () => {
+    setStatus('', '상담 종료');
+    saveConversation();
+  };
+
+  ws.onerror = () => {
+    setStatus('', '연결 오류');
+  };
+}
+
+function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+
+  addMsg('user', text);
+  showTyping(true);
+  ws.send(JSON.stringify({ user_audio_chunk: '' })); // Signal end of "turn"
+  // Send text message
+  ws.send(JSON.stringify({ type: 'user_message', user_message: { text: text } }));
+
+  input.value = '';
+  input.style.height = 'auto';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+  // Auto-resize textarea
+  setTimeout(() => {
+    e.target.style.height = 'auto';
+    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+  }, 0);
+}
+
+function toggleVoice() {
+  voiceEnabled = !voiceEnabled;
+  const btn = document.getElementById('btnVoice');
+  if (voiceEnabled) {
+    btn.textContent = '🔇 음성 안내 끄기';
+    btn.className = 'active';
+    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+  } else {
+    btn.textContent = '🔊 음성 안내 켜기';
+    btn.className = '';
+    audioQueue = [];
+    isPlaying = false;
+  }
+}
+
+function saveConversation() {
+  if (conversationLog.length === 0) return;
+  const history = JSON.parse(localStorage.getItem('dchoi09_calls') || '[]');
+  const isEscalated = conversationLog.some(m => m.text && (m.text.includes('Monica') || m.text.includes('담당자') || m.text.includes('업무시간')));
+  const entry = {
+    id: 'T-' + String(history.length + 1).padStart(4, '0'),
+    date: new Date().toISOString(),
+    type: 'text',
+    messages: conversationLog,
+    duration: Math.round((Date.now() - callStartTime) / 1000),
+    status: isEscalated ? 'escalated' : 'resolved',
+    escalatedTo: isEscalated ? 'Monica (업무시간 KST 10:00-19:00)' : null,
+    customerName: customer.name || null,
+    customerPhone: customer.phone || null,
+    customerEmail: customer.email || null,
+    customerRegion: customer.region || null
+  };
+  history.unshift(entry);
+  if (history.length > 100) history.length = 100;
+  localStorage.setItem('dchoi09_calls', JSON.stringify(history));
+}
+
+// End chat
+window.addEventListener('beforeunload', () => {
+  if (ws && ws.readyState === WebSocket.OPEN) ws.close();
+  saveConversation();
+});
+</script>
+</body>
+</html>
