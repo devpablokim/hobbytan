@@ -10,7 +10,7 @@ body{background:#0a0a0a;color:#e5e5e5;font-family:'Pretendard',-apple-system,san
 .header{padding:24px 32px;border-bottom:1px solid #262626;display:flex;align-items:center;justify-content:space-between}
 .header h1{font-size:18px;color:#fff;font-weight:700}
 .header .brand{font-size:10px;color:#f472b6;text-transform:uppercase;letter-spacing:2px}
-.header a{font-size:12px;color:#f472b6;text-decoration:none;border:1px solid rgba(244,114,182,.3);padding:8px 16px}
+.header a{font-size:12px;color:#f472b6;text-decoration:none;border:1px solid rgba(244,114,182,.3);padding:8px 16px;margin-left:8px}
 .header a:hover{background:rgba(244,114,182,.1)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:24px 32px}
 .stat{border:1px solid #262626;background:#111;padding:16px}
@@ -48,7 +48,8 @@ body{background:#0a0a0a;color:#e5e5e5;font-family:'Pretendard',-apple-system,san
     <div class="brand">dchoi09</div>
     <h1>📊 상담 기록 대시보드</h1>
   </div>
-  <a href="/dchoi09-callcenter/">📞 상담 페이지로</a>
+  <a href="/dchoi09-callcenter/chat/">💬 텍스트 상담</a>
+  <a href="/dchoi09-callcenter/">🎤 음성 상담</a>
 </div>
 
 <div class="stats">
@@ -121,9 +122,11 @@ function load() {
     const statusBadge = c.status === 'resolved' 
       ? '<span class="badge badge-green">AI 해결</span>' 
       : '<span class="badge badge-amber">Monica 연결</span>';
+    const typeBadge = c.type === 'text' ? '💬' : '🎤';
     const name = c.customerName || '-';
     const phone = c.customerPhone || '-';
-    html += '<tr onclick="showDetail(' + i + ')"><td style="font-family:monospace;font-size:11px;color:#525252">' + c.id + '</td><td>' + dateStr + '</td><td>' + name + '</td><td>' + phone + '</td><td>' + c.messages.length + '건</td><td>' + (c.duration || '-') + 's</td><td>' + statusBadge + '</td></tr>';
+    const email = c.customerEmail ? ' / ' + c.customerEmail : '';
+    html += '<tr onclick="showDetail(' + i + ')"><td style="font-family:monospace;font-size:11px;color:#525252">' + typeBadge + ' ' + c.id + '</td><td>' + dateStr + '</td><td>' + name + '</td><td>' + phone + email + '</td><td>' + c.messages.length + '건</td><td>' + (c.duration || '-') + 's</td><td>' + statusBadge + '</td></tr>';
   });
   html += '</tbody></table>';
   list.innerHTML = html;
@@ -137,7 +140,10 @@ function showDetail(idx) {
   const detail = document.getElementById('detail');
   let html = '<h4>' + c.id + ' — ' + new Date(c.date).toLocaleString('ko-KR') + ' (' + (c.duration || 0) + '초)</h4>';
   if (c.customerName || c.customerPhone) {
-    html += '<div style="margin:8px 0;padding:8px 12px;background:rgba(244,114,182,.08);border:1px solid rgba(244,114,182,.2);font-size:12px">👤 ' + (c.customerName || '미확인') + ' | 📞 ' + (c.customerPhone || '미확인') + '</div>';
+    let info = '👤 ' + (c.customerName || '미확인') + ' | 📞 ' + (c.customerPhone || '미확인');
+    if (c.customerEmail) info += ' | ✉️ ' + c.customerEmail;
+    if (c.customerRegion) info += ' | 📍 ' + c.customerRegion;
+    html += '<div style="margin:8px 0;padding:8px 12px;background:rgba(244,114,182,.08);border:1px solid rgba(244,114,182,.2);font-size:12px">' + info + '</div>';
   }
   if (c.escalatedTo) {
     html += '<div style="margin:8px 0;padding:8px 12px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);font-size:12px">🔔 에스컬레이션: ' + c.escalatedTo + '</div>';
