@@ -286,7 +286,12 @@ function connectWS(url) {
         }
         case 'user_transcript':
         case 'user_transcript_event': {
-          // In text mode, user messages are already shown. Skip duplicates.
+          // In voice mode, show user speech as chat bubble
+          if (voiceEnabled) {
+            const t = (msg.user_transcript_event && msg.user_transcript_event.user_transcript) || extractText(msg, 'user_transcript');
+            if (t) addMsg('user', t);
+          }
+          // In text mode, user messages are already shown via sendMessage()
           break;
         }
         case 'audio': {
