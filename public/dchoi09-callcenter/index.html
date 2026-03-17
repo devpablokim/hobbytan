@@ -225,9 +225,15 @@ function connectWS(stream, wsUrl) {
   const source = audioContext.createMediaStreamSource(stream);
   const processor = audioContext.createScriptProcessor(4096, 1, 1);
   let audioQueue = [], isPlaying = false;
+  let agentSpeaking = false; // true while agent TTS is playing — mutes user mic
 
   function playNext() {
-    if (!audioQueue.length) { isPlaying = false; setStatus('online', '연결됨 — 말씀하세요'); return; }
+    if (!audioQueue.length) {
+      isPlaying = false;
+      agentSpeaking = false; // Agent finished speaking — re-enable user mic
+      setStatus('online', '연결됨 — 말씀하세요');
+      return;
+    }
     isPlaying = true;
     const buf = audioQueue.shift();
     try {
@@ -333,7 +339,7 @@ dchoi09은 미국 거주 한인 가정을 위한 한국 유아/키즈 제품 공
     source.connect(processor);
     processor.connect(audioContext.destination);
     processor.onaudioprocess = (e) => {
-      if (isMuted || ws.readyState !== WebSocket.OPEN) return;
+      if (isMuted || agentSpeaking || ws.readyState !== WebSocket.OPEN) return;
       const input = e.inputBuffer.getChannelData(0);
       const srcRate = audioContext.sampleRate, dstRate = 16000;
       let samples = input;
@@ -370,6 +376,8 @@ dchoi09은 미국 거주 한인 가정을 위한 한국 유아/키즈 제품 공
           break;
         }
         case 'agent_response': {
+          agentSpeaking = true; // Mute user mic while agent responds
+          setStatus('online', '상담원 응답 중...');
           const t = extractText(msg, 'agent_response');
           if (t) {
             addMessage('agent', t);
@@ -402,7 +410,7 @@ dchoi09은 미국 거주 한인 가정을 위한 한국 유아/키즈 제품 공
           setStatus('speaking', '상담원 응답 중...');
           break;
         }
-        case 'interruption': audioQueue = []; isPlaying = false; setStatus('online', '연결됨 — 말씀하세요'); break;
+        case 'interruption': audioQueue = []; isPlaying = false; agentSpeaking = false; setStatus('online', '연결됨 — 말씀하세요'); break;
         case 'ping': ws.send(JSON.stringify({ type: 'pong', event_id: msg.ping_event?.event_id || msg.event_id })); break;
       }
     } catch(e) {}
