@@ -70,7 +70,7 @@ const Subtitle: React.FC<{ text: string; delay?: number }> = ({ text, delay = 0 
       <div style={{
         background: "rgba(0, 0, 0, 0.75)",
         padding: "12px 40px",
-        borderRadius: 8,
+        borderRadius: 0,
         maxWidth: "80%",
       }}>
         <p style={{
@@ -172,7 +172,7 @@ const ProblemScene: React.FC = () => {
   const stats = [
     { value: "₩2.4억", label: "AI 미도입 시 연간 기회비용", delay: 10 },
     { value: "67%", label: "AI 전환 실패율 (자체 도입 시)", delay: 40 },
-    { value: "₩8,200만", label: "평균 컨설팅 비용 (대기업 기준)", delay: 70 },
+    { value: "₩3,000만+", label: "평균 컨설팅 비용 (대기업 기준)", delay: 70 },
   ];
 
   return (
@@ -325,7 +325,7 @@ const WorkshopScene: React.FC = () => {
                 <div style={{
                   width: 20,
                   height: 20,
-                  borderRadius: 10,
+                  borderRadius: 0,
                   background: C.accent,
                   boxShadow: `0 0 12px ${C.accent}`,
                 }} />
@@ -334,7 +334,7 @@ const WorkshopScene: React.FC = () => {
                 background: C.card,
                 border: `1px solid ${C.accentDim}`,
                 padding: "24px 16px",
-                borderRadius: 12,
+                borderRadius: 0,
                 minHeight: 160,
               }}>
                 <div style={{ color: C.accent, fontSize: 16, fontWeight: 700, fontFamily: FONT }}>{w.week}</div>
@@ -449,7 +449,7 @@ const PremiumScene: React.FC = () => {
             <div key={i} style={{
               background: C.card,
               border: `1px solid ${C.accentDim}`,
-              borderRadius: 16,
+              borderRadius: 0,
               padding: "36px 28px",
               width: 260,
               textAlign: "center",
@@ -476,11 +476,11 @@ const ServicesScene: React.FC = () => {
 
   const services = [
     "AI 파워워크샵 (기업/개인)",
-    "AI 전환 컨설팅",
-    "AI 콜센터 자동화",
-    "AI 고객상담 챗봇",
-    "맞춤형 AI 에이전트 개발",
-    "AI 교육 콘텐츠 제작",
+    "AI 시스템 설정 · 대행",
+    "AI 비즈니스 웹사이트 구축",
+    "AI 역량 강화 교육",
+    "맞춤형 컨설팅",
+    "하비탄 AI 클럽",
   ];
 
   return (
@@ -508,7 +508,7 @@ const ServicesScene: React.FC = () => {
             <div key={i} style={{
               background: C.card,
               border: `1px solid ${C.accentDim}`,
-              borderRadius: 12,
+              borderRadius: 0,
               padding: "20px 32px",
               display: "flex",
               alignItems: "center",
@@ -519,7 +519,7 @@ const ServicesScene: React.FC = () => {
               <div style={{
                 width: 12,
                 height: 12,
-                borderRadius: 6,
+                borderRadius: 0,
                 background: C.accent,
                 flexShrink: 0,
               }} />
@@ -561,13 +561,13 @@ const ValueScene: React.FC = () => {
         <div style={{
           background: C.darkGray,
           border: "1px solid #333",
-          borderRadius: 16,
+          borderRadius: 0,
           padding: "40px 48px",
           textAlign: "center",
           opacity: leftOpacity,
         }}>
           <p style={{ color: C.gray, fontSize: 20, fontFamily: FONT, marginBottom: 12 }}>대기업 컨설팅</p>
-          <div style={{ color: "#666", fontSize: 64, fontWeight: 800, fontFamily: FONT, textDecoration: "line-through" }}>₩8,200만</div>
+          <div style={{ color: "#666", fontSize: 64, fontWeight: 800, fontFamily: FONT, textDecoration: "line-through" }}>₩3,000만+</div>
           <p style={{ color: "#555", fontSize: 16, fontFamily: FONT, marginTop: 8 }}>이론 중심 / 장기 프로젝트</p>
         </div>
 
@@ -577,7 +577,7 @@ const ValueScene: React.FC = () => {
         <div style={{
           background: `${C.accent}11`,
           border: `2px solid ${C.accent}`,
-          borderRadius: 16,
+          borderRadius: 0,
           padding: "40px 48px",
           textAlign: "center",
           transform: `scale(${Math.min(rightScale, 1)})`,
@@ -588,7 +588,7 @@ const ValueScene: React.FC = () => {
           <p style={{ color: C.accent, fontSize: 16, fontFamily: FONT, marginTop: 8 }}>실전 중심 / 5주 완성 / 90일 관리</p>
         </div>
       </div>
-      <Subtitle text="대기업 컨설팅 8,200만 원 vs 하비탄AI 800만 원 — 10배 더 효율적인 투자" delay={20} />
+      <Subtitle text="일반 컨설팅 3,000만 원 이상 vs 하비탄AI 800만 원 — 4배 더 효율적인 투자" delay={20} />
     </AbsoluteFill>
   );
 };
@@ -638,7 +638,7 @@ const CTAScene: React.FC = () => {
             fontWeight: 800,
             fontFamily: FONT,
             padding: "24px 60px",
-            borderRadius: 16,
+            borderRadius: 0,
             display: "inline-block",
             boxShadow: `0 0 40px ${C.accent}66`,
           }}>
@@ -713,7 +713,7 @@ const ClosingScene: React.FC = () => {
               background: i === 0 ? `${C.accent}22` : C.card,
               border: i === 0 ? `2px solid ${C.accent}` : "1px solid #222",
               padding: "10px 18px",
-              borderRadius: 8,
+              borderRadius: 0,
               textAlign: "center",
               opacity: fadeIn(frame, delay),
               minWidth: 110,
