@@ -28,8 +28,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get("offset") || "0");
     const activeOnly = searchParams.get("active") !== "false";
 
-    let query = db.collection(COLLECTION)
-      .orderBy("priority", "desc") as FirebaseFirestore.Query;
+    let query = db.collection(COLLECTION) as FirebaseFirestore.Query;
 
     if (activeOnly) {
       query = query.where("isActive", "==", true);
@@ -38,7 +37,7 @@ export async function GET(request: NextRequest) {
       query = query.where("category", "==", category);
     }
 
-    const snapshot = await query.offset(offset).limit(limit).get();
+    const snapshot = await query.limit(limit).offset(offset).get();
     const items = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
