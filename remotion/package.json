@@ -1,0 +1,25 @@
+{
+  "name": "remotion",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx remotion studio src/index.ts",
+    "build": "npx remotion render src/index.ts HobbyTANIntro out/hobbytan-intro.mp4 --codec h264",
+    "build:high": "npx remotion render src/index.ts HobbyTANIntro out/hobbytan-intro.mp4 --codec h264 --crf 18 --scale 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@remotion/bundler": "^4.0.436",
+    "@remotion/cli": "^4.0.436",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "remotion": "^4.0.436",
+    "typescript": "^5.9.3"
+  }
+}
