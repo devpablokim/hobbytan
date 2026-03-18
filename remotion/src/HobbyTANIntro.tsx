@@ -7,12 +7,13 @@ import {
   Sequence,
   spring,
   staticFile,
+  Audio,
 } from "remotion";
 
 // === DESIGN TOKENS ===
 const C = {
   bg: "#0a0a0a",
-  accent: "#10b981",      // Emerald — 하비탄AI 메인 컬러
+  accent: "#10b981",
   accentDim: "#10b98133",
   white: "#ffffff",
   gray: "#a3a3a3",
@@ -22,36 +23,27 @@ const C = {
 
 const FONT = "'Pretendard', system-ui, -apple-system, sans-serif";
 
-// === FONT FACE (loaded via staticFile) ===
+// === FONT FACE ===
 const FontLoader: React.FC = () => (
   <style>
     {`
-      @font-face {
-        font-family: 'Pretendard';
-        src: url('${staticFile("fonts/Pretendard-Regular.woff2")}') format('woff2');
-        font-weight: 400;
-        font-style: normal;
-      }
-      @font-face {
-        font-family: 'Pretendard';
-        src: url('${staticFile("fonts/Pretendard-Bold.woff2")}') format('woff2');
-        font-weight: 700;
-        font-style: normal;
-      }
-      @font-face {
-        font-family: 'Pretendard';
-        src: url('${staticFile("fonts/Pretendard-ExtraBold.woff2")}') format('woff2');
-        font-weight: 800;
-        font-style: normal;
-      }
+      @font-face { font-family: 'Pretendard'; src: url('${staticFile("fonts/Pretendard-Regular.woff2")}') format('woff2'); font-weight: 400; }
+      @font-face { font-family: 'Pretendard'; src: url('${staticFile("fonts/Pretendard-Bold.woff2")}') format('woff2'); font-weight: 700; }
+      @font-face { font-family: 'Pretendard'; src: url('${staticFile("fonts/Pretendard-ExtraBold.woff2")}') format('woff2'); font-weight: 800; }
     `}
   </style>
 );
 
-// === SUBTITLE COMPONENT ===
-const Subtitle: React.FC<{ text: string; delay?: number }> = ({ text, delay = 0 }) => {
+// === MULTI-SUBTITLE COMPONENT ===
+// subs: array of { text, startFrame, endFrame } relative to scene start
+const MultiSubtitle: React.FC<{ subs: { text: string; startFrame: number; endFrame: number }[] }> = ({ subs }) => {
   const frame = useCurrentFrame();
-  const opacity = interpolate(frame, [delay, delay + 10], [0, 1], {
+
+  const activeSub = subs.find((s) => frame >= s.startFrame && frame < s.endFrame);
+  if (!activeSub) return null;
+
+  const fadeInEnd = activeSub.startFrame + 8;
+  const opacity = interpolate(frame, [activeSub.startFrame, fadeInEnd], [0, 1], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
@@ -70,7 +62,6 @@ const Subtitle: React.FC<{ text: string; delay?: number }> = ({ text, delay = 0 
       <div style={{
         background: "rgba(0, 0, 0, 0.75)",
         padding: "12px 40px",
-        borderRadius: 0,
         maxWidth: "80%",
       }}>
         <p style={{
@@ -82,28 +73,22 @@ const Subtitle: React.FC<{ text: string; delay?: number }> = ({ text, delay = 0 
           lineHeight: 1.5,
           margin: 0,
         }}>
-          {text}
+          {activeSub.text}
         </p>
       </div>
     </div>
   );
 };
 
-// === FADE IN HELPER ===
+// === HELPERS ===
 const fadeIn = (frame: number, start: number, dur = 15) =>
-  interpolate(frame, [start, start + dur], [0, 1], {
-    extrapolateRight: "clamp",
-    extrapolateLeft: "clamp",
-  });
+  interpolate(frame, [start, start + dur], [0, 1], { extrapolateRight: "clamp", extrapolateLeft: "clamp" });
 
 const slideUp = (frame: number, start: number, dur = 15) =>
-  interpolate(frame, [start, start + dur], [40, 0], {
-    extrapolateRight: "clamp",
-    extrapolateLeft: "clamp",
-  });
+  interpolate(frame, [start, start + dur], [40, 0], { extrapolateRight: "clamp", extrapolateLeft: "clamp" });
 
 // ============================================================
-// SCENE 1: Hook (0~5초 = 150프레임)
+// SCENE 1: Hook (0~5s = 0~150f)
 // ============================================================
 const HookScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -114,56 +99,40 @@ const HookScene: React.FC = () => {
   const line2Opacity = fadeIn(frame, 50);
   const numberScale = spring({ frame: frame - 70, fps, config: { damping: 12 } });
 
+  const subs = [
+    { text: "18개월 후, 따라잡을 수 없습니다.", startFrame: 10, endFrame: 75 },
+    { text: "AI 도입이 성장의 분수령이 됩니다.", startFrame: 75, endFrame: 145 },
+  ];
+
   return (
     <AbsoluteFill style={{ background: C.bg, justifyContent: "center", alignItems: "center" }}>
       <div style={{ textAlign: "center", maxWidth: 1200 }}>
         <h1 style={{
-          color: C.white,
-          fontSize: 64,
-          fontWeight: 800,
-          fontFamily: FONT,
-          opacity: line1Opacity,
-          transform: `translateY(${line1Y}px)`,
-          lineHeight: 1.3,
+          color: C.white, fontSize: 64, fontWeight: 800, fontFamily: FONT,
+          opacity: line1Opacity, transform: `translateY(${line1Y}px)`, lineHeight: 1.3,
         }}>
           18개월 후,<br />
           <span style={{ color: C.accent }}>따라잡을 수 없습니다</span>
         </h1>
         <p style={{
-          color: C.gray,
-          fontSize: 32,
-          fontFamily: FONT,
-          fontWeight: 400,
-          marginTop: 30,
-          opacity: line2Opacity,
+          color: C.gray, fontSize: 32, fontFamily: FONT, fontWeight: 400, marginTop: 30, opacity: line2Opacity,
         }}>
           AI를 도입하지 않은 기업의 미래
         </p>
-        <div style={{
-          marginTop: 40,
-          opacity: fadeIn(frame, 70),
-          transform: `scale(${Math.min(numberScale, 1)})`,
-        }}>
-          <span style={{
-            color: C.accent,
-            fontSize: 100,
-            fontWeight: 800,
-            fontFamily: FONT,
-          }}>
-            3.2배
-          </span>
+        <div style={{ marginTop: 40, opacity: fadeIn(frame, 70), transform: `scale(${Math.min(numberScale, 1)})` }}>
+          <span style={{ color: C.accent, fontSize: 100, fontWeight: 800, fontFamily: FONT }}>3.2배</span>
           <p style={{ color: C.gray, fontSize: 24, fontFamily: FONT, marginTop: 8 }}>
             AI 도입 기업과 비도입 기업의 성장률 차이
           </p>
         </div>
       </div>
-      <Subtitle text="18개월 후, 따라잡을 수 없습니다. AI 도입이 성장의 분수령이 됩니다." delay={10} />
+      <MultiSubtitle subs={subs} />
     </AbsoluteFill>
   );
 };
 
 // ============================================================
-// SCENE 2: 문제 제기 (5~15초 = 300프레임)
+// SCENE 2: 문제 제기 (5~15s = 150~450f, scene-local 0~300f)
 // ============================================================
 const ProblemScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -175,16 +144,17 @@ const ProblemScene: React.FC = () => {
     { value: "₩3,000만+", label: "평균 컨설팅 비용 (대기업 기준)", delay: 70 },
   ];
 
+  const subs = [
+    { text: "연간 2.4억 원의 기회비용이 발생합니다.", startFrame: 10, endFrame: 100 },
+    { text: "자체 도입 시 67%가 실패합니다.", startFrame: 100, endFrame: 200 },
+    { text: "전문 파트너와 함께해야 합니다.", startFrame: 200, endFrame: 295 },
+  ];
+
   return (
     <AbsoluteFill style={{ background: C.bg, justifyContent: "center", alignItems: "center" }}>
       <h2 style={{
-        color: C.white,
-        fontSize: 44,
-        fontWeight: 700,
-        fontFamily: FONT,
-        marginBottom: 60,
-        opacity: fadeIn(frame, 0),
-        textAlign: "center",
+        color: C.white, fontSize: 44, fontWeight: 700, fontFamily: FONT, marginBottom: 60,
+        opacity: fadeIn(frame, 0), textAlign: "center",
       }}>
         당신의 기업은 <span style={{ color: C.accent }}>준비되어 있습니까?</span>
       </h2>
@@ -193,38 +163,22 @@ const ProblemScene: React.FC = () => {
           const scale = spring({ frame: frame - s.delay, fps, config: { damping: 12 } });
           return (
             <div key={i} style={{
-              textAlign: "center",
-              opacity: fadeIn(frame, s.delay),
+              textAlign: "center", opacity: fadeIn(frame, s.delay),
               transform: `scale(${Math.min(scale, 1)})`,
             }}>
-              <div style={{
-                color: C.accent,
-                fontSize: 72,
-                fontWeight: 800,
-                fontFamily: FONT,
-              }}>
-                {s.value}
-              </div>
-              <p style={{
-                color: C.gray,
-                fontSize: 20,
-                fontFamily: FONT,
-                marginTop: 12,
-                maxWidth: 280,
-              }}>
-                {s.label}
-              </p>
+              <div style={{ color: C.accent, fontSize: 72, fontWeight: 800, fontFamily: FONT }}>{s.value}</div>
+              <p style={{ color: C.gray, fontSize: 20, fontFamily: FONT, marginTop: 12, maxWidth: 280 }}>{s.label}</p>
             </div>
           );
         })}
       </div>
-      <Subtitle text="연간 2.4억 원의 기회비용, 67%의 자체 도입 실패율. 전문 파트너가 필요합니다." delay={10} />
+      <MultiSubtitle subs={subs} />
     </AbsoluteFill>
   );
 };
 
 // ============================================================
-// SCENE 3: 브랜드 등장 (15~20초 = 150프레임)
+// SCENE 3: 브랜드 등장 (15~20s = 450~600f, scene-local 0~150f)
 // ============================================================
 const BrandScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -233,48 +187,38 @@ const BrandScene: React.FC = () => {
   const logoScale = spring({ frame, fps, config: { damping: 12 } });
   const taglineOpacity = fadeIn(frame, 30);
 
+  const subs = [
+    { text: "하비탄AI", startFrame: 5, endFrame: 75 },
+    { text: "가장 뛰어난 AX 혁신 파트너", startFrame: 75, endFrame: 145 },
+  ];
+
   return (
     <AbsoluteFill style={{ background: C.bg, justifyContent: "center", alignItems: "center" }}>
       <div style={{ textAlign: "center", transform: `scale(${Math.min(logoScale, 1)})` }}>
         <div style={{ fontSize: 80, marginBottom: 20 }}>🔥</div>
-        <h1 style={{
-          color: C.white,
-          fontSize: 80,
-          fontWeight: 800,
-          fontFamily: FONT,
-          letterSpacing: -2,
-        }}>
+        <h1 style={{ color: C.white, fontSize: 80, fontWeight: 800, fontFamily: FONT, letterSpacing: -2 }}>
           HOBBYTAN<span style={{ color: C.accent }}> AI</span>
         </h1>
       </div>
       <p style={{
-        color: C.accent,
-        fontSize: 32,
-        fontFamily: FONT,
-        fontWeight: 700,
-        marginTop: 24,
-        opacity: taglineOpacity,
-        textAlign: "center",
+        color: C.accent, fontSize: 32, fontFamily: FONT, fontWeight: 700, marginTop: 24,
+        opacity: taglineOpacity, textAlign: "center",
       }}>
         가장 뛰어난 AX 혁신 파트너
       </p>
       <p style={{
-        color: C.gray,
-        fontSize: 22,
-        fontFamily: FONT,
-        marginTop: 12,
-        opacity: taglineOpacity,
-        textAlign: "center",
+        color: C.gray, fontSize: 22, fontFamily: FONT, marginTop: 12,
+        opacity: taglineOpacity, textAlign: "center",
       }}>
         Thinking Assembly Network — AI 집단 지성 의회
       </p>
-      <Subtitle text="하비탄AI — 가장 뛰어난 AI 트랜스포메이션(AX) 혁신 파트너" delay={20} />
+      <MultiSubtitle subs={subs} />
     </AbsoluteFill>
   );
 };
 
 // ============================================================
-// SCENE 4: 파워워크샵 5주 타임라인 (20~35초 = 450프레임)
+// SCENE 4: 파워워크샵 (20~35s = 600~1050f, scene-local 0~450f)
 // ============================================================
 const WorkshopScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -287,26 +231,25 @@ const WorkshopScene: React.FC = () => {
     { week: "5주차", title: "실전 프로젝트", desc: "실제 업무에 AI 적용 + 발표" },
   ];
 
+  const subs = [
+    { text: "5주 파워워크샵, 이론이 아닌 실전입니다.", startFrame: 5, endFrame: 90 },
+    { text: "1주차, AI 기초와 비즈니스 전략을 수립합니다.", startFrame: 90, endFrame: 180 },
+    { text: "2주차부터 실전 도구를 마스터합니다.", startFrame: 180, endFrame: 270 },
+    { text: "3주차, 반복 업무 80%를 자동화합니다.", startFrame: 270, endFrame: 360 },
+    { text: "5주 만에 AI 실무 역량을 완성합니다.", startFrame: 360, endFrame: 445 },
+  ];
+
   return (
     <AbsoluteFill style={{ background: C.bg, justifyContent: "center", alignItems: "center", padding: 80 }}>
       <h2 style={{
-        color: C.white,
-        fontSize: 48,
-        fontWeight: 700,
-        fontFamily: FONT,
-        marginBottom: 16,
-        opacity: fadeIn(frame, 0),
-        textAlign: "center",
+        color: C.white, fontSize: 48, fontWeight: 700, fontFamily: FONT, marginBottom: 16,
+        opacity: fadeIn(frame, 0), textAlign: "center",
       }}>
         <span style={{ color: C.accent }}>파워워크샵</span> 5주 커리큘럼
       </h2>
       <p style={{
-        color: C.gray,
-        fontSize: 22,
-        fontFamily: FONT,
-        marginBottom: 50,
-        opacity: fadeIn(frame, 10),
-        textAlign: "center",
+        color: C.gray, fontSize: 22, fontFamily: FONT, marginBottom: 50,
+        opacity: fadeIn(frame, 10), textAlign: "center",
       }}>
         이론이 아닌 실전. 5주 만에 AI 실무 역량을 완성합니다.
       </p>
@@ -315,27 +258,18 @@ const WorkshopScene: React.FC = () => {
           const delay = i * 20 + 20;
           return (
             <div key={i} style={{
-              opacity: fadeIn(frame, delay),
-              transform: `translateY(${slideUp(frame, delay)}px)`,
-              textAlign: "center",
-              flex: 1,
+              opacity: fadeIn(frame, delay), transform: `translateY(${slideUp(frame, delay)}px)`,
+              textAlign: "center", flex: 1,
             }}>
-              {/* Timeline dot + line */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
                 <div style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 0,
-                  background: C.accent,
+                  width: 20, height: 20, borderRadius: 10, background: C.accent,
                   boxShadow: `0 0 12px ${C.accent}`,
                 }} />
               </div>
               <div style={{
-                background: C.card,
-                border: `1px solid ${C.accentDim}`,
-                padding: "24px 16px",
-                borderRadius: 0,
-                minHeight: 160,
+                background: C.card, border: `1px solid ${C.accentDim}`,
+                padding: "24px 16px", minHeight: 160,
               }}>
                 <div style={{ color: C.accent, fontSize: 16, fontWeight: 700, fontFamily: FONT }}>{w.week}</div>
                 <h3 style={{ color: C.white, fontSize: 22, fontWeight: 700, fontFamily: FONT, margin: "8px 0" }}>{w.title}</h3>
@@ -345,13 +279,13 @@ const WorkshopScene: React.FC = () => {
           );
         })}
       </div>
-      <Subtitle text="5주 파워워크샵 — 이론이 아닌 실전. AI 실무 역량을 완성합니다." delay={10} />
+      <MultiSubtitle subs={subs} />
     </AbsoluteFill>
   );
 };
 
 // ============================================================
-// SCENE 5: 실적 숫자 (35~45초 = 300프레임)
+// SCENE 5: 실적 숫자 (35~45s = 1050~1350f, scene-local 0~300f)
 // ============================================================
 const ResultsScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -364,16 +298,17 @@ const ResultsScene: React.FC = () => {
     { value: "12", unit: "배", label: "ROI" },
   ];
 
+  const subs = [
+    { text: "숫자가 증명합니다.", startFrame: 5, endFrame: 90 },
+    { text: "11개 기업, 82명 수료, 수료율 100%", startFrame: 90, endFrame: 200 },
+    { text: "투자 대비 12배의 ROI를 달성했습니다.", startFrame: 200, endFrame: 295 },
+  ];
+
   return (
     <AbsoluteFill style={{ background: C.bg, justifyContent: "center", alignItems: "center" }}>
       <h2 style={{
-        color: C.white,
-        fontSize: 44,
-        fontWeight: 700,
-        fontFamily: FONT,
-        marginBottom: 60,
-        opacity: fadeIn(frame, 0),
-        textAlign: "center",
+        color: C.white, fontSize: 44, fontWeight: 700, fontFamily: FONT, marginBottom: 60,
+        opacity: fadeIn(frame, 0), textAlign: "center",
       }}>
         숫자가 <span style={{ color: C.accent }}>증명합니다</span>
       </h2>
@@ -383,41 +318,25 @@ const ResultsScene: React.FC = () => {
           const scale = spring({ frame: frame - delay, fps, config: { damping: 10 } });
           return (
             <div key={i} style={{
-              textAlign: "center",
-              opacity: fadeIn(frame, delay),
+              textAlign: "center", opacity: fadeIn(frame, delay),
               transform: `scale(${Math.min(scale, 1)})`,
             }}>
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center" }}>
-                <span style={{
-                  color: C.accent,
-                  fontSize: 96,
-                  fontWeight: 800,
-                  fontFamily: FONT,
-                }}>
-                  {m.value}
-                </span>
-                <span style={{
-                  color: C.accent,
-                  fontSize: 36,
-                  fontWeight: 700,
-                  fontFamily: FONT,
-                  marginLeft: 4,
-                }}>
-                  {m.unit}
-                </span>
+                <span style={{ color: C.accent, fontSize: 96, fontWeight: 800, fontFamily: FONT }}>{m.value}</span>
+                <span style={{ color: C.accent, fontSize: 36, fontWeight: 700, fontFamily: FONT, marginLeft: 4 }}>{m.unit}</span>
               </div>
               <p style={{ color: C.gray, fontSize: 22, fontFamily: FONT, marginTop: 8 }}>{m.label}</p>
             </div>
           );
         })}
       </div>
-      <Subtitle text="11개 기업, 82명 수료, 수료율 100%, 투자 대비 12배 ROI" delay={15} />
+      <MultiSubtitle subs={subs} />
     </AbsoluteFill>
   );
 };
 
 // ============================================================
-// SCENE 6: 프리미엄 혜택 (45~55초 = 300프레임)
+// SCENE 6: 프리미엄 혜택 (45~55s = 1350~1650f, scene-local 0~300f)
 // ============================================================
 const PremiumScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -429,16 +348,17 @@ const PremiumScene: React.FC = () => {
     { icon: "📋", title: "90일 사후 관리", desc: "수료 후 3개월 밀착 지원" },
   ];
 
+  const subs = [
+    { text: "프리미엄 혜택을 제공합니다.", startFrame: 5, endFrame: 90 },
+    { text: "1박2일 워크샵과 전문가 특강", startFrame: 90, endFrame: 200 },
+    { text: "1:1 코칭부터 90일 사후 관리까지", startFrame: 200, endFrame: 295 },
+  ];
+
   return (
     <AbsoluteFill style={{ background: C.bg, justifyContent: "center", alignItems: "center" }}>
       <h2 style={{
-        color: C.white,
-        fontSize: 44,
-        fontWeight: 700,
-        fontFamily: FONT,
-        marginBottom: 60,
-        opacity: fadeIn(frame, 0),
-        textAlign: "center",
+        color: C.white, fontSize: 44, fontWeight: 700, fontFamily: FONT, marginBottom: 60,
+        opacity: fadeIn(frame, 0), textAlign: "center",
       }}>
         <span style={{ color: C.accent }}>프리미엄</span> 혜택
       </h2>
@@ -447,14 +367,9 @@ const PremiumScene: React.FC = () => {
           const delay = i * 15 + 15;
           return (
             <div key={i} style={{
-              background: C.card,
-              border: `1px solid ${C.accentDim}`,
-              borderRadius: 0,
-              padding: "36px 28px",
-              width: 260,
-              textAlign: "center",
-              opacity: fadeIn(frame, delay),
-              transform: `translateY(${slideUp(frame, delay)}px)`,
+              background: C.card, border: `1px solid ${C.accentDim}`,
+              padding: "36px 28px", width: 260, textAlign: "center",
+              opacity: fadeIn(frame, delay), transform: `translateY(${slideUp(frame, delay)}px)`,
             }}>
               <div style={{ fontSize: 52, marginBottom: 16 }}>{b.icon}</div>
               <h3 style={{ color: C.white, fontSize: 24, fontWeight: 700, fontFamily: FONT, marginBottom: 8 }}>{b.title}</h3>
@@ -463,13 +378,13 @@ const PremiumScene: React.FC = () => {
           );
         })}
       </div>
-      <Subtitle text="1박2일 워크샵, 전문가 특강, 1:1 코칭, 그리고 90일 사후 관리까지" delay={15} />
+      <MultiSubtitle subs={subs} />
     </AbsoluteFill>
   );
 };
 
 // ============================================================
-// SCENE 7: 서비스 라인업 (55~63초 = 240프레임)
+// SCENE 7: 서비스 라인업 (55~63s = 1650~1890f, scene-local 0~240f)
 // ============================================================
 const ServicesScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -483,58 +398,43 @@ const ServicesScene: React.FC = () => {
     "하비탄 AI 클럽",
   ];
 
+  const subs = [
+    { text: "다양한 AI 서비스 라인업을 갖추고 있습니다.", startFrame: 5, endFrame: 90 },
+    { text: "워크샵부터 웹사이트 구축, 맞춤형 컨설팅까지", startFrame: 90, endFrame: 180 },
+    { text: "풀스택 AI 서비스를 제공합니다.", startFrame: 180, endFrame: 235 },
+  ];
+
   return (
     <AbsoluteFill style={{ background: C.bg, justifyContent: "center", alignItems: "center" }}>
       <h2 style={{
-        color: C.white,
-        fontSize: 44,
-        fontWeight: 700,
-        fontFamily: FONT,
-        marginBottom: 50,
-        opacity: fadeIn(frame, 0),
-        textAlign: "center",
+        color: C.white, fontSize: 44, fontWeight: 700, fontFamily: FONT, marginBottom: 50,
+        opacity: fadeIn(frame, 0), textAlign: "center",
       }}>
         서비스 <span style={{ color: C.accent }}>라인업</span>
       </h2>
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 20,
-        maxWidth: 900,
-      }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, maxWidth: 900 }}>
         {services.map((s, i) => {
           const delay = i * 10 + 15;
           return (
             <div key={i} style={{
-              background: C.card,
-              border: `1px solid ${C.accentDim}`,
-              borderRadius: 0,
-              padding: "20px 32px",
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
+              background: C.card, border: `1px solid ${C.accentDim}`,
+              padding: "20px 32px", display: "flex", alignItems: "center", gap: 16,
               opacity: fadeIn(frame, delay),
               transform: `translateX(${interpolate(frame, [delay, delay + 15], [-30, 0], { extrapolateRight: "clamp", extrapolateLeft: "clamp" })}px)`,
             }}>
-              <div style={{
-                width: 12,
-                height: 12,
-                borderRadius: 0,
-                background: C.accent,
-                flexShrink: 0,
-              }} />
+              <div style={{ width: 12, height: 12, background: C.accent, flexShrink: 0 }} />
               <span style={{ color: C.white, fontSize: 24, fontFamily: FONT, fontWeight: 700 }}>{s}</span>
             </div>
           );
         })}
       </div>
-      <Subtitle text="워크샵부터 AI 콜센터, 챗봇, 맞춤형 에이전트 개발까지 — 풀스택 AI 서비스" delay={10} />
+      <MultiSubtitle subs={subs} />
     </AbsoluteFill>
   );
 };
 
 // ============================================================
-// SCENE 8: 투자 가치 비교 (63~73초 = 300프레임)
+// SCENE 8: 투자 가치 (63~73s = 1890~2190f, scene-local 0~300f)
 // ============================================================
 const ValueScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -543,58 +443,47 @@ const ValueScene: React.FC = () => {
   const leftOpacity = fadeIn(frame, 20);
   const rightScale = spring({ frame: frame - 40, fps, config: { damping: 12 } });
 
+  const subs = [
+    { text: "일반 컨설팅은 3,000만 원 이상입니다.", startFrame: 10, endFrame: 100 },
+    { text: "하비탄AI 파워워크샵은 800만 원.", startFrame: 100, endFrame: 200 },
+    { text: "4배 더 효율적인 투자입니다.", startFrame: 200, endFrame: 295 },
+  ];
+
   return (
     <AbsoluteFill style={{ background: C.bg, justifyContent: "center", alignItems: "center" }}>
       <h2 style={{
-        color: C.white,
-        fontSize: 44,
-        fontWeight: 700,
-        fontFamily: FONT,
-        marginBottom: 60,
-        opacity: fadeIn(frame, 0),
-        textAlign: "center",
+        color: C.white, fontSize: 44, fontWeight: 700, fontFamily: FONT, marginBottom: 60,
+        opacity: fadeIn(frame, 0), textAlign: "center",
       }}>
         투자 <span style={{ color: C.accent }}>가치</span>
       </h2>
       <div style={{ display: "flex", gap: 60, alignItems: "center" }}>
-        {/* 경쟁사 */}
         <div style={{
-          background: C.darkGray,
-          border: "1px solid #333",
-          borderRadius: 0,
-          padding: "40px 48px",
-          textAlign: "center",
-          opacity: leftOpacity,
+          background: C.darkGray, border: "1px solid #333",
+          padding: "40px 48px", textAlign: "center", opacity: leftOpacity,
         }}>
           <p style={{ color: C.gray, fontSize: 20, fontFamily: FONT, marginBottom: 12 }}>대기업 컨설팅</p>
           <div style={{ color: "#666", fontSize: 64, fontWeight: 800, fontFamily: FONT, textDecoration: "line-through" }}>₩3,000만+</div>
           <p style={{ color: "#555", fontSize: 16, fontFamily: FONT, marginTop: 8 }}>이론 중심 / 장기 프로젝트</p>
         </div>
-
         <div style={{ color: C.accent, fontSize: 48, fontWeight: 800, fontFamily: FONT }}>VS</div>
-
-        {/* 하비탄AI */}
         <div style={{
-          background: `${C.accent}11`,
-          border: `2px solid ${C.accent}`,
-          borderRadius: 0,
-          padding: "40px 48px",
-          textAlign: "center",
-          transform: `scale(${Math.min(rightScale, 1)})`,
-          boxShadow: `0 0 40px ${C.accent}22`,
+          background: `${C.accent}11`, border: `2px solid ${C.accent}`,
+          padding: "40px 48px", textAlign: "center",
+          transform: `scale(${Math.min(rightScale, 1)})`, boxShadow: `0 0 40px ${C.accent}22`,
         }}>
           <p style={{ color: C.accent, fontSize: 20, fontFamily: FONT, fontWeight: 700, marginBottom: 12 }}>하비탄AI 파워워크샵</p>
           <div style={{ color: C.white, fontSize: 64, fontWeight: 800, fontFamily: FONT }}>₩800만</div>
           <p style={{ color: C.accent, fontSize: 16, fontFamily: FONT, marginTop: 8 }}>실전 중심 / 5주 완성 / 90일 관리</p>
         </div>
       </div>
-      <Subtitle text="일반 컨설팅 3,000만 원 이상 vs 하비탄AI 800만 원 — 4배 더 효율적인 투자" delay={20} />
+      <MultiSubtitle subs={subs} />
     </AbsoluteFill>
   );
 };
 
 // ============================================================
-// SCENE 9: CTA (73~83초 = 300프레임)
+// SCENE 9: CTA (73~83s = 2190~2490f, scene-local 0~300f)
 // ============================================================
 const CTAScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -603,108 +492,81 @@ const CTAScene: React.FC = () => {
   const buttonScale = spring({ frame: frame - 40, fps, config: { damping: 8, stiffness: 100 } });
   const pulse = Math.sin(frame * 0.08) * 0.03 + 1;
 
+  const subs = [
+    { text: "지금 시작하세요.", startFrame: 5, endFrame: 90 },
+    { text: "AI 전환, 늦으면 뒤처집니다.", startFrame: 90, endFrame: 200 },
+    { text: "30분 무료 AI 진단을 신청하세요.", startFrame: 200, endFrame: 295 },
+  ];
+
   return (
     <AbsoluteFill style={{ background: C.bg, justifyContent: "center", alignItems: "center" }}>
       <div style={{ textAlign: "center" }}>
         <h2 style={{
-          color: C.white,
-          fontSize: 52,
-          fontWeight: 800,
-          fontFamily: FONT,
-          opacity: fadeIn(frame, 0),
-          lineHeight: 1.4,
+          color: C.white, fontSize: 52, fontWeight: 800, fontFamily: FONT, opacity: fadeIn(frame, 0), lineHeight: 1.4,
         }}>
           지금 시작하세요
         </h2>
         <p style={{
-          color: C.gray,
-          fontSize: 28,
-          fontFamily: FONT,
-          marginTop: 20,
-          opacity: fadeIn(frame, 15),
+          color: C.gray, fontSize: 28, fontFamily: FONT, marginTop: 20, opacity: fadeIn(frame, 15),
         }}>
           AI 전환, 늦으면 뒤처집니다
         </p>
-        {/* CTA Button */}
         <div style={{
-          marginTop: 50,
-          transform: `scale(${Math.min(buttonScale, 1) * pulse})`,
-          opacity: fadeIn(frame, 30),
+          marginTop: 50, transform: `scale(${Math.min(buttonScale, 1) * pulse})`, opacity: fadeIn(frame, 30),
         }}>
           <div style={{
-            background: C.accent,
-            color: C.bg,
-            fontSize: 36,
-            fontWeight: 800,
-            fontFamily: FONT,
-            padding: "24px 60px",
-            borderRadius: 0,
-            display: "inline-block",
-            boxShadow: `0 0 40px ${C.accent}66`,
+            background: C.accent, color: C.bg, fontSize: 36, fontWeight: 800, fontFamily: FONT,
+            padding: "24px 60px", display: "inline-block", boxShadow: `0 0 40px ${C.accent}66`,
           }}>
             30분 무료 진단 받기
           </div>
         </div>
         <p style={{
-          color: C.gray,
-          fontSize: 20,
-          fontFamily: FONT,
-          marginTop: 24,
-          opacity: fadeIn(frame, 50),
+          color: C.gray, fontSize: 20, fontFamily: FONT, marginTop: 24, opacity: fadeIn(frame, 50),
         }}>
           hobbytan-ai.web.app
         </p>
       </div>
-      <Subtitle text="30분 무료 AI 진단 — 지금 바로 신청하세요" delay={30} />
+      <MultiSubtitle subs={subs} />
     </AbsoluteFill>
   );
 };
 
 // ============================================================
-// SCENE 10: TAN Council + Closing (83~90초 = 210프레임)
+// SCENE 10: Council + Closing (83~90s = 2490~2700f, scene-local 0~210f)
 // ============================================================
 const ClosingScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   const agents = [
-    { role: "CEO", name: "HOBBY" },
-    { role: "DEO", name: "운영총괄" },
-    { role: "DEV", name: "개발" },
-    { role: "PO", name: "제품기획" },
-    { role: "PM", name: "프로젝트" },
-    { role: "UX", name: "디자인" },
-    { role: "BA", name: "분석" },
-    { role: "QA", name: "품질관리" },
-    { role: "RES", name: "연구" },
-    { role: "MKT", name: "마케팅" },
-    { role: "HR", name: "인사" },
-    { role: "CS", name: "고객지원" },
+    { role: "CEO", name: "HOBBY" }, { role: "DEO", name: "운영총괄" },
+    { role: "DEV", name: "개발" }, { role: "PO", name: "제품기획" },
+    { role: "PM", name: "프로젝트" }, { role: "UX", name: "디자인" },
+    { role: "BA", name: "분석" }, { role: "QA", name: "품질관리" },
+    { role: "RES", name: "연구" }, { role: "MKT", name: "마케팅" },
+    { role: "HR", name: "인사" }, { role: "CS", name: "고객지원" },
     { role: "LEGAL", name: "법무" },
   ];
 
   const logoScale = spring({ frame, fps, config: { damping: 12 } });
 
+  const subs = [
+    { text: "13명의 AI 전문 에이전트가 함께합니다.", startFrame: 5, endFrame: 100 },
+    { text: "하비탄AI, AI와 함께 성장하는 미래.", startFrame: 100, endFrame: 205 },
+  ];
+
   return (
     <AbsoluteFill style={{ background: C.bg, justifyContent: "center", alignItems: "center", padding: 60 }}>
       <h2 style={{
-        color: C.white,
-        fontSize: 36,
-        fontWeight: 700,
-        fontFamily: FONT,
-        marginBottom: 30,
-        opacity: fadeIn(frame, 0),
-        textAlign: "center",
+        color: C.white, fontSize: 36, fontWeight: 700, fontFamily: FONT, marginBottom: 30,
+        opacity: fadeIn(frame, 0), textAlign: "center",
       }}>
         Powered by <span style={{ color: C.accent }}>13 TAN Council</span>
       </h2>
       <div style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 12,
-        justifyContent: "center",
-        maxWidth: 1300,
-        marginBottom: 40,
+        display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center",
+        maxWidth: 1300, marginBottom: 40,
       }}>
         {agents.map((a, i) => {
           const delay = i * 2 + 5;
@@ -712,11 +574,8 @@ const ClosingScene: React.FC = () => {
             <div key={i} style={{
               background: i === 0 ? `${C.accent}22` : C.card,
               border: i === 0 ? `2px solid ${C.accent}` : "1px solid #222",
-              padding: "10px 18px",
-              borderRadius: 0,
-              textAlign: "center",
-              opacity: fadeIn(frame, delay),
-              minWidth: 110,
+              padding: "10px 18px", textAlign: "center",
+              opacity: fadeIn(frame, delay), minWidth: 110,
             }}>
               <div style={{ color: i === 0 ? C.accent : C.white, fontSize: 15, fontWeight: 700, fontFamily: FONT }}>TAN-{a.role}</div>
               <div style={{ color: C.gray, fontSize: 12, fontFamily: FONT }}>{a.name}</div>
@@ -725,37 +584,15 @@ const ClosingScene: React.FC = () => {
         })}
       </div>
       <div style={{
-        opacity: fadeIn(frame, 40),
-        transform: `scale(${Math.min(logoScale, 1)})`,
-        textAlign: "center",
+        opacity: fadeIn(frame, 40), transform: `scale(${Math.min(logoScale, 1)})`, textAlign: "center",
       }}>
-        <h1 style={{
-          color: C.white,
-          fontSize: 52,
-          fontWeight: 800,
-          fontFamily: FONT,
-          letterSpacing: -2,
-        }}>
+        <h1 style={{ color: C.white, fontSize: 52, fontWeight: 800, fontFamily: FONT, letterSpacing: -2 }}>
           HOBBYTAN<span style={{ color: C.accent }}> AI</span>
         </h1>
-        <p style={{
-          color: C.accent,
-          fontSize: 22,
-          fontFamily: FONT,
-          marginTop: 8,
-        }}>
-          AI와 함께 성장하는 미래
-        </p>
-        <p style={{
-          color: C.gray,
-          fontSize: 16,
-          fontFamily: FONT,
-          marginTop: 12,
-        }}>
-          hobbytan-ai.web.app · @aijossi
-        </p>
+        <p style={{ color: C.accent, fontSize: 22, fontFamily: FONT, marginTop: 8 }}>AI와 함께 성장하는 미래</p>
+        <p style={{ color: C.gray, fontSize: 16, fontFamily: FONT, marginTop: 12 }}>hobbytan-ai.web.app · @aijossi</p>
       </div>
-      <Subtitle text="13명의 AI 전문 에이전트가 당신의 AI 전환을 함께합니다" delay={5} />
+      <MultiSubtitle subs={subs} />
     </AbsoluteFill>
   );
 };
@@ -768,55 +605,19 @@ export const HobbyTANIntro: React.FC = () => {
     <AbsoluteFill style={{ background: C.bg }}>
       <FontLoader />
 
-      {/* Scene 1: Hook (0~5s) */}
-      <Sequence from={0} durationInFrames={150}>
-        <HookScene />
-      </Sequence>
+      {/* Narration audio */}
+      <Audio src={staticFile("audio/narration.mp3")} />
 
-      {/* Scene 2: 문제 제기 (5~15s) */}
-      <Sequence from={150} durationInFrames={300}>
-        <ProblemScene />
-      </Sequence>
-
-      {/* Scene 3: 브랜드 등장 (15~20s) */}
-      <Sequence from={450} durationInFrames={150}>
-        <BrandScene />
-      </Sequence>
-
-      {/* Scene 4: 파워워크샵 (20~35s) */}
-      <Sequence from={600} durationInFrames={450}>
-        <WorkshopScene />
-      </Sequence>
-
-      {/* Scene 5: 실적 숫자 (35~45s) */}
-      <Sequence from={1050} durationInFrames={300}>
-        <ResultsScene />
-      </Sequence>
-
-      {/* Scene 6: 프리미엄 혜택 (45~55s) */}
-      <Sequence from={1350} durationInFrames={300}>
-        <PremiumScene />
-      </Sequence>
-
-      {/* Scene 7: 서비스 라인업 (55~63s) */}
-      <Sequence from={1650} durationInFrames={240}>
-        <ServicesScene />
-      </Sequence>
-
-      {/* Scene 8: 투자 가치 (63~73s) */}
-      <Sequence from={1890} durationInFrames={300}>
-        <ValueScene />
-      </Sequence>
-
-      {/* Scene 9: CTA (73~83s) */}
-      <Sequence from={2190} durationInFrames={300}>
-        <CTAScene />
-      </Sequence>
-
-      {/* Scene 10: Council + Closing (83~90s) */}
-      <Sequence from={2490} durationInFrames={210}>
-        <ClosingScene />
-      </Sequence>
+      <Sequence from={0} durationInFrames={150}><HookScene /></Sequence>
+      <Sequence from={150} durationInFrames={300}><ProblemScene /></Sequence>
+      <Sequence from={450} durationInFrames={150}><BrandScene /></Sequence>
+      <Sequence from={600} durationInFrames={450}><WorkshopScene /></Sequence>
+      <Sequence from={1050} durationInFrames={300}><ResultsScene /></Sequence>
+      <Sequence from={1350} durationInFrames={300}><PremiumScene /></Sequence>
+      <Sequence from={1650} durationInFrames={240}><ServicesScene /></Sequence>
+      <Sequence from={1890} durationInFrames={300}><ValueScene /></Sequence>
+      <Sequence from={2190} durationInFrames={300}><CTAScene /></Sequence>
+      <Sequence from={2490} durationInFrames={210}><ClosingScene /></Sequence>
     </AbsoluteFill>
   );
 };
