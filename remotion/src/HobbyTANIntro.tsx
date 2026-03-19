@@ -101,7 +101,7 @@ const HookScene: React.FC = () => {
 
   const subs = [
     { text: "18개월 후, 따라잡을 수 없습니다.", startFrame: 10, endFrame: 75 },
-    { text: "AI 도입이 성장의 분수령이 됩니다.", startFrame: 75, endFrame: 145 },
+    { text: "경쟁사는 이미 앞서가고 있습니다.", startFrame: 75, endFrame: 145 },
   ];
 
   return (
@@ -147,7 +147,7 @@ const ProblemScene: React.FC = () => {
   const subs = [
     { text: "연간 2.4억 원의 기회비용이 발생합니다.", startFrame: 10, endFrame: 100 },
     { text: "자체 도입 시 67%가 실패합니다.", startFrame: 100, endFrame: 200 },
-    { text: "전문 파트너와 함께해야 합니다.", startFrame: 200, endFrame: 295 },
+    { text: "혼자서는 안 됩니다. 전문 파트너가 필요합니다.", startFrame: 200, endFrame: 295 },
   ];
 
   return (
@@ -189,7 +189,7 @@ const BrandScene: React.FC = () => {
 
   const subs = [
     { text: "하비탄AI", startFrame: 5, endFrame: 75 },
-    { text: "가장 뛰어난 AX 혁신 파트너", startFrame: 75, endFrame: 145 },
+    { text: "당신의 변화를 이끄는 AX 혁신 파트너", startFrame: 75, endFrame: 145 },
   ];
 
   return (
@@ -236,7 +236,7 @@ const WorkshopScene: React.FC = () => {
     { text: "1주차, AI 기초와 비즈니스 전략을 수립합니다.", startFrame: 90, endFrame: 180 },
     { text: "2주차부터 실전 도구를 마스터합니다.", startFrame: 180, endFrame: 270 },
     { text: "3주차, 반복 업무 80%를 자동화합니다.", startFrame: 270, endFrame: 360 },
-    { text: "5주 만에 AI 실무 역량을 완성합니다.", startFrame: 360, endFrame: 445 },
+    { text: "5주면, 진짜 변화가 시작됩니다.", startFrame: 360, endFrame: 445 },
   ];
 
   return (
@@ -446,7 +446,7 @@ const ValueScene: React.FC = () => {
   const subs = [
     { text: "일반 컨설팅은 3,000만 원 이상입니다.", startFrame: 10, endFrame: 100 },
     { text: "하비탄AI 파워워크샵은 800만 원.", startFrame: 100, endFrame: 200 },
-    { text: "4배 더 효율적인 투자입니다.", startFrame: 200, endFrame: 295 },
+    { text: "남는 건 보고서뿐인 컨설팅과는 다릅니다.", startFrame: 200, endFrame: 295 },
   ];
 
   return (
@@ -494,7 +494,7 @@ const CTAScene: React.FC = () => {
 
   const subs = [
     { text: "지금 시작하세요.", startFrame: 5, endFrame: 90 },
-    { text: "AI 전환, 늦으면 뒤처집니다.", startFrame: 90, endFrame: 200 },
+    { text: "당신의 비즈니스에 AI를 심어드립니다.", startFrame: 90, endFrame: 200 },
     { text: "30분 무료 AI 진단을 신청하세요.", startFrame: 200, endFrame: 295 },
   ];
 
@@ -553,7 +553,7 @@ const ClosingScene: React.FC = () => {
 
   const subs = [
     { text: "13명의 AI 전문 에이전트가 함께합니다.", startFrame: 5, endFrame: 100 },
-    { text: "하비탄AI, AI와 함께 성장하는 미래.", startFrame: 100, endFrame: 205 },
+    { text: "하비탄AI와 함께, 미래를 만들어 가세요.", startFrame: 100, endFrame: 205 },
   ];
 
   return (
