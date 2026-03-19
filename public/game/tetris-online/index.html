@@ -7,142 +7,139 @@
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0a;--card:#111;--accent:#10b981;--accent2:#059669;--white:#fff;--gray:#888;--border:#222;--chat-bg:#0d0d0d}
-body{background:var(--bg);color:var(--white);font-family:'Pretendard Variable',system-ui,sans-serif;min-height:100vh;min-height:100dvh;overflow:hidden;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+:root{--bg:#0a0a0a;--card:#111;--accent:#10b981;--accent2:#059669;--white:#fff;--gray:#888;--border:#222}
+body{background:var(--bg);color:var(--white);font-family:'Pretendard Variable',system-ui,sans-serif;height:100vh;height:100dvh;overflow:hidden;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 h1,h2,h3{font-weight:800}
-
-/* ===== LOBBY ===== */
-#lobby{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;min-height:100dvh;gap:14px;padding:16px;overflow-y:auto}
-#lobby h1{font-size:30px;color:var(--accent)}
-#lobby h1 span{color:var(--white)}
-.lobby-box{background:var(--card);border:1px solid var(--border);padding:22px;width:100%;max-width:440px;text-align:center}
-.lobby-box input{background:#1a1a1a;border:1px solid var(--border);color:var(--white);padding:11px 14px;font-size:17px;width:100%;margin:7px 0;font-family:inherit;text-align:center;border-radius:0;-webkit-appearance:none}
-.lobby-box input.code-input{letter-spacing:4px}
-.lobby-box input::placeholder{letter-spacing:normal;color:#555}
-.btn{background:var(--accent);color:var(--bg);border:none;padding:13px 24px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin:5px 0;border-radius:0;-webkit-appearance:none}
+.btn{background:var(--accent);color:var(--bg);border:none;padding:12px 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin:4px 0;border-radius:0;-webkit-appearance:none}
 .btn:active{transform:scale(.97)}
 .btn-secondary{background:transparent;border:2px solid var(--accent);color:var(--accent)}
 .btn-danger{background:#ef4444;color:#fff}
-.players-list{margin:14px 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.player-slot{background:#1a1a1a;border:1px solid var(--border);padding:8px 14px;min-width:85px;text-align:center;font-size:12px}
+input[type=text]{background:#1a1a1a;border:1px solid var(--border);color:var(--white);padding:10px 14px;font-size:16px;width:100%;font-family:inherit;text-align:center;border-radius:0;-webkit-appearance:none;margin:4px 0}
+input::placeholder{color:#555}
+
+/* ===== LOBBY LAYOUT: 2-column (menu left, chat right) ===== */
+#lobby{display:flex;height:100vh;height:100dvh}
+#lobby-left{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;overflow-y:auto;min-width:0}
+#lobby-right{width:340px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100%}
+#lobby h1{font-size:28px;color:var(--accent);text-align:center}
+#lobby h1 span{color:var(--white)}
+.lobby-box{background:var(--card);border:1px solid var(--border);padding:20px;width:100%;max-width:420px;text-align:center}
+.code-input{letter-spacing:4px!important}
+.players-list{margin:12px 0;display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.player-slot{background:#1a1a1a;border:1px solid var(--border);padding:7px 12px;min-width:80px;text-align:center;font-size:11px}
 .player-slot.ready{border-color:var(--accent);color:var(--accent)}
 .player-slot.empty{color:#333}
-.player-slot .nick{font-weight:700;font-size:14px}
-#error-msg{color:#ef4444;font-size:13px;margin:6px 0;min-height:18px}
+.player-slot .nick{font-weight:700;font-size:13px}
+#error-msg{color:#ef4444;font-size:12px;margin:4px 0;min-height:16px}
 #countdown{font-size:72px;font-weight:800;color:var(--accent);display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999;text-shadow:0 0 40px rgba(16,185,129,.5)}
 
-/* ===== DANCER ===== */
-.dancer-container{position:relative;width:50px;height:70px;margin:6px auto}
+/* ===== CHAT PANEL (reused in lobby-right, game sidebar, mobile) ===== */
+.chat-panel{display:flex;flex-direction:column;flex:1;min-height:0}
+.chat-panel-header{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:6px}
+.chat-messages{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:3px;min-height:0}
+.chat-msg{font-size:12px;line-height:1.4;word-break:break-word}
+.chat-msg .cn{color:var(--accent);font-weight:700}
+.chat-msg .ct{color:#ccc}
+.chat-sys{color:var(--gray);font-style:italic;font-size:11px}
+.chat-input-row{display:flex;border-top:1px solid var(--border);padding:6px}
+.chat-input-row input{flex:1;background:#1a1a1a;border:1px solid var(--border);color:var(--white);padding:8px;font-size:13px;font-family:inherit;border-radius:0;text-align:left}
+.chat-input-row button{background:var(--accent);color:var(--bg);border:none;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer}
+
+/* Invite bar inside lobby-right */
+.invite-bar{padding:10px 12px;border-bottom:1px solid var(--border);text-align:center}
+.invite-bar .invite-label{font-size:11px;color:var(--gray)}
+.invite-bar .invite-code{font-size:22px;letter-spacing:6px;font-weight:800;color:var(--accent);margin:4px 0}
+.invite-bar .invite-btns{display:flex;gap:6px;margin-top:6px}
+.invite-bar .invite-btns button{flex:1;padding:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;border-radius:0}
+.invite-bar .ib-copy{background:var(--accent);color:var(--bg)}
+.invite-bar .ib-share{background:var(--accent2);color:var(--white)}
+
+/* Ranking section */
+.ranking-section{border-bottom:1px solid var(--border);max-height:200px;overflow-y:auto}
+.ranking-section .rk-title{padding:8px 12px;font-size:12px;font-weight:700;color:var(--accent)}
+.rank-row{display:flex;align-items:center;padding:5px 12px;gap:8px;font-size:12px}
+.rank-pos{font-weight:800;color:var(--accent);min-width:22px}
+.rank-pos.gold{color:#f59e0b}.rank-pos.silver{color:#94a3b8}.rank-pos.bronze{color:#b45309}
+.rank-name{flex:1;font-weight:600}
+.rank-score{color:var(--accent);font-weight:700}
+.rank-empty{color:var(--gray);text-align:center;padding:16px;font-size:12px}
+
+/* Dancer */
+.dancer-container{position:relative;width:40px;height:55px;margin:4px auto}
 .dancer{position:absolute;bottom:0;left:50%;transform:translateX(-50%);animation:dance .6s ease-in-out infinite alternate}
-.dancer .head{width:18px;height:18px;background:var(--accent);border-radius:50%;margin:0 auto}
-.dancer .body{width:5px;height:20px;background:var(--accent);margin:2px auto}
-.dancer .arm-l,.dancer .arm-r{position:absolute;width:4px;height:16px;background:var(--accent);top:22px;border-radius:2px}
-.dancer .arm-l{left:7px;transform-origin:top center;animation:arm-l .6s ease-in-out infinite alternate}
-.dancer .arm-r{right:7px;transform-origin:top center;animation:arm-r .6s ease-in-out infinite alternate}
-.dancer .leg-l,.dancer .leg-r{position:absolute;width:5px;height:18px;background:var(--accent);bottom:0;border-radius:2px}
-.dancer .leg-l{left:12px;transform-origin:top center;animation:leg-l .3s ease-in-out infinite alternate}
-.dancer .leg-r{right:12px;transform-origin:top center;animation:leg-r .3s ease-in-out infinite alternate .15s}
-@keyframes dance{0%{transform:translateX(-50%) translateY(0)}100%{transform:translateX(-50%) translateY(-5px)}}
+.dancer .head{width:16px;height:16px;background:var(--accent);border-radius:50%;margin:0 auto}
+.dancer .body{width:4px;height:16px;background:var(--accent);margin:1px auto}
+.dancer .arm-l,.dancer .arm-r{position:absolute;width:4px;height:14px;background:var(--accent);top:18px;border-radius:2px}
+.dancer .arm-l{left:5px;transform-origin:top center;animation:arm-l .6s ease-in-out infinite alternate}
+.dancer .arm-r{right:5px;transform-origin:top center;animation:arm-r .6s ease-in-out infinite alternate}
+.dancer .leg-l,.dancer .leg-r{position:absolute;width:4px;height:16px;background:var(--accent);bottom:0;border-radius:2px}
+.dancer .leg-l{left:10px;transform-origin:top center;animation:leg-l .3s ease-in-out infinite alternate}
+.dancer .leg-r{right:10px;transform-origin:top center;animation:leg-r .3s ease-in-out infinite alternate .15s}
+@keyframes dance{0%{transform:translateX(-50%) translateY(0)}100%{transform:translateX(-50%) translateY(-4px)}}
 @keyframes arm-l{0%{transform:rotate(-30deg)}100%{transform:rotate(45deg)}}
 @keyframes arm-r{0%{transform:rotate(30deg)}100%{transform:rotate(-45deg)}}
 @keyframes leg-l{0%{transform:rotate(-15deg)}100%{transform:rotate(15deg)}}
 @keyframes leg-r{0%{transform:rotate(15deg)}100%{transform:rotate(-15deg)}}
 
-/* ===== GAME LAYOUT ===== */
-#game{display:none;width:100%;height:100vh;height:100dvh}
-/* Desktop: game left + sidebar right */
+/* ===== GAME ===== */
+#game{display:none;height:100vh;height:100dvh}
 #game-container{display:flex;width:100%;height:100%}
 #game-main{flex:1;display:flex;flex-direction:column;min-width:0}
-.game-top{text-align:center;padding:4px;display:flex;justify-content:center;align-items:center;gap:10px}
-.game-top h2{font-size:15px;color:var(--accent)}
-#my-game-area{display:flex;justify-content:center;align-items:flex-start;gap:6px;padding:2px}
-#opponents{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;padding:2px}
+.game-top{text-align:center;padding:3px;font-size:14px;color:var(--accent);font-weight:700}
+#my-game-area{display:flex;justify-content:center;align-items:flex-start;gap:5px;padding:2px}
+#opponents{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;padding:2px}
 .board-wrapper{display:flex;flex-direction:column;align-items:center;gap:2px}
-.board-wrapper .player-name{font-size:12px;color:var(--accent);font-weight:700}
+.board-wrapper .player-name{font-size:11px;color:var(--accent);font-weight:700}
 .board-wrapper.dead .player-name{color:#f44}
 canvas.tetris-board{border:1px solid var(--border);background:#050505}
-.side-panel{display:flex;flex-direction:column;align-items:center;gap:5px}
+.side-panel{display:flex;flex-direction:column;align-items:center;gap:4px}
 .side-panel .label{font-size:9px;color:var(--gray);text-transform:uppercase}
-.side-panel .score-display{font-size:11px;color:var(--gray)}
+.side-panel .score-display{font-size:10px;color:var(--gray)}
 canvas.preview{border:1px solid var(--border);background:#0a0a0a}
 .opp-wrapper{display:flex;flex-direction:column;align-items:center;gap:2px}
 .opp-wrapper .opp-name{font-size:9px;color:var(--accent);font-weight:600}
 .opp-wrapper.dead .opp-name{color:#f44}
 
-/* ===== SIDEBAR (Desktop) ===== */
-#sidebar{width:300px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100%}
-#sidebar-tabs{display:flex;border-bottom:1px solid var(--border)}
-.stab{flex:1;padding:10px 8px;text-align:center;font-size:12px;font-weight:700;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent}
-.stab.active{color:var(--accent);border-bottom-color:var(--accent)}
-#sidebar-content{flex:1;overflow-y:auto;display:flex;flex-direction:column}
-.spanel{display:none;flex:1;flex-direction:column}
-.spanel.active{display:flex}
+/* Game sidebar (desktop) — same structure as lobby-right */
+#game-sidebar{width:300px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100%}
 
-/* Chat */
-#chat-messages{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:4px;min-height:0}
-.chat-msg{font-size:12px;line-height:1.4;word-break:break-word}
-.chat-msg .chat-nick{color:var(--accent);font-weight:700}
-.chat-msg .chat-text{color:var(--white)}
-.chat-sys{color:var(--gray);font-style:italic;font-size:11px}
-#chat-input-area{display:flex;border-top:1px solid var(--border);padding:6px}
-#chat-input-area input{flex:1;background:#1a1a1a;border:1px solid var(--border);color:var(--white);padding:8px;font-size:13px;font-family:inherit;border-radius:0;-webkit-appearance:none}
-#chat-input-area button{background:var(--accent);color:var(--bg);border:none;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer}
-
-/* Invite */
-.invite-panel{padding:16px;display:flex;flex-direction:column;gap:12px;align-items:center}
-.invite-code{font-size:32px;letter-spacing:8px;font-weight:800;color:var(--accent);padding:16px;background:#1a1a1a;border:2px dashed var(--accent);text-align:center}
-.copy-btn{background:var(--accent);color:var(--bg);border:none;padding:10px 24px;font-weight:700;font-size:14px;cursor:pointer;width:100%}
-.copy-btn:active{transform:scale(.97)}
-.share-url{font-size:11px;color:var(--gray);word-break:break-all;text-align:center}
-
-/* Ranking */
-#ranking-list{padding:8px}
-.rank-row{display:flex;align-items:center;padding:8px;border-bottom:1px solid var(--border);gap:10px}
-.rank-pos{font-size:18px;font-weight:800;color:var(--accent);min-width:30px;text-align:center}
-.rank-pos.gold{color:#f59e0b}
-.rank-pos.silver{color:#94a3b8}
-.rank-pos.bronze{color:#b45309}
-.rank-name{flex:1;font-size:13px;font-weight:600}
-.rank-score{font-size:13px;color:var(--accent);font-weight:700}
-.rank-empty{color:var(--gray);text-align:center;padding:30px;font-size:13px}
-
-/* ===== MOBILE SIDEBAR (Hamburger) ===== */
-#mobile-menu-btn{display:none;position:fixed;top:8px;right:8px;z-index:100;background:var(--card);border:1px solid var(--border);color:var(--white);width:40px;height:40px;font-size:20px;cursor:pointer;border-radius:6px;align-items:center;justify-content:center}
-#mobile-sidebar{display:none;position:fixed;top:0;right:-320px;width:300px;max-width:85vw;height:100%;background:var(--card);border-left:1px solid var(--border);z-index:200;transition:right .25s ease;flex-direction:column}
+/* Mobile */
+#mobile-menu-btn{display:none;position:fixed;top:6px;right:6px;z-index:100;background:var(--card);border:1px solid var(--border);color:var(--white);width:38px;height:38px;font-size:18px;cursor:pointer;border-radius:6px;align-items:center;justify-content:center}
+#mobile-sidebar-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:150}
+#mobile-sidebar-overlay.show{display:block}
+#mobile-sidebar{display:none;position:fixed;top:0;right:-310px;width:300px;max-width:85vw;height:100%;background:var(--card);border-left:1px solid var(--border);z-index:200;transition:right .25s ease;flex-direction:column}
 #mobile-sidebar.open{right:0}
-#mobile-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:150}
-#mobile-overlay.show{display:block}
-#mobile-sidebar-close{background:none;border:none;color:var(--white);font-size:24px;padding:10px;cursor:pointer;text-align:right}
-
-/* ===== MOBILE CONTROLS ===== */
-#mobile-controls{display:none;position:fixed;bottom:0;left:0;right:0;padding:6px 10px 12px;z-index:50;background:linear-gradient(transparent,rgba(0,0,0,.92) 25%)}
-.ctrl-row{display:flex;justify-content:center;gap:8px;margin-bottom:5px}
-.mobile-btn{background:rgba(17,17,17,.9);border:2px solid var(--border);color:var(--white);width:62px;height:50px;font-size:20px;display:flex;align-items:center;justify-content:center;border-radius:8px;touch-action:manipulation}
+#mobile-sidebar-close{background:none;border:none;color:var(--white);font-size:22px;padding:8px;cursor:pointer;text-align:right}
+#mobile-controls{display:none;position:fixed;bottom:0;left:0;right:0;padding:5px 10px 10px;z-index:50;background:linear-gradient(transparent,rgba(0,0,0,.92) 20%)}
+.ctrl-row{display:flex;justify-content:center;gap:8px;margin-bottom:4px}
+.mobile-btn{background:rgba(17,17,17,.9);border:2px solid var(--border);color:var(--white);width:60px;height:48px;font-size:18px;display:flex;align-items:center;justify-content:center;border-radius:8px;touch-action:manipulation}
 .mobile-btn:active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
-.mobile-btn.wide{width:130px;font-size:14px;font-weight:700}
+.mobile-btn.wide{width:124px;font-size:13px;font-weight:700}
 
-/* ===== GAME OVER ===== */
-.game-over-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.88);z-index:1000;justify-content:center;align-items:center;flex-direction:column;gap:14px;padding:20px}
-.game-over-overlay.show{display:flex}
-.game-over-overlay h2{font-size:36px;color:var(--accent)}
-.game-over-overlay p{font-size:18px;color:var(--gray)}
+/* Game Over */
+.go-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.88);z-index:1000;justify-content:center;align-items:center;flex-direction:column;gap:14px;padding:20px}
+.go-overlay.show{display:flex}
+.go-overlay h2{font-size:36px;color:var(--accent)}
+.go-overlay p{font-size:18px;color:var(--gray)}
 
-/* ===== RESPONSIVE ===== */
+/* Mobile: lobby becomes single column, chat toggles */
+#lobby-mobile-chat-btn{display:none}
 @media(max-width:768px){
-  #sidebar{display:none}
+  #lobby{flex-direction:column}
+  #lobby-left{min-height:auto;flex:none;padding:10px;gap:8px;justify-content:flex-start;overflow-y:auto;max-height:55vh}
+  #lobby-right{width:100%;flex:1;border-left:none;border-top:1px solid var(--border)}
+  #game-sidebar{display:none}
   #mobile-menu-btn{display:flex}
   #mobile-sidebar{display:flex}
   #mobile-controls{display:block}
   body{overflow:hidden}
 }
 @media(min-width:769px){
-  #mobile-menu-btn{display:none!important}
-  #mobile-sidebar{display:none!important}
-  #mobile-overlay{display:none!important}
+  #mobile-menu-btn,#mobile-sidebar,#mobile-sidebar-overlay{display:none!important}
 }
 @media(max-width:480px){
-  #lobby h1{font-size:24px}
-  .lobby-box{padding:16px}
+  #lobby h1{font-size:22px}
+  #lobby-left{max-height:50vh}
 }
 </style>
 </head>
@@ -150,34 +147,66 @@ canvas.preview{border:1px solid var(--border);background:#0a0a0a}
 
 <!-- ===== LOBBY ===== -->
 <div id="lobby">
-  <div class="dancer-container"><div class="dancer"><div class="head"></div><div class="arm-l"></div><div class="arm-r"></div><div class="body"></div><div class="leg-l"></div><div class="leg-r"></div></div></div>
-  <h1><span>TETRIS</span> ONLINE</h1>
-  <p style="color:var(--gray);font-size:13px">HOBBYTAN AI — 최대 4인 실시간 대전</p>
-  <div class="lobby-box" id="nick-box">
-    <p style="color:var(--accent);font-weight:700;font-size:15px;margin-bottom:8px">닉네임을 입력하세요</p>
-    <input type="text" id="nick-input" placeholder="닉네임 (2~8자)" maxlength="8" autocomplete="off">
-    <button class="btn" onclick="setNickname()">확인</button>
+  <!-- LEFT: menu -->
+  <div id="lobby-left">
+    <div class="dancer-container"><div class="dancer"><div class="head"></div><div class="arm-l"></div><div class="arm-r"></div><div class="body"></div><div class="leg-l"></div><div class="leg-r"></div></div></div>
+    <h1><span>TETRIS</span> ONLINE</h1>
+    <p style="color:var(--gray);font-size:12px">HOBBYTAN AI — 최대 4인 실시간 대전</p>
+
+    <!-- Step 1: Nickname -->
+    <div class="lobby-box" id="nick-box">
+      <p style="color:var(--accent);font-weight:700;font-size:14px;margin-bottom:6px">닉네임을 입력하세요</p>
+      <input type="text" id="nick-input" placeholder="닉네임 (2~8자)" maxlength="8" autocomplete="off">
+      <button class="btn" onclick="setNickname()">확인</button>
+    </div>
+
+    <!-- Step 2: Create/Join -->
+    <div class="lobby-box" id="create-join" style="display:none">
+      <p style="color:var(--gray);margin-bottom:8px;font-size:13px">환영합니다, <span id="nick-display" style="color:var(--accent);font-weight:700"></span>!</p>
+      <button class="btn" onclick="createRoom()">🎮 방 만들기</button>
+      <p style="color:var(--gray);margin:8px 0;font-size:13px">또는</p>
+      <input type="text" id="room-input" class="code-input" placeholder="방 코드 입력" maxlength="6" autocomplete="off">
+      <button class="btn btn-secondary" onclick="joinRoom()">참가하기</button>
+      <div id="error-msg"></div>
+      <hr style="border-color:var(--border);margin:10px 0">
+      <button class="btn btn-secondary" onclick="startSolo()">🎯 혼자 하기</button>
+    </div>
+
+    <!-- Step 3: Waiting room -->
+    <div class="lobby-box" id="waiting-room" style="display:none">
+      <p>방 코드: <span id="room-code" style="color:var(--accent);font-weight:700;font-size:22px;letter-spacing:5px"></span></p>
+      <p style="color:var(--gray);font-size:11px;margin:4px 0">코드를 채팅에서 공유하세요!</p>
+      <div class="players-list" id="players-list"></div>
+      <button class="btn" id="ready-btn" onclick="toggleReady()">✅ READY</button>
+      <p id="status-msg" style="color:var(--gray);margin-top:4px;font-size:11px"></p>
+    </div>
   </div>
-  <div class="lobby-box" id="create-join" style="display:none">
-    <p style="color:var(--gray);margin-bottom:12px">환영합니다, <span id="nick-display" style="color:var(--accent);font-weight:700"></span>!</p>
-    <button class="btn" onclick="createRoom()">🎮 방 만들기</button>
-    <p style="color:var(--gray);margin:12px 0;font-size:14px">또는</p>
-    <input type="text" id="room-input" class="code-input" placeholder="방 코드 입력" maxlength="6" autocomplete="off">
-    <button class="btn btn-secondary" onclick="joinRoom()">참가하기</button>
-    <div id="error-msg"></div>
-    <hr style="border-color:var(--border);margin:14px 0">
-    <button class="btn btn-secondary" onclick="startSolo()">🎯 혼자 하기</button>
-    <hr style="border-color:var(--border);margin:14px 0">
-    <p style="color:var(--gray);font-size:13px;margin-bottom:6px">🏆 랭킹</p>
-    <div id="lobby-ranking"></div>
-  </div>
-  <div class="lobby-box" id="waiting-room" style="display:none">
-    <p>방 코드: <span id="room-code" style="color:var(--accent);font-weight:700;font-size:24px;letter-spacing:6px"></span></p>
-    <p style="color:var(--gray);font-size:11px;margin:6px 0">이 코드를 친구에게 공유하세요!</p>
-    <button class="copy-btn" onclick="copyInvite()" style="margin:8px 0">📋 초대코드 복사</button>
-    <div class="players-list" id="players-list"></div>
-    <button class="btn" id="ready-btn" onclick="toggleReady()">✅ READY</button>
-    <p id="status-msg" style="color:var(--gray);margin-top:6px;font-size:12px"></p>
+
+  <!-- RIGHT: chat + ranking + invite (always visible) -->
+  <div id="lobby-right">
+    <!-- Invite bar (hidden until room created) -->
+    <div class="invite-bar" id="lobby-invite" style="display:none">
+      <div class="invite-label">초대코드</div>
+      <div class="invite-code" id="lobby-invite-code"></div>
+      <div class="invite-btns">
+        <button class="ib-copy" onclick="copyInvite()">📋 복사</button>
+        <button class="ib-share" onclick="shareInvite()">📤 공유</button>
+      </div>
+    </div>
+    <!-- Ranking -->
+    <div class="ranking-section" id="lobby-ranking-section">
+      <div class="rk-title">🏆 랭킹 TOP 10</div>
+      <div id="lobby-ranking"></div>
+    </div>
+    <!-- Chat (global → room) -->
+    <div class="chat-panel">
+      <div class="chat-panel-header" id="lobby-chat-header">💬 글로벌 채팅</div>
+      <div class="chat-messages" id="lobby-chat-messages"></div>
+      <div class="chat-input-row">
+        <input type="text" id="lobby-chat-input" placeholder="메시지 입력..." maxlength="100" autocomplete="off">
+        <button onclick="sendLobbyChat()">전송</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -187,89 +216,71 @@ canvas.preview{border:1px solid var(--border);background:#0a0a0a}
 <div id="game">
   <div id="game-container">
     <div id="game-main">
-      <div class="game-top"><h2>🕹️ TETRIS</h2></div>
+      <div class="game-top">🕹️ TETRIS ONLINE</div>
       <div id="opponents"></div>
       <div id="my-game-area"></div>
     </div>
-    <!-- Desktop Sidebar -->
-    <div id="sidebar">
-      <div id="sidebar-tabs">
-        <div class="stab active" data-tab="chat" onclick="switchTab(this,'chat')">💬 채팅</div>
-        <div class="stab" data-tab="invite" onclick="switchTab(this,'invite')">🔗 초대</div>
-        <div class="stab" data-tab="rank" onclick="switchTab(this,'rank')">🏆 랭킹</div>
+    <!-- Desktop game sidebar -->
+    <div id="game-sidebar">
+      <div class="invite-bar" id="game-invite" style="display:none">
+        <div class="invite-label">초대코드</div>
+        <div class="invite-code" id="game-invite-code"></div>
+        <div class="invite-btns">
+          <button class="ib-copy" onclick="copyInvite()">📋 복사</button>
+          <button class="ib-share" onclick="shareInvite()">📤 공유</button>
+        </div>
       </div>
-      <div id="sidebar-content">
-        <div class="spanel active" id="panel-chat">
-          <div id="chat-messages"></div>
-          <div id="chat-input-area">
-            <input type="text" id="chat-input" placeholder="메시지 입력..." maxlength="100" autocomplete="off">
-            <button onclick="sendChat()">전송</button>
-          </div>
-        </div>
-        <div class="spanel" id="panel-invite">
-          <div class="invite-panel">
-            <p style="color:var(--gray);font-size:13px">친구를 초대하세요!</p>
-            <div class="invite-code" id="invite-code-desktop">—</div>
-            <button class="copy-btn" onclick="copyInvite()">📋 코드 복사</button>
-            <button class="copy-btn" onclick="shareInvite()" style="background:var(--accent2)">📤 링크 공유</button>
-            <div class="share-url" id="share-url"></div>
-          </div>
-        </div>
-        <div class="spanel" id="panel-rank">
-          <div id="ranking-list"></div>
+      <div class="ranking-section">
+        <div class="rk-title">🏆 랭킹</div>
+        <div id="game-ranking"></div>
+      </div>
+      <div class="chat-panel">
+        <div class="chat-panel-header">💬 채팅</div>
+        <div class="chat-messages" id="game-chat-messages"></div>
+        <div class="chat-input-row">
+          <input type="text" id="game-chat-input" placeholder="메시지..." maxlength="100" autocomplete="off">
+          <button onclick="sendGameChat()">전송</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Mobile hamburger -->
-<button id="mobile-menu-btn" onclick="toggleMobileSidebar()">☰</button>
-<div id="mobile-overlay" onclick="toggleMobileSidebar()"></div>
+<!-- Mobile hamburger sidebar -->
+<button id="mobile-menu-btn" onclick="toggleMobile()">☰</button>
+<div id="mobile-sidebar-overlay" onclick="toggleMobile()"></div>
 <div id="mobile-sidebar">
-  <button id="mobile-sidebar-close" onclick="toggleMobileSidebar()">✕</button>
-  <div id="sidebar-tabs-m" style="display:flex;border-bottom:1px solid var(--border)">
-    <div class="stab active" data-tab="chat-m" onclick="switchTabM(this,'chat-m')">💬</div>
-    <div class="stab" data-tab="invite-m" onclick="switchTabM(this,'invite-m')">🔗</div>
-    <div class="stab" data-tab="rank-m" onclick="switchTabM(this,'rank-m')">🏆</div>
+  <button id="mobile-sidebar-close" onclick="toggleMobile()">✕</button>
+  <div class="invite-bar" id="mobile-invite" style="display:none">
+    <div class="invite-label">초대코드</div>
+    <div class="invite-code" id="mobile-invite-code"></div>
+    <div class="invite-btns">
+      <button class="ib-copy" onclick="copyInvite()">📋 복사</button>
+      <button class="ib-share" onclick="shareInvite()">📤 공유</button>
+    </div>
   </div>
-  <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column">
-    <div class="spanel active" id="panel-chat-m" style="flex:1;display:flex;flex-direction:column">
-      <div id="chat-messages-m" style="flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:4px;min-height:0"></div>
-      <div style="display:flex;border-top:1px solid var(--border);padding:6px">
-        <input type="text" id="chat-input-m" placeholder="메시지..." maxlength="100" autocomplete="off" style="flex:1;background:#1a1a1a;border:1px solid var(--border);color:var(--white);padding:8px;font-size:13px;font-family:inherit;border-radius:0">
-        <button onclick="sendChatM()" style="background:var(--accent);color:var(--bg);border:none;padding:8px 12px;font-weight:700;font-size:13px">전송</button>
-      </div>
-    </div>
-    <div class="spanel" id="panel-invite-m">
-      <div class="invite-panel">
-        <p style="color:var(--gray);font-size:13px">친구를 초대하세요!</p>
-        <div class="invite-code" id="invite-code-mobile">—</div>
-        <button class="copy-btn" onclick="copyInvite()">📋 코드 복사</button>
-        <button class="copy-btn" onclick="shareInvite()" style="background:var(--accent2)">📤 링크 공유</button>
-      </div>
-    </div>
-    <div class="spanel" id="panel-rank-m">
-      <div id="ranking-list-m"></div>
+  <div class="ranking-section">
+    <div class="rk-title">🏆 랭킹</div>
+    <div id="mobile-ranking"></div>
+  </div>
+  <div class="chat-panel">
+    <div class="chat-panel-header">💬 채팅</div>
+    <div class="chat-messages" id="mobile-chat-messages"></div>
+    <div class="chat-input-row">
+      <input type="text" id="mobile-chat-input" placeholder="메시지..." maxlength="100" autocomplete="off">
+      <button onclick="sendMobileChat()">전송</button>
     </div>
   </div>
 </div>
 
 <!-- Mobile Controls -->
 <div id="mobile-controls">
-  <div class="ctrl-row">
-    <div class="mobile-btn" data-action="rotate">🔄</div>
-    <div class="mobile-btn wide" data-action="drop">⬇ DROP</div>
-  </div>
-  <div class="ctrl-row">
-    <div class="mobile-btn" data-action="left">◀</div>
-    <div class="mobile-btn" data-action="down">▼</div>
-    <div class="mobile-btn" data-action="right">▶</div>
-  </div>
+  <div class="ctrl-row"><div class="mobile-btn" data-action="rotate">🔄</div><div class="mobile-btn wide" data-action="drop">⬇ DROP</div></div>
+  <div class="ctrl-row"><div class="mobile-btn" data-action="left">◀</div><div class="mobile-btn" data-action="down">▼</div><div class="mobile-btn" data-action="right">▶</div></div>
 </div>
 
 <!-- Game Over -->
-<div class="game-over-overlay" id="game-over">
+<div class="go-overlay" id="game-over">
   <h2 id="go-title">GAME OVER</h2>
   <p id="go-msg"></p>
   <p id="go-score"></p>
@@ -281,7 +292,6 @@ canvas.preview{border:1px solid var(--border);background:#0a0a0a}
 <script>
 firebase.initializeApp({apiKey:"AIzaSyDxnIFPnFdSVR6IKuBMRm5ZQynO0ORrlzI",authDomain:"hobbytan-ai.firebaseapp.com",projectId:"hobbytan-ai",storageBucket:"hobbytan-ai.firebasestorage.app",messagingSenderId:"820555571498",appId:"1:820555571498:web:eb5c2de98d3b6c18e43cb9"});
 const db=firebase.firestore();
-
 const COLS=10,ROWS=20;
 const COLORS=['#10b981','#06b6d4','#f59e0b','#ef4444','#8b5cf6','#ec4899','#3b82f6'];
 const SHAPES=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]]];
@@ -291,12 +301,75 @@ let roomId=null,roomRef=null,isSolo=false,isReady=false,gameStarted=false,gameOv
 let players={},playerNicks={};
 let myBoard,myPiece,myNext,myScore,myLines,myLevel,dropInterval;
 let canvases={},countdownStarted=false,syncTimer=null,BLOCK=28;
+let currentChatMode='global'; // 'global' or 'room'
+let unsubGlobalChat=null,unsubRoomChat=null;
 
 function isMobile(){return window.innerWidth<=768}
 function calcBlockSize(){if(!isMobile())return 28;const mw=window.innerWidth-70,mh=window.innerHeight-210;return Math.min(Math.floor(mw/COLS),Math.floor(mh/ROWS),28)}
 
+// ===== GLOBAL CHAT =====
+function startGlobalChat(){
+  currentChatMode='global';
+  document.getElementById('lobby-chat-header').textContent='💬 글로벌 채팅';
+  unsubGlobalChat=db.collection('tetris_lobby_chat').orderBy('ts','asc').limitToLast(50).onSnapshot(snap=>{
+    snap.docChanges().forEach(ch=>{if(ch.type==='added'){const m=ch.doc.data();appendLobbyChat(m.name,m.text,m.sys)}});
+  });
+}
+function stopGlobalChat(){if(unsubGlobalChat){unsubGlobalChat();unsubGlobalChat=null}}
+
+function switchToRoomChat(){
+  stopGlobalChat();
+  currentChatMode='room';
+  // Clear lobby chat display
+  document.getElementById('lobby-chat-messages').innerHTML='';
+  document.getElementById('lobby-chat-header').textContent='💬 방 채팅 ('+roomId+')';
+  unsubRoomChat=roomRef.collection('chat').orderBy('ts','asc').limitToLast(50).onSnapshot(snap=>{
+    snap.docChanges().forEach(ch=>{if(ch.type==='added'){const m=ch.doc.data();appendAllChats(m.name,m.text,m.sys)}});
+  });
+}
+
+function appendLobbyChat(name,text,sys){
+  const html=sys?`<div class="chat-msg chat-sys">${esc(text)}</div>`:`<div class="chat-msg"><span class="cn">${esc(name)}</span> <span class="ct">${esc(text)}</span></div>`;
+  const el=document.getElementById('lobby-chat-messages');
+  if(el){el.insertAdjacentHTML('beforeend',html);el.scrollTop=el.scrollHeight}
+}
+function appendAllChats(name,text,sys){
+  const html=sys?`<div class="chat-msg chat-sys">${esc(text)}</div>`:`<div class="chat-msg"><span class="cn">${esc(name)}</span> <span class="ct">${esc(text)}</span></div>`;
+  ['lobby-chat-messages','game-chat-messages','mobile-chat-messages'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.insertAdjacentHTML('beforeend',html);el.scrollTop=el.scrollHeight}
+  });
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function sendLobbyChat(){const inp=document.getElementById('lobby-chat-input'),t=inp.value.trim();if(!t||!myNickname)return;inp.value='';sendChatToCurrentChannel(t)}
+function sendGameChat(){const inp=document.getElementById('game-chat-input'),t=inp.value.trim();if(!t)return;inp.value='';sendChatToCurrentChannel(t)}
+function sendMobileChat(){const inp=document.getElementById('mobile-chat-input'),t=inp.value.trim();if(!t)return;inp.value='';sendChatToCurrentChannel(t)}
+
+function sendChatToCurrentChannel(text){
+  if(currentChatMode==='room'&&roomRef){
+    roomRef.collection('chat').add({name:myNickname,text:text,sys:false,ts:Date.now()}).catch(()=>{});
+  }else{
+    db.collection('tetris_lobby_chat').add({name:myNickname,text:text,sys:false,ts:Date.now()}).catch(()=>{});
+  }
+}
+function addSystemChat(text){if(roomRef)roomRef.collection('chat').add({name:'',text:text,sys:true,ts:Date.now()}).catch(()=>{})}
+
+document.getElementById('lobby-chat-input').addEventListener('keydown',e=>{if(e.key==='Enter')sendLobbyChat()});
+document.getElementById('game-chat-input').addEventListener('keydown',e=>{if(e.key==='Enter')sendGameChat()});
+document.getElementById('mobile-chat-input').addEventListener('keydown',e=>{if(e.key==='Enter')sendMobileChat()});
+
 // ===== NICKNAME =====
-function setNickname(){const n=document.getElementById('nick-input').value.trim();if(n.length<2){alert('닉네임은 2자 이상');return}myNickname=n;document.getElementById('nick-box').style.display='none';document.getElementById('create-join').style.display='block';document.getElementById('nick-display').textContent=n;loadRanking()}
+function setNickname(){
+  const n=document.getElementById('nick-input').value.trim();
+  if(n.length<2){alert('닉네임은 2자 이상');return}
+  myNickname=n;
+  document.getElementById('nick-box').style.display='none';
+  document.getElementById('create-join').style.display='block';
+  document.getElementById('nick-display').textContent=n;
+  startGlobalChat();
+  loadRanking();
+}
 document.getElementById('nick-input').addEventListener('keydown',e=>{if(e.key==='Enter')setNickname()});
 
 // ===== LOBBY =====
@@ -331,6 +404,12 @@ function enterWaitingRoom(){
   document.getElementById('create-join').style.display='none';
   document.getElementById('waiting-room').style.display='block';
   document.getElementById('room-code').textContent=roomId;
+  // Show invite bar
+  showInviteBar(roomId);
+  // Switch chat to room
+  switchToRoomChat();
+  addSystemChat(myNickname+'님이 입장했습니다');
+
   roomRef.collection('players').onSnapshot(snap=>{
     players={};playerNicks={};
     snap.forEach(d=>{players[d.id]=d.data();playerNicks[d.id]=d.data().name||'Player'});
@@ -344,22 +423,27 @@ function enterWaitingRoom(){
   roomRef.collection('attacks').where('target','==',myId).onSnapshot(snap=>{
     snap.docChanges().forEach(ch=>{if(ch.type==='added'&&gameStarted&&!gameOver){const a=ch.doc.data();if(a.lines)addGarbage(a.lines);ch.doc.ref.delete().catch(()=>{})}});
   });
-  // Chat listener
-  roomRef.collection('chat').orderBy('ts','asc').limitToLast(50).onSnapshot(snap=>{
-    snap.docChanges().forEach(ch=>{if(ch.type==='added'){const m=ch.doc.data();appendChat(m.name,m.text,m.sys)}});
-  });
   window.addEventListener('beforeunload',()=>{if(roomRef)roomRef.collection('players').doc(myId).delete().catch(()=>{})});
+}
+
+function showInviteBar(code){
+  ['lobby-invite','game-invite','mobile-invite'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='block';
+  });
+  ['lobby-invite-code','game-invite-code','mobile-invite-code'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.textContent=code;
+  });
 }
 
 function renderPlayers(){
   const el=document.getElementById('players-list'),ids=Object.keys(players);
   let html='';
   for(let i=0;i<4;i++){
-    if(i<ids.length){const p=players[ids[i]],me=ids[i]===myId;html+=`<div class="player-slot ${p.ready?'ready':''}"><div class="nick">${p.name}${me?' 👈':''}</div><div>${p.ready?'✅':'⏳'}</div></div>`}
+    if(i<ids.length){const p=players[ids[i]],me=ids[i]===myId;html+=`<div class="player-slot ${p.ready?'ready':''}"><div class="nick">${esc(p.name)}${me?' 👈':''}</div><div>${p.ready?'✅':'⏳'}</div></div>`}
     else html+=`<div class="player-slot empty">빈 슬롯</div>`;
   }
   el.innerHTML=html;
-  document.getElementById('status-msg').textContent=ids.length<2?'다른 플레이어 대기중...':ids.length+'명! 모두 Ready 누르면 시작';
+  document.getElementById('status-msg').textContent=ids.length<2?'채팅으로 초대코드를 공유하세요!':ids.length+'명! 모두 Ready 누르면 시작';
 }
 
 async function toggleReady(){
@@ -369,98 +453,54 @@ async function toggleReady(){
   btn.textContent=isReady?'❌ CANCEL':'✅ READY';btn.className=isReady?'btn btn-danger':'btn';
 }
 function checkAllReady(){const ids=Object.keys(players);if(ids.length<1||countdownStarted||gameStarted)return;if(ids.every(id=>players[id].ready))roomRef.update({state:'countdown'}).catch(()=>{})}
-
 function startSolo(){isSolo=true;myNickname=myNickname||'Player';document.getElementById('lobby').style.display='none';showGame();setupLocalGame()}
 function startCountdown(){countdownStarted=true;const el=document.getElementById('countdown');el.style.display='block';let c=3;el.textContent=c;const iv=setInterval(()=>{c--;if(c>0)el.textContent=c;else{el.textContent='GO!';setTimeout(()=>el.style.display='none',500);clearInterval(iv);roomRef.update({state:'playing'}).catch(()=>{})}},1000)}
-function startGame(){if(gameStarted)return;gameStarted=true;document.getElementById('lobby').style.display='none';showGame();setupLocalGame();setupRemoteBoards();addSystemChat(myNickname+' 게임 시작!')}
-
+function startGame(){if(gameStarted)return;gameStarted=true;document.getElementById('lobby').style.display='none';showGame();setupLocalGame();setupRemoteBoards();addSystemChat('게임 시작!')}
 function showGame(){
   document.getElementById('game').style.display='block';
   if(isMobile())document.getElementById('mobile-controls').style.display='block';
-  // Set invite codes
-  if(roomId){
-    const ic=document.getElementById('invite-code-desktop');if(ic)ic.textContent=roomId;
-    const icm=document.getElementById('invite-code-mobile');if(icm)icm.textContent=roomId;
-    const su=document.getElementById('share-url');if(su)su.textContent=location.origin+location.pathname+'?room='+roomId;
-  }
-  loadRankingInGame();
+  loadRankingAll();
 }
 
 // ===== INVITE =====
-function copyInvite(){
-  const code=roomId||'';
-  navigator.clipboard.writeText(code).then(()=>alert('초대코드 복사됨: '+code)).catch(()=>{});
-}
+function copyInvite(){navigator.clipboard.writeText(roomId||'').then(()=>alert('초대코드 복사됨: '+roomId)).catch(()=>{})}
 function shareInvite(){
   const url=location.origin+location.pathname+'?room='+(roomId||'');
-  if(navigator.share){navigator.share({title:'테트리스 온라인',text:'같이 테트리스 하자! 방코드: '+(roomId||''),url:url}).catch(()=>{})}
-  else{navigator.clipboard.writeText(url).then(()=>alert('링크 복사됨!')).catch(()=>{})}
+  if(navigator.share)navigator.share({title:'테트리스 온라인',text:'같이 테트리스 하자! 방코드: '+roomId,url:url}).catch(()=>{});
+  else navigator.clipboard.writeText(url).then(()=>alert('링크 복사됨!')).catch(()=>{});
 }
-// Auto-join from URL
-(function(){const params=new URLSearchParams(location.search);const r=params.get('room');if(r){document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{const ri=document.getElementById('room-input');if(ri)ri.value=r},500)})}})();
-
-// ===== CHAT =====
-function appendChat(name,text,sys){
-  const html=sys?`<div class="chat-msg chat-sys">${text}</div>`:`<div class="chat-msg"><span class="chat-nick">${name}</span> <span class="chat-text">${text}</span></div>`;
-  const el=document.getElementById('chat-messages');if(el){el.insertAdjacentHTML('beforeend',html);el.scrollTop=el.scrollHeight}
-  const elm=document.getElementById('chat-messages-m');if(elm){elm.insertAdjacentHTML('beforeend',html);elm.scrollTop=elm.scrollHeight}
-}
-function addSystemChat(text){if(!isSolo&&roomRef)roomRef.collection('chat').add({name:'',text:text,sys:true,ts:Date.now()}).catch(()=>{})}
-function sendChat(){const inp=document.getElementById('chat-input');const t=inp.value.trim();if(!t||!roomRef)return;roomRef.collection('chat').add({name:myNickname,text:t,sys:false,ts:Date.now()}).catch(()=>{});inp.value=''}
-function sendChatM(){const inp=document.getElementById('chat-input-m');const t=inp.value.trim();if(!t||!roomRef)return;roomRef.collection('chat').add({name:myNickname,text:t,sys:false,ts:Date.now()}).catch(()=>{});inp.value=''}
-document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
-document.getElementById('chat-input-m').addEventListener('keydown',e=>{if(e.key==='Enter')sendChatM()});
+(function(){const r=new URLSearchParams(location.search).get('room');if(r)setTimeout(()=>{const ri=document.getElementById('room-input');if(ri)ri.value=r},300)})();
 
 // ===== RANKING =====
 async function loadRanking(){
   try{
     const snap=await db.collection('tetris_ranking').orderBy('score','desc').limit(10).get();
-    let html='';let i=1;
-    snap.forEach(d=>{const r=d.data();const cls=i===1?'gold':i===2?'silver':i===3?'bronze':'';html+=`<div class="rank-row"><div class="rank-pos ${cls}">${i}</div><div class="rank-name">${r.name}</div><div class="rank-score">${r.score.toLocaleString()}</div></div>`;i++});
-    if(!html)html='<div class="rank-empty">아직 기록이 없습니다</div>';
+    const html=renderRankingHTML(snap);
     document.getElementById('lobby-ranking').innerHTML=html;
   }catch(e){}
 }
-async function loadRankingInGame(){
+async function loadRankingAll(){
   try{
     const snap=await db.collection('tetris_ranking').orderBy('score','desc').limit(10).get();
-    let html='';let i=1;
-    snap.forEach(d=>{const r=d.data();const cls=i===1?'gold':i===2?'silver':i===3?'bronze':'';html+=`<div class="rank-row"><div class="rank-pos ${cls}">${i}</div><div class="rank-name">${r.name}</div><div class="rank-score">${r.score.toLocaleString()}</div></div>`;i++});
-    if(!html)html='<div class="rank-empty">아직 기록이 없습니다</div>';
-    const el=document.getElementById('ranking-list');if(el)el.innerHTML=html;
-    const elm=document.getElementById('ranking-list-m');if(elm)elm.innerHTML=html;
+    const html=renderRankingHTML(snap);
+    ['lobby-ranking','game-ranking','mobile-ranking'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html});
   }catch(e){}
 }
-async function saveScore(){
-  try{
-    // Check if this is a top score and save
-    await db.collection('tetris_ranking').add({name:myNickname,score:myScore,lines:myLines,level:myLevel,ts:firebase.firestore.FieldValue.serverTimestamp()});
-    loadRankingInGame();
-  }catch(e){}
+function renderRankingHTML(snap){
+  let html='',i=1;
+  snap.forEach(d=>{const r=d.data(),cls=i===1?'gold':i===2?'silver':i===3?'bronze':'';html+=`<div class="rank-row"><div class="rank-pos ${cls}">${i}</div><div class="rank-name">${esc(r.name)}</div><div class="rank-score">${(r.score||0).toLocaleString()}</div></div>`;i++});
+  return html||'<div class="rank-empty">아직 기록이 없습니다</div>';
 }
+async function saveScore(){try{await db.collection('tetris_ranking').add({name:myNickname,score:myScore,lines:myLines,level:myLevel,ts:firebase.firestore.FieldValue.serverTimestamp()});loadRankingAll()}catch(e){}}
 
-// ===== SIDEBAR TABS =====
-function switchTab(el,tab){
-  el.parentElement.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
-  document.querySelectorAll('#sidebar-content .spanel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-'+tab).classList.add('active');
-}
-function switchTabM(el,tab){
-  el.parentElement.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
-  document.querySelectorAll('#mobile-sidebar .spanel').forEach(p=>{p.classList.remove('active');p.style.display='none'});
-  const panel=document.getElementById('panel-'+tab);panel.classList.add('active');panel.style.display='flex';
-}
-function toggleMobileSidebar(){
-  const sb=document.getElementById('mobile-sidebar'),ov=document.getElementById('mobile-overlay');
-  sb.classList.toggle('open');ov.classList.toggle('show');
-}
+function toggleMobile(){document.getElementById('mobile-sidebar').classList.toggle('open');document.getElementById('mobile-sidebar-overlay').classList.toggle('show')}
 
 // ===== GAME SETUP =====
 function setupLocalGame(){
   BLOCK=calcBlockSize();myBoard=Array.from({length:ROWS},()=>Array(COLS).fill(0));
   myScore=0;myLines=0;myLevel=1;dropInterval=1000;
   const area=document.getElementById('my-game-area'),pb=Math.min(BLOCK,20);
-  area.innerHTML=`<div class="board-wrapper" id="board-${myId}"><div class="player-name">${myNickname} (나)</div><div style="display:flex;gap:5px;align-items:flex-start"><canvas class="tetris-board" id="my-canvas" width="${COLS*BLOCK}" height="${ROWS*BLOCK}"></canvas><div class="side-panel"><div class="label">NEXT</div><canvas class="preview" id="my-preview" width="${4*pb}" height="${4*pb}"></canvas><div class="label" style="margin-top:6px">SCORE</div><div class="score-display" id="score-me">0</div><div class="label">LINES</div><div class="score-display" id="lines-me">0</div><div class="label">LV</div><div class="score-display" id="level-me">1</div></div></div></div>`;
+  area.innerHTML=`<div class="board-wrapper" id="board-${myId}"><div class="player-name">${esc(myNickname)} (나)</div><div style="display:flex;gap:5px;align-items:flex-start"><canvas class="tetris-board" id="my-canvas" width="${COLS*BLOCK}" height="${ROWS*BLOCK}"></canvas><div class="side-panel"><div class="label">NEXT</div><canvas class="preview" id="my-preview" width="${4*pb}" height="${4*pb}"></canvas><div class="label" style="margin-top:6px">SCORE</div><div class="score-display" id="score-me">0</div><div class="label">LINES</div><div class="score-display" id="lines-me">0</div><div class="label">LV</div><div class="score-display" id="level-me">1</div></div></div></div>`;
   canvases.me={board:document.getElementById('my-canvas').getContext('2d'),preview:document.getElementById('my-preview').getContext('2d'),prevBlock:pb};
   spawnPiece();gameLoop();document.addEventListener('keydown',handleKey);
   if(!isSolo)syncTimer=setInterval(syncBoard,500);
@@ -469,7 +509,7 @@ function setupRemoteBoards(){
   const el=document.getElementById('opponents'),ids=Object.keys(players).filter(id=>id!==myId),S=isMobile()?10:18;
   ids.forEach(id=>{
     const nick=playerNicks[id]||'상대',w=document.createElement('div');w.className='opp-wrapper';w.id='opp-'+id;
-    w.innerHTML=`<div class="opp-name">${nick}</div><canvas class="tetris-board" width="${COLS*S}" height="${ROWS*S}"></canvas><div style="font-size:9px;color:var(--gray)" id="score-${id}">0</div>`;
+    w.innerHTML=`<div class="opp-name">${esc(nick)}</div><canvas class="tetris-board" width="${COLS*S}" height="${ROWS*S}"></canvas><div style="font-size:9px;color:var(--gray)" id="score-${id}">0</div>`;
     el.appendChild(w);canvases[id]={board:w.querySelector('canvas').getContext('2d'),blockSize:S};
     roomRef.collection('players').doc(id).onSnapshot(snap=>{
       if(!snap.exists)return;const p=snap.data();
@@ -514,25 +554,21 @@ function draw(){
 }
 function drawBlock(ctx,x,y,col,sz){ctx.fillStyle=col;ctx.fillRect(x*sz+1,y*sz+1,sz-2,sz-2);ctx.fillStyle='rgba(255,255,255,0.1)';ctx.fillRect(x*sz+1,y*sz+1,sz-2,2);ctx.fillRect(x*sz+1,y*sz+1,2,sz-2)}
 function drawRemoteBoard(id,json,bs){const c=canvases[id];if(!c)return;try{const board=JSON.parse(json),ctx=c.board;ctx.clearRect(0,0,COLS*bs,ROWS*bs);for(let r=0;r<ROWS;r++)for(let c2=0;c2<COLS;c2++)if(board[r]&&board[r][c2]){ctx.fillStyle=board[r][c2];ctx.fillRect(c2*bs+1,r*bs+1,bs-2,bs-2)}}catch(e){}}
-
-// ===== GAME LOOP =====
 let lastDrop=0;
 function gameLoop(){if(gameOver)return;const now=Date.now();if(now-lastDrop>dropInterval){if(myPiece&&!collides(myPiece.shape,myPiece.x,myPiece.y+1))myPiece.y++;else if(myPiece)lock();lastDrop=now}draw();requestAnimationFrame(gameLoop)}
-
-// ===== KEYBOARD =====
 function handleKey(e){if(gameOver||!myPiece)return;switch(e.key){case'ArrowLeft':if(!collides(myPiece.shape,myPiece.x-1,myPiece.y))myPiece.x--;e.preventDefault();break;case'ArrowRight':if(!collides(myPiece.shape,myPiece.x+1,myPiece.y))myPiece.x++;e.preventDefault();break;case'ArrowDown':if(!collides(myPiece.shape,myPiece.x,myPiece.y+1)){myPiece.y++;myScore+=1}e.preventDefault();break;case'ArrowUp':tryRotate();e.preventDefault();break;case' ':hardDrop();e.preventDefault();break}draw()}
 
-// ===== MOBILE TOUCH =====
+// Mobile touch
 function doAction(a){if(gameOver||!myPiece)return;switch(a){case'left':if(!collides(myPiece.shape,myPiece.x-1,myPiece.y))myPiece.x--;break;case'right':if(!collides(myPiece.shape,myPiece.x+1,myPiece.y))myPiece.x++;break;case'down':if(!collides(myPiece.shape,myPiece.x,myPiece.y+1)){myPiece.y++;myScore+=1}break;case'rotate':tryRotate();break;case'drop':hardDrop();break}draw()}
 document.querySelectorAll('.mobile-btn').forEach(btn=>{
   const a=btn.dataset.action;let iv=null;
-  function start(e){e.preventDefault();doAction(a);if(a==='left'||a==='right'||a==='down')iv=setInterval(()=>doAction(a),100)}
+  function start(e){e.preventDefault();doAction(a);if('left right down'.includes(a))iv=setInterval(()=>doAction(a),100)}
   function stop(e){e.preventDefault();if(iv){clearInterval(iv);iv=null}}
   btn.addEventListener('touchstart',start,{passive:false});btn.addEventListener('touchend',stop,{passive:false});btn.addEventListener('touchcancel',stop,{passive:false});
 });
 let tsx=0,tsy=0,tst=0;
-document.addEventListener('touchstart',e=>{if(!gameStarted||gameOver)return;const t=e.touches[0];tsx=t.clientX;tsy=t.clientY;tst=Date.now()},{passive:true});
-document.addEventListener('touchend',e=>{if(!gameStarted||gameOver)return;if(e.target.closest('#mobile-controls,#lobby,.game-over-overlay,#mobile-sidebar,#mobile-menu-btn,#chat-input-area'))return;const t=e.changedTouches[0],dx=t.clientX-tsx,dy=t.clientY-tsy,d=Math.sqrt(dx*dx+dy*dy),el=Date.now()-tst;if(d<20&&el<300){doAction('rotate');return}if(d<30)return;if(Math.abs(dx)>Math.abs(dy))doAction(dx>0?'right':'left');else if(dy>0){dy>80?doAction('drop'):doAction('down')}},{passive:true});
+document.addEventListener('touchstart',e=>{if(!gameStarted||gameOver)return;tsx=e.touches[0].clientX;tsy=e.touches[0].clientY;tst=Date.now()},{passive:true});
+document.addEventListener('touchend',e=>{if(!gameStarted||gameOver)return;if(e.target.closest('#mobile-controls,#lobby,.go-overlay,#mobile-sidebar,#mobile-menu-btn,.chat-input-row'))return;const t=e.changedTouches[0],dx=t.clientX-tsx,dy=t.clientY-tsy,d=Math.sqrt(dx*dx+dy*dy);if(d<20&&Date.now()-tst<300){doAction('rotate');return}if(d<30)return;if(Math.abs(dx)>Math.abs(dy))doAction(dx>0?'right':'left');else if(dy>0)dy>80?doAction('drop'):doAction('down')},{passive:true});
 
 document.getElementById('nick-input').focus();
 </script>
