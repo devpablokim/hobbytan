@@ -35,43 +35,25 @@ const FontLoader: React.FC = () => (
 );
 
 // === MULTI-SUBTITLE COMPONENT ===
-// subs: array of { text, startFrame, endFrame } relative to scene start
 const MultiSubtitle: React.FC<{ subs: { text: string; startFrame: number; endFrame: number }[] }> = ({ subs }) => {
   const frame = useCurrentFrame();
-
   const activeSub = subs.find((s) => frame >= s.startFrame && frame < s.endFrame);
   if (!activeSub) return null;
 
   const fadeInEnd = activeSub.startFrame + 8;
   const opacity = interpolate(frame, [activeSub.startFrame, fadeInEnd], [0, 1], {
-    extrapolateRight: "clamp",
-    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp", extrapolateLeft: "clamp",
   });
 
   return (
     <div style={{
-      position: "absolute",
-      bottom: 60,
-      left: 0,
-      right: 0,
-      display: "flex",
-      justifyContent: "center",
-      opacity,
-      zIndex: 100,
+      position: "absolute", bottom: 60, left: 0, right: 0,
+      display: "flex", justifyContent: "center", opacity, zIndex: 100,
     }}>
-      <div style={{
-        background: "rgba(0, 0, 0, 0.75)",
-        padding: "12px 40px",
-        maxWidth: "80%",
-      }}>
+      <div style={{ background: "rgba(0, 0, 0, 0.75)", padding: "12px 40px", maxWidth: "80%" }}>
         <p style={{
-          color: C.white,
-          fontSize: 28,
-          fontFamily: FONT,
-          fontWeight: 400,
-          textAlign: "center",
-          lineHeight: 1.5,
-          margin: 0,
+          color: C.white, fontSize: 28, fontFamily: FONT, fontWeight: 400,
+          textAlign: "center", lineHeight: 1.5, margin: 0,
         }}>
           {activeSub.text}
         </p>
@@ -88,20 +70,20 @@ const slideUp = (frame: number, start: number, dur = 15) =>
   interpolate(frame, [start, start + dur], [40, 0], { extrapolateRight: "clamp", extrapolateLeft: "clamp" });
 
 // ============================================================
-// SCENE 1: Hook (0~5s = 0~150f)
+// SCENE 1: Hook (0~5s = 150f)
 // ============================================================
 const HookScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const line1Opacity = fadeIn(frame, 10);
-  const line1Y = slideUp(frame, 10);
-  const line2Opacity = fadeIn(frame, 50);
-  const numberScale = spring({ frame: frame - 70, fps, config: { damping: 12 } });
+  const line1Opacity = fadeIn(frame, 5);
+  const line1Y = slideUp(frame, 5);
+  const line2Opacity = fadeIn(frame, 40);
+  const numberScale = spring({ frame: frame - 60, fps, config: { damping: 12 } });
 
   const subs = [
-    { text: "18개월 후, 따라잡을 수 없습니다.", startFrame: 10, endFrame: 75 },
-    { text: "경쟁사는 이미 앞서가고 있습니다.", startFrame: 75, endFrame: 145 },
+    { text: "18개월 후, 따라잡을 수 없습니다.", startFrame: 5, endFrame: 70 },
+    { text: "경쟁사는 이미 앞서가고 있습니다.", startFrame: 70, endFrame: 145 },
   ];
 
   return (
@@ -119,7 +101,7 @@ const HookScene: React.FC = () => {
         }}>
           AI를 도입하지 않은 기업의 미래
         </p>
-        <div style={{ marginTop: 40, opacity: fadeIn(frame, 70), transform: `scale(${Math.min(numberScale, 1)})` }}>
+        <div style={{ marginTop: 40, opacity: fadeIn(frame, 60), transform: `scale(${Math.min(numberScale, 1)})` }}>
           <span style={{ color: C.accent, fontSize: 100, fontWeight: 800, fontFamily: FONT }}>3.2배</span>
           <p style={{ color: C.gray, fontSize: 24, fontFamily: FONT, marginTop: 8 }}>
             AI 도입 기업과 비도입 기업의 성장률 차이
@@ -132,22 +114,22 @@ const HookScene: React.FC = () => {
 };
 
 // ============================================================
-// SCENE 2: 문제 제기 (5~15s = 150~450f, scene-local 0~300f)
+// SCENE 2: 문제 제기 (5~15s = 300f)
 // ============================================================
 const ProblemScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   const stats = [
-    { value: "₩2.4억", label: "AI 미도입 시 연간 기회비용", delay: 10 },
-    { value: "67%", label: "AI 전환 실패율 (자체 도입 시)", delay: 40 },
-    { value: "₩3,000만+", label: "평균 컨설팅 비용 (대기업 기준)", delay: 70 },
+    { value: "₩2.4억", label: "AI 미도입 시 연간 기회비용", delay: 5 },
+    { value: "67%", label: "AI 전환 실패율 (자체 도입 시)", delay: 35 },
+    { value: "₩3,000만+", label: "평균 컨설팅 비용 (대기업 기준)", delay: 65 },
   ];
 
   const subs = [
-    { text: "연간 2.4억 원의 기회비용이 발생합니다.", startFrame: 10, endFrame: 100 },
-    { text: "자체 도입 시 67%가 실패합니다.", startFrame: 100, endFrame: 200 },
-    { text: "혼자서는 안 됩니다. 전문 파트너가 필요합니다.", startFrame: 200, endFrame: 295 },
+    { text: "연간 2.4억 원의 기회비용이 발생합니다.", startFrame: 5, endFrame: 95 },
+    { text: "자체 도입 시 67%가 실패합니다.", startFrame: 95, endFrame: 195 },
+    { text: "혼자서는 안 됩니다. 전문 파트너가 필요합니다.", startFrame: 195, endFrame: 295 },
   ];
 
   return (
@@ -178,18 +160,18 @@ const ProblemScene: React.FC = () => {
 };
 
 // ============================================================
-// SCENE 3: 브랜드 등장 (15~20s = 450~600f, scene-local 0~150f)
+// SCENE 3: 브랜드 등장 (15~20s = 150f)
 // ============================================================
 const BrandScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   const logoScale = spring({ frame, fps, config: { damping: 12 } });
-  const taglineOpacity = fadeIn(frame, 30);
+  const taglineOpacity = fadeIn(frame, 25);
 
   const subs = [
-    { text: "하비탄AI", startFrame: 5, endFrame: 75 },
-    { text: "당신의 변화를 이끄는 AX 혁신 파트너", startFrame: 75, endFrame: 145 },
+    { text: "하비탄AI", startFrame: 5, endFrame: 65 },
+    { text: "당신의 변화를 이끄는 AX 혁신 파트너", startFrame: 65, endFrame: 145 },
   ];
 
   return (
@@ -218,7 +200,7 @@ const BrandScene: React.FC = () => {
 };
 
 // ============================================================
-// SCENE 4: 파워워크샵 (20~35s = 600~1050f, scene-local 0~450f)
+// SCENE 4: 파워워크샵 (20~35s = 450f)
 // ============================================================
 const WorkshopScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -232,11 +214,11 @@ const WorkshopScene: React.FC = () => {
   ];
 
   const subs = [
-    { text: "5주 파워워크샵, 이론이 아닌 실전입니다.", startFrame: 5, endFrame: 90 },
-    { text: "1주차, AI 기초와 비즈니스 전략을 수립합니다.", startFrame: 90, endFrame: 180 },
-    { text: "2주차부터 실전 도구를 마스터합니다.", startFrame: 180, endFrame: 270 },
-    { text: "3주차, 반복 업무 80%를 자동화합니다.", startFrame: 270, endFrame: 360 },
-    { text: "5주면, 진짜 변화가 시작됩니다.", startFrame: 360, endFrame: 445 },
+    { text: "5주 파워워크샵, 이론이 아닌 실전입니다.", startFrame: 5, endFrame: 85 },
+    { text: "AI 기초와 비즈니스 전략을 수립합니다.", startFrame: 85, endFrame: 170 },
+    { text: "실전 도구를 마스터합니다.", startFrame: 170, endFrame: 250 },
+    { text: "반복 업무 80%를 자동화합니다.", startFrame: 250, endFrame: 340 },
+    { text: "5주면, 진짜 변화가 시작됩니다.", startFrame: 340, endFrame: 445 },
   ];
 
   return (
@@ -285,7 +267,7 @@ const WorkshopScene: React.FC = () => {
 };
 
 // ============================================================
-// SCENE 5: 실적 숫자 (35~45s = 1050~1350f, scene-local 0~300f)
+// SCENE 5: 실적 숫자 (35~45s = 300f)
 // ============================================================
 const ResultsScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -299,9 +281,9 @@ const ResultsScene: React.FC = () => {
   ];
 
   const subs = [
-    { text: "숫자가 증명합니다.", startFrame: 5, endFrame: 90 },
-    { text: "11개 기업, 82명 수료, 수료율 100%", startFrame: 90, endFrame: 200 },
-    { text: "투자 대비 12배의 ROI를 달성했습니다.", startFrame: 200, endFrame: 295 },
+    { text: "숫자가 증명합니다.", startFrame: 5, endFrame: 85 },
+    { text: "11개 기업, 82명 수료, 수료율 100%", startFrame: 85, endFrame: 195 },
+    { text: "투자 대비 12배의 ROI를 달성했습니다.", startFrame: 195, endFrame: 295 },
   ];
 
   return (
@@ -314,7 +296,7 @@ const ResultsScene: React.FC = () => {
       </h2>
       <div style={{ display: "flex", gap: 80 }}>
         {metrics.map((m, i) => {
-          const delay = i * 15 + 15;
+          const delay = i * 15 + 10;
           const scale = spring({ frame: frame - delay, fps, config: { damping: 10 } });
           return (
             <div key={i} style={{
@@ -336,7 +318,7 @@ const ResultsScene: React.FC = () => {
 };
 
 // ============================================================
-// SCENE 6: 프리미엄 혜택 (45~55s = 1350~1650f, scene-local 0~300f)
+// SCENE 6: 프리미엄 혜택 (45~55s = 300f)
 // ============================================================
 const PremiumScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -349,9 +331,9 @@ const PremiumScene: React.FC = () => {
   ];
 
   const subs = [
-    { text: "프리미엄 혜택을 제공합니다.", startFrame: 5, endFrame: 90 },
-    { text: "1박2일 워크샵과 전문가 특강", startFrame: 90, endFrame: 200 },
-    { text: "1:1 코칭부터 90일 사후 관리까지", startFrame: 200, endFrame: 295 },
+    { text: "프리미엄 혜택을 제공합니다.", startFrame: 5, endFrame: 85 },
+    { text: "1박2일 워크샵과 전문가 특강", startFrame: 85, endFrame: 190 },
+    { text: "1:1 코칭부터 90일 사후 관리까지", startFrame: 190, endFrame: 295 },
   ];
 
   return (
@@ -364,7 +346,7 @@ const PremiumScene: React.FC = () => {
       </h2>
       <div style={{ display: "flex", gap: 36 }}>
         {benefits.map((b, i) => {
-          const delay = i * 15 + 15;
+          const delay = i * 15 + 10;
           return (
             <div key={i} style={{
               background: C.card, border: `1px solid ${C.accentDim}`,
@@ -384,7 +366,7 @@ const PremiumScene: React.FC = () => {
 };
 
 // ============================================================
-// SCENE 7: 서비스 라인업 (55~63s = 1650~1890f, scene-local 0~240f)
+// SCENE 7: 서비스 라인업 (55~63s = 240f)
 // ============================================================
 const ServicesScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -399,9 +381,9 @@ const ServicesScene: React.FC = () => {
   ];
 
   const subs = [
-    { text: "다양한 AI 서비스 라인업을 갖추고 있습니다.", startFrame: 5, endFrame: 90 },
-    { text: "워크샵부터 웹사이트 구축, 맞춤형 컨설팅까지", startFrame: 90, endFrame: 180 },
-    { text: "풀스택 AI 서비스를 제공합니다.", startFrame: 180, endFrame: 235 },
+    { text: "다양한 AI 서비스 라인업을 갖추고 있습니다.", startFrame: 5, endFrame: 80 },
+    { text: "워크샵부터 웹사이트 구축, 맞춤형 컨설팅까지", startFrame: 80, endFrame: 165 },
+    { text: "풀스택 AI 서비스를 제공합니다.", startFrame: 165, endFrame: 235 },
   ];
 
   return (
@@ -414,7 +396,7 @@ const ServicesScene: React.FC = () => {
       </h2>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, maxWidth: 900 }}>
         {services.map((s, i) => {
-          const delay = i * 10 + 15;
+          const delay = i * 10 + 10;
           return (
             <div key={i} style={{
               background: C.card, border: `1px solid ${C.accentDim}`,
@@ -434,19 +416,19 @@ const ServicesScene: React.FC = () => {
 };
 
 // ============================================================
-// SCENE 8: 투자 가치 (63~73s = 1890~2190f, scene-local 0~300f)
+// SCENE 8: 투자 가치 (63~73s = 300f)
 // ============================================================
 const ValueScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const leftOpacity = fadeIn(frame, 20);
-  const rightScale = spring({ frame: frame - 40, fps, config: { damping: 12 } });
+  const leftOpacity = fadeIn(frame, 15);
+  const rightScale = spring({ frame: frame - 35, fps, config: { damping: 12 } });
 
   const subs = [
-    { text: "일반 컨설팅은 3,000만 원 이상입니다.", startFrame: 10, endFrame: 100 },
-    { text: "하비탄AI 파워워크샵은 800만 원.", startFrame: 100, endFrame: 200 },
-    { text: "남는 건 보고서뿐인 컨설팅과는 다릅니다.", startFrame: 200, endFrame: 295 },
+    { text: "일반 컨설팅은 3,000만 원 이상입니다.", startFrame: 5, endFrame: 95 },
+    { text: "하비탄AI 파워워크샵은 800만 원.", startFrame: 95, endFrame: 195 },
+    { text: "남는 건 보고서뿐인 컨설팅과는 다릅니다.", startFrame: 195, endFrame: 295 },
   ];
 
   return (
@@ -483,19 +465,19 @@ const ValueScene: React.FC = () => {
 };
 
 // ============================================================
-// SCENE 9: CTA (73~83s = 2190~2490f, scene-local 0~300f)
+// SCENE 9: CTA (73~83s = 300f)
 // ============================================================
 const CTAScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const buttonScale = spring({ frame: frame - 40, fps, config: { damping: 8, stiffness: 100 } });
+  const buttonScale = spring({ frame: frame - 35, fps, config: { damping: 8, stiffness: 100 } });
   const pulse = Math.sin(frame * 0.08) * 0.03 + 1;
 
   const subs = [
-    { text: "지금 시작하세요.", startFrame: 5, endFrame: 90 },
-    { text: "당신의 비즈니스에 AI를 심어드립니다.", startFrame: 90, endFrame: 200 },
-    { text: "30분 무료 AI 진단을 신청하세요.", startFrame: 200, endFrame: 295 },
+    { text: "지금 시작하세요.", startFrame: 5, endFrame: 85 },
+    { text: "당신의 비즈니스에 AI를 심어드립니다.", startFrame: 85, endFrame: 195 },
+    { text: "30분 무료 AI 진단을 신청하세요.", startFrame: 195, endFrame: 295 },
   ];
 
   return (
@@ -512,7 +494,7 @@ const CTAScene: React.FC = () => {
           AI 전환, 늦으면 뒤처집니다
         </p>
         <div style={{
-          marginTop: 50, transform: `scale(${Math.min(buttonScale, 1) * pulse})`, opacity: fadeIn(frame, 30),
+          marginTop: 50, transform: `scale(${Math.min(buttonScale, 1) * pulse})`, opacity: fadeIn(frame, 25),
         }}>
           <div style={{
             background: C.accent, color: C.bg, fontSize: 36, fontWeight: 800, fontFamily: FONT,
@@ -522,7 +504,7 @@ const CTAScene: React.FC = () => {
           </div>
         </div>
         <p style={{
-          color: C.gray, fontSize: 20, fontFamily: FONT, marginTop: 24, opacity: fadeIn(frame, 50),
+          color: C.gray, fontSize: 20, fontFamily: FONT, marginTop: 24, opacity: fadeIn(frame, 45),
         }}>
           hobbytan-ai.web.app
         </p>
@@ -533,7 +515,7 @@ const CTAScene: React.FC = () => {
 };
 
 // ============================================================
-// SCENE 10: Council + Closing (83~90s = 2490~2700f, scene-local 0~210f)
+// SCENE 10: Council + Closing (83~90s = 210f)
 // ============================================================
 const ClosingScene: React.FC = () => {
   const frame = useCurrentFrame();
@@ -584,7 +566,7 @@ const ClosingScene: React.FC = () => {
         })}
       </div>
       <div style={{
-        opacity: fadeIn(frame, 40), transform: `scale(${Math.min(logoScale, 1)})`, textAlign: "center",
+        opacity: fadeIn(frame, 35), transform: `scale(${Math.min(logoScale, 1)})`, textAlign: "center",
       }}>
         <h1 style={{ color: C.white, fontSize: 52, fontWeight: 800, fontFamily: FONT, letterSpacing: -2 }}>
           HOBBYTAN<span style={{ color: C.accent }}> AI</span>
@@ -598,15 +580,36 @@ const ClosingScene: React.FC = () => {
 };
 
 // ============================================================
+// SCENE AUDIO CONFIG — per-scene audio files synced to sequences
+// ============================================================
+const SCENE_AUDIO = [
+  { file: "audio/scenes/scene01-hook.mp3", from: 0 },
+  { file: "audio/scenes/scene02-problem.mp3", from: 150 },
+  { file: "audio/scenes/scene03-brand.mp3", from: 450 },
+  { file: "audio/scenes/scene04-workshop.mp3", from: 600 },
+  { file: "audio/scenes/scene05-results.mp3", from: 1050 },
+  { file: "audio/scenes/scene06-premium.mp3", from: 1350 },
+  { file: "audio/scenes/scene07-services.mp3", from: 1650 },
+  { file: "audio/scenes/scene08-value.mp3", from: 1890 },
+  { file: "audio/scenes/scene09-cta.mp3", from: 2190 },
+  { file: "audio/scenes/scene10-closing.mp3", from: 2490 },
+];
+
+// ============================================================
 // MAIN COMPOSITION — 10 Scenes, 90초 (2700 frames @ 30fps)
+// Per-scene audio synced to each Sequence start
 // ============================================================
 export const HobbyTANIntro: React.FC = () => {
   return (
     <AbsoluteFill style={{ background: C.bg }}>
       <FontLoader />
 
-      {/* Narration audio */}
-      <Audio src={staticFile("audio/narration.mp3")} />
+      {/* Per-scene audio — each starts at the exact scene start frame */}
+      {SCENE_AUDIO.map((sa, i) => (
+        <Sequence key={`audio-${i}`} from={sa.from}>
+          <Audio src={staticFile(sa.file)} />
+        </Sequence>
+      ))}
 
       <Sequence from={0} durationInFrames={150}><HookScene /></Sequence>
       <Sequence from={150} durationInFrames={300}><ProblemScene /></Sequence>
