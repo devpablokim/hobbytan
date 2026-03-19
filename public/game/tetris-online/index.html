@@ -20,7 +20,7 @@ input::placeholder{color:#555}
 /* ===== LOBBY LAYOUT: 2-column (menu left, chat right) ===== */
 #lobby{display:flex;height:100vh;height:100dvh}
 #lobby-left{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;overflow-y:auto;min-width:0}
-#lobby-right{width:340px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100%}
+#lobby-right{width:340px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100%;min-height:0}
 #lobby h1{font-size:28px;color:var(--accent);text-align:center}
 #lobby h1 span{color:var(--white)}
 .lobby-box{background:var(--card);border:1px solid var(--border);padding:20px;width:100%;max-width:420px;text-align:center}
@@ -55,7 +55,7 @@ input::placeholder{color:#555}
 .invite-bar .ib-share{background:var(--accent2);color:var(--white)}
 
 /* Ranking section */
-.ranking-section{border-bottom:1px solid var(--border);max-height:200px;overflow-y:auto}
+.ranking-section{border-bottom:1px solid var(--border);max-height:160px;overflow-y:auto;flex-shrink:0}
 .ranking-section .rk-title{padding:8px 12px;font-size:12px;font-weight:700;color:var(--accent)}
 .rank-row{display:flex;align-items:center;padding:5px 12px;gap:8px;font-size:12px}
 .rank-pos{font-weight:800;color:var(--accent);min-width:22px}
@@ -105,12 +105,13 @@ canvas.preview{border:1px solid var(--border);background:#0a0a0a}
 
 /* Mobile */
 #mobile-menu-btn{display:none;position:fixed;top:6px;right:6px;z-index:100;background:var(--card);border:1px solid var(--border);color:var(--white);width:38px;height:38px;font-size:18px;cursor:pointer;border-radius:6px;align-items:center;justify-content:center}
+#mobile-controls{display:none}
 #mobile-sidebar-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:150}
 #mobile-sidebar-overlay.show{display:block}
 #mobile-sidebar{display:none;position:fixed;top:0;right:-310px;width:300px;max-width:85vw;height:100%;background:var(--card);border-left:1px solid var(--border);z-index:200;transition:right .25s ease;flex-direction:column}
 #mobile-sidebar.open{right:0}
 #mobile-sidebar-close{background:none;border:none;color:var(--white);font-size:22px;padding:8px;cursor:pointer;text-align:right}
-#mobile-controls{display:none;position:fixed;bottom:0;left:0;right:0;padding:5px 10px 10px;z-index:50;background:linear-gradient(transparent,rgba(0,0,0,.92) 20%)}
+#mobile-controls{position:fixed;bottom:0;left:0;right:0;padding:5px 10px 10px;z-index:50;background:linear-gradient(transparent,rgba(0,0,0,.92) 20%)}
 .ctrl-row{display:flex;justify-content:center;gap:8px;margin-bottom:4px}
 .mobile-btn{background:rgba(17,17,17,.9);border:2px solid var(--border);color:var(--white);width:60px;height:48px;font-size:18px;display:flex;align-items:center;justify-content:center;border-radius:8px;touch-action:manipulation}
 .mobile-btn:active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
@@ -126,12 +127,11 @@ canvas.preview{border:1px solid var(--border);background:#0a0a0a}
 #lobby-mobile-chat-btn{display:none}
 @media(max-width:768px){
   #lobby{flex-direction:column}
-  #lobby-left{min-height:auto;flex:none;padding:10px;gap:8px;justify-content:flex-start;overflow-y:auto;max-height:55vh}
-  #lobby-right{width:100%;flex:1;border-left:none;border-top:1px solid var(--border)}
+  #lobby-left{min-height:auto;flex:none;padding:10px;gap:6px;justify-content:flex-start;overflow-y:auto;max-height:45vh}
+  #lobby-right{width:100%;flex:1;border-left:none;border-top:1px solid var(--border);min-height:0}
   #game-sidebar{display:none}
   #mobile-menu-btn{display:flex}
   #mobile-sidebar{display:flex}
-  #mobile-controls{display:block}
   body{overflow:hidden}
 }
 @media(min-width:769px){
@@ -458,7 +458,10 @@ function startCountdown(){countdownStarted=true;const el=document.getElementById
 function startGame(){if(gameStarted)return;gameStarted=true;document.getElementById('lobby').style.display='none';showGame();setupLocalGame();setupRemoteBoards();addSystemChat('게임 시작!')}
 function showGame(){
   document.getElementById('game').style.display='block';
-  if(isMobile())document.getElementById('mobile-controls').style.display='block';
+  if(isMobile()){
+    document.getElementById('mobile-controls').style.display='block';
+    document.getElementById('mobile-menu-btn').style.display='flex';
+  }
   loadRankingAll();
 }
 
