@@ -487,9 +487,17 @@ function endGame(){
 }
 
 function checkWinner(){
-  const alive=Object.keys(players).filter(id=>players[id]?.alive);
-  if(alive.length<=1){
-    // Game over for everyone
+  const ids=Object.keys(players);
+  if(ids.length<=1) return;
+  const alive=ids.filter(id=>players[id]?.alive);
+  if(alive.length<=1 && alive[0]===myId){
+    // I won!
+    gameOver=true;
+    const el=document.getElementById('game-over');
+    el.classList.add('show');
+    document.getElementById('go-title').textContent='🏆 승리!';
+    document.getElementById('go-msg').textContent='마지막까지 살아남았습니다!';
+    document.getElementById('go-score').textContent='점수: '+myScore+' | 라인: '+myLines;
   }
 }
 
