@@ -11,26 +11,27 @@
 :root{--bg:#0a0a0a;--card:#111;--accent:#10b981;--accent2:#059669;--white:#fff;--gray:#888;--border:#222}
 body{background:var(--bg);color:var(--white);font-family:'Pretendard Variable',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
 h1,h2,h3{font-weight:800}
-
-/* LOBBY */
 #lobby{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:20px;padding:20px}
 #lobby h1{font-size:36px;color:var(--accent)}
 #lobby h1 span{color:var(--white)}
 .lobby-box{background:var(--card);border:1px solid var(--border);padding:30px;width:100%;max-width:500px;text-align:center}
-.lobby-box input{background:#1a1a1a;border:1px solid var(--border);color:var(--white);padding:12px 16px;font-size:18px;width:100%;margin:10px 0;font-family:inherit;text-align:center;letter-spacing:4px}
+.lobby-box input{background:#1a1a1a;border:1px solid var(--border);color:var(--white);padding:12px 16px;font-size:18px;width:100%;margin:10px 0;font-family:inherit;text-align:center}
+.lobby-box input.code-input{letter-spacing:4px}
 .lobby-box input::placeholder{letter-spacing:normal;color:#555}
 .btn{background:var(--accent);color:var(--bg);border:none;padding:14px 32px;font-size:18px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;width:100%;margin:6px 0}
 .btn:hover{background:var(--accent2)}
+.btn:disabled{background:#333;color:#666;cursor:not-allowed}
 .btn-secondary{background:transparent;border:2px solid var(--accent);color:var(--accent)}
 .btn-secondary:hover{background:var(--accent);color:var(--bg)}
+.btn-danger{background:#ef4444;color:#fff}
+.btn-danger:hover{background:#dc2626}
 .players-list{margin:20px 0;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.player-slot{background:#1a1a1a;border:1px solid var(--border);padding:12px 20px;min-width:100px;text-align:center;font-size:14px}
+.player-slot{background:#1a1a1a;border:1px solid var(--border);padding:12px 20px;min-width:110px;text-align:center;font-size:14px}
 .player-slot.ready{border-color:var(--accent);color:var(--accent)}
 .player-slot.empty{color:#333}
+.player-slot .nick{font-weight:700;font-size:16px}
 #room-info{color:var(--gray);font-size:14px;margin:10px 0}
 #countdown{font-size:72px;font-weight:800;color:var(--accent);display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999;text-shadow:0 0 40px rgba(16,185,129,.5)}
-
-/* GAME */
 #game{display:none;padding:10px}
 .game-header{text-align:center;padding:10px;display:flex;justify-content:center;align-items:center;gap:20px}
 .game-header h2{font-size:20px;color:var(--accent)}
@@ -43,8 +44,6 @@ canvas.tetris-board{border:1px solid var(--border);background:#050505}
 .side-panel{display:flex;flex-direction:column;align-items:center;gap:8px}
 .side-panel .label{font-size:11px;color:var(--gray);text-transform:uppercase}
 canvas.preview{border:1px solid var(--border);background:#0a0a0a}
-
-/* DANCING MAN */
 .dancer-container{position:relative;width:80px;height:120px;margin:10px auto}
 .dancer{position:absolute;bottom:0;left:50%;transform:translateX(-50%);animation:dance .6s ease-in-out infinite alternate}
 .dancer .head{width:24px;height:24px;background:var(--accent);border-radius:50%;margin:0 auto}
@@ -60,64 +59,61 @@ canvas.preview{border:1px solid var(--border);background:#0a0a0a}
 @keyframes arm-r{0%{transform:rotate(30deg)}100%{transform:rotate(-45deg)}}
 @keyframes leg-l{0%{transform:rotate(-15deg)}100%{transform:rotate(15deg)}}
 @keyframes leg-r{0%{transform:rotate(15deg)}100%{transform:rotate(-15deg)}}
-
-/* GAME OVER OVERLAY */
 .game-over-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:1000;justify-content:center;align-items:center;flex-direction:column;gap:20px}
 .game-over-overlay.show{display:flex}
 .game-over-overlay h2{font-size:48px;color:var(--accent)}
 .game-over-overlay p{font-size:24px;color:var(--gray)}
-
-/* MOBILE */
 #mobile-controls{display:none;position:fixed;bottom:10px;left:0;right:0;justify-content:center;gap:8px;padding:10px;z-index:50}
 .mobile-btn{background:var(--card);border:2px solid var(--border);color:var(--white);width:60px;height:60px;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;-webkit-user-select:none;border-radius:8px}
 .mobile-btn:active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+#error-msg{color:#ef4444;font-size:14px;margin:8px 0;min-height:20px}
 @media(max-width:768px){
   #mobile-controls{display:flex}
   canvas.tetris-board{width:120px!important;height:240px!important}
 }
-@media(max-width:480px){
-  canvas.tetris-board{width:90px!important;height:180px!important}
-}
+@media(max-width:480px){canvas.tetris-board{width:90px!important;height:180px!important}}
 </style>
 </head>
 <body>
 
-<!-- LOBBY -->
 <div id="lobby">
   <div class="dancer-container">
-    <div class="dancer">
-      <div class="head"></div>
-      <div class="arm-l"></div>
-      <div class="arm-r"></div>
-      <div class="body"></div>
-      <div class="leg-l"></div>
-      <div class="leg-r"></div>
-    </div>
+    <div class="dancer"><div class="head"></div><div class="arm-l"></div><div class="arm-r"></div><div class="body"></div><div class="leg-l"></div><div class="leg-r"></div></div>
   </div>
   <h1><span>TETRIS</span> ONLINE</h1>
   <p style="color:var(--gray)">HOBBYTAN AI — 최대 4인 실시간 대전</p>
 
-  <div class="lobby-box" id="create-join">
+  <!-- STEP 1: 닉네임 -->
+  <div class="lobby-box" id="nick-box">
+    <p style="color:var(--accent);font-weight:700;font-size:16px;margin-bottom:12px">닉네임을 입력하세요</p>
+    <input type="text" id="nick-input" placeholder="닉네임 (2~8자)" maxlength="8">
+    <button class="btn" onclick="setNickname()">확인</button>
+  </div>
+
+  <!-- STEP 2: 방 만들기/참가 -->
+  <div class="lobby-box" id="create-join" style="display:none">
+    <p style="color:var(--gray);margin-bottom:16px">환영합니다, <span id="nick-display" style="color:var(--accent);font-weight:700"></span>!</p>
     <button class="btn" onclick="createRoom()">🎮 방 만들기</button>
     <p style="color:var(--gray);margin:16px 0">또는</p>
-    <input type="text" id="room-input" placeholder="방 코드 입력" maxlength="6">
+    <input type="text" id="room-input" class="code-input" placeholder="방 코드 입력" maxlength="6">
     <button class="btn btn-secondary" onclick="joinRoom()">참가하기</button>
+    <div id="error-msg"></div>
     <hr style="border-color:var(--border);margin:20px 0">
     <button class="btn btn-secondary" onclick="startSolo()">🎯 혼자 하기</button>
   </div>
 
+  <!-- STEP 3: 대기실 -->
   <div class="lobby-box" id="waiting-room" style="display:none">
-    <p id="room-info">방 코드: <span id="room-code" style="color:var(--accent);font-weight:700;font-size:20px;letter-spacing:4px"></span></p>
+    <p id="room-info">방 코드: <span id="room-code" style="color:var(--accent);font-weight:700;font-size:24px;letter-spacing:6px"></span></p>
+    <p style="color:var(--gray);font-size:13px;margin:8px 0">이 코드를 친구에게 공유하세요!</p>
     <div class="players-list" id="players-list"></div>
-    <button class="btn" id="ready-btn" onclick="toggleReady()">READY</button>
-    <p id="status-msg" style="color:var(--gray);margin-top:10px;font-size:14px">다른 플레이어를 기다리는 중...</p>
+    <button class="btn" id="ready-btn" onclick="toggleReady()">✅ READY</button>
+    <p id="status-msg" style="color:var(--gray);margin-top:10px;font-size:14px"></p>
   </div>
 </div>
 
-<!-- COUNTDOWN -->
 <div id="countdown"></div>
 
-<!-- GAME -->
 <div id="game">
   <div class="game-header">
     <div class="dancer-container" style="width:50px;height:70px;margin:0">
@@ -130,7 +126,6 @@ canvas.preview{border:1px solid var(--border);background:#0a0a0a}
   <div id="boards"></div>
 </div>
 
-<!-- MOBILE CONTROLS -->
 <div id="mobile-controls">
   <div class="mobile-btn" ontouchstart="mobileInput('left')">◀</div>
   <div class="mobile-btn" ontouchstart="mobileInput('down')">▼</div>
@@ -139,7 +134,6 @@ canvas.preview{border:1px solid var(--border);background:#0a0a0a}
   <div class="mobile-btn" ontouchstart="mobileInput('drop')">⬇</div>
 </div>
 
-<!-- GAME OVER -->
 <div class="game-over-overlay" id="game-over">
   <h2 id="go-title">GAME OVER</h2>
   <p id="go-msg"></p>
@@ -148,139 +142,170 @@ canvas.preview{border:1px solid var(--border);background:#0a0a0a}
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script>
-// ========== FIREBASE ==========
 firebase.initializeApp({
   apiKey:"AIzaSyDxnIFPnFdSVR6IKuBMRm5ZQynO0ORrlzI",
   authDomain:"hobbytan-ai.firebaseapp.com",
-  databaseURL:"https://hobbytan-ai-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId:"hobbytan-ai",
   storageBucket:"hobbytan-ai.firebasestorage.app",
   messagingSenderId:"820555571498",
   appId:"1:820555571498:web:eb5c2de98d3b6c18e43cb9"
 });
-const db = firebase.database();
+const db = firebase.firestore();
 
-// ========== CONSTANTS ==========
 const COLS=10, ROWS=20, BLOCK=28;
 const COLORS=['#10b981','#06b6d4','#f59e0b','#ef4444','#8b5cf6','#ec4899','#3b82f6'];
 const SHAPES=[
-  [[1,1,1,1]],                    // I
-  [[1,1],[1,1]],                   // O
-  [[0,1,0],[1,1,1]],              // T
-  [[0,1,1],[1,1,0]],              // S
-  [[1,1,0],[0,1,1]],              // Z
-  [[1,0,0],[1,1,1]],              // J
-  [[0,0,1],[1,1,1]],              // L
+  [[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]]
 ];
 
-// ========== STATE ==========
-let myId = Math.random().toString(36).substr(2,8);
-let roomId = null;
-let roomRef = null;
-let isSolo = false;
-let isReady = false;
-let gameStarted = false;
-let gameOver = false;
-let players = {};
-let myBoard, myPiece, myNext, myScore, myLines, myLevel, dropInterval, dropTimer, lockTimer;
-let canvases = {};
+let myId=Math.random().toString(36).substr(2,8);
+let myNickname='';
+let roomId=null, roomRef=null, isSolo=false, isReady=false, gameStarted=false, gameOver=false;
+let players={}, playerNicks={};
+let myBoard, myPiece, myNext, myScore, myLines, myLevel, dropInterval;
+let canvases={};
+let unsubRoom=null, unsubPlayers=null;
+let countdownStarted=false;
+let syncTimer=null;
+
+// ========== NICKNAME ==========
+function setNickname(){
+  const nick=document.getElementById('nick-input').value.trim();
+  if(nick.length<2){alert('닉네임은 2자 이상 입력하세요');return}
+  myNickname=nick;
+  document.getElementById('nick-box').style.display='none';
+  document.getElementById('create-join').style.display='block';
+  document.getElementById('nick-display').textContent=nick;
+}
+document.getElementById('nick-input').addEventListener('keydown',e=>{if(e.key==='Enter')setNickname()});
 
 // ========== LOBBY ==========
-function genCode(){ return Math.random().toString(36).substr(2,6).toUpperCase() }
+function genCode(){return Math.random().toString(36).substr(2,6).toUpperCase()}
 
-function createRoom(){
-  roomId = genCode();
-  roomRef = db.ref('tetris_rooms/'+roomId);
-  roomRef.set({ created: Date.now(), state:'lobby', players:{} });
-  joinRoomInternal();
+function showError(msg){document.getElementById('error-msg').textContent=msg}
+
+async function createRoom(){
+  roomId=genCode();
+  roomRef=db.collection('tetris_rooms').doc(roomId);
+  try{
+    await roomRef.set({created:firebase.firestore.FieldValue.serverTimestamp(),state:'lobby'});
+    await roomRef.collection('players').doc(myId).set({
+      name:myNickname, ready:false, alive:true, score:0, board:'', ts:Date.now()
+    });
+    enterWaitingRoom();
+  }catch(e){showError('방 생성 실패: '+e.message)}
 }
 
-function joinRoom(){
-  const code = document.getElementById('room-input').value.trim().toUpperCase();
-  if(!code) return;
-  roomId = code;
-  roomRef = db.ref('tetris_rooms/'+roomId);
-  roomRef.once('value', snap => {
-    if(!snap.exists()){ alert('방을 찾을 수 없습니다'); return; }
-    joinRoomInternal();
-  });
+async function joinRoom(){
+  const code=document.getElementById('room-input').value.trim().toUpperCase();
+  if(!code){showError('방 코드를 입력하세요');return}
+  roomId=code;
+  roomRef=db.collection('tetris_rooms').doc(roomId);
+  try{
+    const snap=await roomRef.get();
+    if(!snap.exists){showError('방을 찾을 수 없습니다: '+code);return}
+    const data=snap.data();
+    if(data.state!=='lobby'){showError('이미 게임이 진행 중인 방입니다');return}
+    // Check player count
+    const playersSnap=await roomRef.collection('players').get();
+    if(playersSnap.size>=4){showError('방이 꽉 찼습니다 (최대 4명)');return}
+    await roomRef.collection('players').doc(myId).set({
+      name:myNickname, ready:false, alive:true, score:0, board:'', ts:Date.now()
+    });
+    enterWaitingRoom();
+  }catch(e){showError('참가 실패: '+e.message)}
 }
 
-function joinRoomInternal(){
+function enterWaitingRoom(){
   document.getElementById('create-join').style.display='none';
   document.getElementById('waiting-room').style.display='block';
   document.getElementById('room-code').textContent=roomId;
 
-  const myRef = roomRef.child('players/'+myId);
-  myRef.set({ name:'Player', ready:false, alive:true, score:0, board:null, ts:Date.now() });
-  myRef.onDisconnect().remove();
-
-  roomRef.child('players').on('value', snap => {
-    players = snap.val() || {};
+  // Listen to players subcollection
+  unsubPlayers=roomRef.collection('players').onSnapshot(snap=>{
+    players={};
+    playerNicks={};
+    snap.forEach(doc=>{
+      players[doc.id]=doc.data();
+      playerNicks[doc.id]=doc.data().name||'Player';
+    });
     renderPlayers();
     checkAllReady();
   });
 
-  roomRef.child('state').on('value', snap => {
-    if(snap.val()==='countdown') startCountdown();
-    if(snap.val()==='playing' && !gameStarted) startGame();
+  // Listen to room state
+  unsubRoom=roomRef.onSnapshot(snap=>{
+    if(!snap.exists) return;
+    const data=snap.data();
+    if(data.state==='countdown' && !countdownStarted) startCountdown();
+    if(data.state==='playing' && !gameStarted) startGame();
   });
 
-  roomRef.child('attacks/'+myId).on('child_added', snap => {
-    if(gameStarted && !gameOver){
-      const atk = snap.val();
-      if(atk && atk.lines) addGarbage(atk.lines);
-      snap.ref.remove();
-    }
-  });
+  // Cleanup on leave
+  window.addEventListener('beforeunload',cleanup);
+}
+
+function cleanup(){
+  if(roomRef && myId){
+    roomRef.collection('players').doc(myId).delete().catch(()=>{});
+  }
 }
 
 function renderPlayers(){
-  const el = document.getElementById('players-list');
-  const ids = Object.keys(players);
-  let html = '';
+  const el=document.getElementById('players-list');
+  const ids=Object.keys(players);
+  let html='';
   for(let i=0;i<4;i++){
     if(i<ids.length){
-      const p = players[ids[i]];
-      const me = ids[i]===myId?' (나)':'';
-      html+=`<div class="player-slot ${p.ready?'ready':''}">${p.ready?'✅':''} P${i+1}${me}</div>`;
+      const p=players[ids[i]];
+      const isMe=ids[i]===myId;
+      html+=`<div class="player-slot ${p.ready?'ready':''}">
+        <div class="nick">${p.name||'Player'}${isMe?' 👈':''}</div>
+        <div>${p.ready?'✅ 준비완료':'⏳ 대기중'}</div>
+      </div>`;
     } else {
       html+=`<div class="player-slot empty">빈 슬롯</div>`;
     }
   }
   el.innerHTML=html;
-  const n = ids.length;
-  document.getElementById('status-msg').textContent = n<2?'다른 플레이어를 기다리는 중... (혼자 시작도 가능)':'n명 접속 중. Ready를 누르세요!'.replace('n',n);
+  const n=ids.length;
+  const msg=document.getElementById('status-msg');
+  if(n===1) msg.textContent='다른 플레이어를 기다리는 중...';
+  else msg.textContent=n+'명 접속 중! 모두 Ready를 누르면 시작됩니다.';
 }
 
-function toggleReady(){
+async function toggleReady(){
   isReady=!isReady;
-  roomRef.child('players/'+myId+'/ready').set(isReady);
-  document.getElementById('ready-btn').textContent = isReady?'CANCEL':'READY';
-  document.getElementById('ready-btn').style.background = isReady?'#ef4444':'var(--accent)';
+  try{
+    await roomRef.collection('players').doc(myId).update({ready:isReady});
+  }catch(e){}
+  const btn=document.getElementById('ready-btn');
+  btn.textContent=isReady?'❌ CANCEL':'✅ READY';
+  btn.className=isReady?'btn btn-danger':'btn';
 }
 
 function checkAllReady(){
   const ids=Object.keys(players);
   if(ids.length<1) return;
-  const allReady = ids.every(id=>players[id].ready);
-  if(allReady && !gameStarted){
-    roomRef.child('state').set('countdown');
+  const allReady=ids.every(id=>players[id].ready);
+  if(allReady && !countdownStarted && !gameStarted){
+    roomRef.update({state:'countdown'}).catch(()=>{});
   }
 }
 
 function startSolo(){
   isSolo=true;
+  myNickname=myNickname||'Player';
   document.getElementById('lobby').style.display='none';
   document.getElementById('game').style.display='block';
   if('ontouchstart' in window) document.getElementById('mobile-controls').style.display='flex';
   setupLocalGame();
 }
 
-// ========== COUNTDOWN ==========
 function startCountdown(){
+  countdownStarted=true;
   const el=document.getElementById('countdown');
   el.style.display='block';
   let c=3;
@@ -292,42 +317,48 @@ function startCountdown(){
       el.textContent='GO!';
       setTimeout(()=>{el.style.display='none'},500);
       clearInterval(iv);
-      if(!isSolo) roomRef.child('state').set('playing');
+      roomRef.update({state:'playing'}).catch(()=>{});
     }
   },1000);
 }
 
-// ========== GAME START ==========
 function startGame(){
+  if(gameStarted) return;
   gameStarted=true;
   document.getElementById('lobby').style.display='none';
   document.getElementById('game').style.display='block';
   if('ontouchstart' in window) document.getElementById('mobile-controls').style.display='flex';
   setupLocalGame();
   setupRemoteBoards();
+  // Listen for attacks
+  roomRef.collection('attacks').where('target','==',myId).onSnapshot(snap=>{
+    snap.docChanges().forEach(change=>{
+      if(change.type==='added' && gameStarted && !gameOver){
+        const atk=change.doc.data();
+        if(atk.lines) addGarbage(atk.lines);
+        change.doc.ref.delete().catch(()=>{});
+      }
+    });
+  });
 }
 
 function setupLocalGame(){
-  gameStarted=true;
   myBoard=Array.from({length:ROWS},()=>Array(COLS).fill(0));
-  myScore=0; myLines=0; myLevel=1;
-  dropInterval=1000;
-
+  myScore=0;myLines=0;myLevel=1;dropInterval=1000;
   const boardsEl=document.getElementById('boards');
-  // My board
   const wrapper=document.createElement('div');
   wrapper.className='board-wrapper';
   wrapper.id='board-'+myId;
-  wrapper.innerHTML=`<div class="player-name">나</div><div style="display:flex;gap:8px"><div><canvas class="tetris-board" width="${COLS*BLOCK}" height="${ROWS*BLOCK}"></canvas></div><div class="side-panel"><div class="label">NEXT</div><canvas class="preview" width="${4*BLOCK}" height="${4*BLOCK}"></canvas><div class="label" style="margin-top:12px">SCORE</div><div class="score-display" id="score-me">0</div><div class="label">LINES</div><div class="score-display" id="lines-me">0</div><div class="label">LEVEL</div><div class="score-display" id="level-me">1</div></div></div>`;
+  wrapper.innerHTML=`<div class="player-name">${myNickname} (나)</div><div style="display:flex;gap:8px"><div><canvas class="tetris-board" width="${COLS*BLOCK}" height="${ROWS*BLOCK}"></canvas></div><div class="side-panel"><div class="label">NEXT</div><canvas class="preview" width="${4*BLOCK}" height="${4*BLOCK}"></canvas><div class="label" style="margin-top:12px">SCORE</div><div class="score-display" id="score-me">0</div><div class="label">LINES</div><div class="score-display" id="lines-me">0</div><div class="label">LEVEL</div><div class="score-display" id="level-me">1</div></div></div>`;
   boardsEl.appendChild(wrapper);
-
   const cvs=wrapper.querySelector('.tetris-board');
   const preview=wrapper.querySelector('.preview');
   canvases.me={board:cvs.getContext('2d'),preview:preview.getContext('2d'),el:cvs};
-
   spawnPiece();
   gameLoop();
   document.addEventListener('keydown',handleKey);
+  // Periodic sync (every 500ms instead of every frame)
+  if(!isSolo) syncTimer=setInterval(syncBoard,500);
 }
 
 function setupRemoteBoards(){
@@ -337,162 +368,115 @@ function setupRemoteBoards(){
     const w=document.createElement('div');
     w.className='board-wrapper';
     w.id='board-'+id;
-    const S=18; // smaller blocks for opponents
-    w.innerHTML=`<div class="player-name">상대</div><canvas class="tetris-board" width="${COLS*S}" height="${ROWS*S}" style="width:${COLS*S}px;height:${ROWS*S}px"></canvas><div class="score-display" id="score-${id}">0</div>`;
+    const S=18;
+    const nick=playerNicks[id]||'상대';
+    w.innerHTML=`<div class="player-name">${nick}</div><canvas class="tetris-board" width="${COLS*S}" height="${ROWS*S}" style="width:${COLS*S}px;height:${ROWS*S}px"></canvas><div class="score-display" id="score-${id}">0</div>`;
     boardsEl.appendChild(w);
     const cvs=w.querySelector('.tetris-board');
     canvases[id]={board:cvs.getContext('2d'),el:cvs,blockSize:S};
 
-    // Listen for remote board updates
-    roomRef.child('players/'+id).on('value', snap=>{
-      const p=snap.val();
-      if(!p) return;
-      if(p.board) drawRemoteBoard(id, p.board, S);
+    roomRef.collection('players').doc(id).onSnapshot(snap=>{
+      if(!snap.exists) return;
+      const p=snap.data();
+      if(p.board) drawRemoteBoard(id,p.board,S);
       const scoreEl=document.getElementById('score-'+id);
       if(scoreEl) scoreEl.textContent=p.score||0;
       if(!p.alive){
         const bw=document.getElementById('board-'+id);
         if(bw) bw.classList.add('dead');
+        // Check win
+        checkWinner();
       }
     });
   });
 }
 
-// ========== TETRIS LOGIC ==========
+// ========== TETRIS ==========
 let bag=[];
 function randomPiece(){
-  if(bag.length===0) bag=[0,1,2,3,4,5,6].sort(()=>Math.random()-.5);
+  if(!bag.length) bag=[0,1,2,3,4,5,6].sort(()=>Math.random()-.5);
   const idx=bag.pop();
   return {shape:SHAPES[idx].map(r=>[...r]),color:COLORS[idx],x:3,y:0,type:idx};
 }
-
 function spawnPiece(){
   if(!myNext) myNext=randomPiece();
-  myPiece=myNext;
-  myNext=randomPiece();
-  if(collides(myPiece.shape,myPiece.x,myPiece.y)){
-    endGame();
-  }
+  myPiece=myNext;myNext=randomPiece();
+  if(collides(myPiece.shape,myPiece.x,myPiece.y)) endGame();
 }
-
 function collides(shape,px,py){
-  for(let r=0;r<shape.length;r++){
-    for(let c=0;c<shape[r].length;c++){
-      if(!shape[r][c]) continue;
-      const nx=px+c, ny=py+r;
-      if(nx<0||nx>=COLS||ny>=ROWS) return true;
-      if(ny>=0 && myBoard[ny][nx]) return true;
-    }
+  for(let r=0;r<shape.length;r++)for(let c=0;c<shape[r].length;c++){
+    if(!shape[r][c]) continue;
+    const nx=px+c,ny=py+r;
+    if(nx<0||nx>=COLS||ny>=ROWS) return true;
+    if(ny>=0&&myBoard[ny][nx]) return true;
   }
   return false;
 }
-
 function rotate(shape){
-  const rows=shape.length, cols=shape[0].length;
-  const rotated=Array.from({length:cols},(_,c)=>Array.from({length:rows},(_,r)=>shape[rows-1-r][c]));
-  return rotated;
+  const rows=shape.length,cols=shape[0].length;
+  return Array.from({length:cols},(_,c)=>Array.from({length:rows},(_,r)=>shape[rows-1-r][c]));
 }
-
 function lock(){
   const s=myPiece.shape;
-  for(let r=0;r<s.length;r++){
-    for(let c=0;c<s[r].length;c++){
-      if(!s[r][c]) continue;
-      const ny=myPiece.y+r;
-      if(ny<0){endGame();return}
-      myBoard[ny][myPiece.x+c]=myPiece.color;
-    }
+  for(let r=0;r<s.length;r++)for(let c=0;c<s[r].length;c++){
+    if(!s[r][c]) continue;
+    if(myPiece.y+r<0){endGame();return}
+    myBoard[myPiece.y+r][myPiece.x+c]=myPiece.color;
   }
-  clearLines();
-  spawnPiece();
+  clearLines();spawnPiece();
 }
-
 function clearLines(){
   let cleared=0;
   for(let r=ROWS-1;r>=0;r--){
-    if(myBoard[r].every(c=>c)){
-      myBoard.splice(r,1);
-      myBoard.unshift(Array(COLS).fill(0));
-      cleared++;
-      r++;
-    }
+    if(myBoard[r].every(c=>c)){myBoard.splice(r,1);myBoard.unshift(Array(COLS).fill(0));cleared++;r++}
   }
   if(cleared){
-    myLines+=cleared;
-    myScore+=[0,100,300,500,800][cleared]*myLevel;
-    myLevel=Math.floor(myLines/10)+1;
-    dropInterval=Math.max(100,1000-myLevel*80);
-    // Attack
-    if(cleared>=2){
-      sendAttack(cleared-1);
-    }
+    myLines+=cleared;myScore+=[0,100,300,500,800][cleared]*myLevel;
+    myLevel=Math.floor(myLines/10)+1;dropInterval=Math.max(100,1000-myLevel*80);
+    if(cleared>=2 && !isSolo) sendAttack(cleared-1);
   }
   updateScoreDisplay();
-  syncBoard();
 }
-
 function sendAttack(lines){
-  if(isSolo) return;
-  const ids=Object.keys(players).filter(id=>id!==myId && players[id]?.alive);
-  if(ids.length===0) return;
+  const ids=Object.keys(players).filter(id=>id!==myId&&players[id]?.alive);
+  if(!ids.length) return;
   const target=ids[Math.floor(Math.random()*ids.length)];
-  roomRef.child('attacks/'+target).push({from:myId,lines:lines,ts:Date.now()});
+  roomRef.collection('attacks').add({target:target,from:myId,lines:lines,ts:Date.now()}).catch(()=>{});
 }
-
 function addGarbage(lines){
   for(let i=0;i<lines;i++){
     myBoard.shift();
     const row=Array(COLS).fill('#333');
-    const hole=Math.floor(Math.random()*COLS);
-    row[hole]=0;
+    row[Math.floor(Math.random()*COLS)]=0;
     myBoard.push(row);
   }
 }
-
-function ghostY(){
-  let gy=myPiece.y;
-  while(!collides(myPiece.shape,myPiece.x,gy+1)) gy++;
-  return gy;
-}
-
-function hardDrop(){
-  while(!collides(myPiece.shape,myPiece.x,myPiece.y+1)) myPiece.y++;
-  lock();
-}
-
+function ghostY(){let gy=myPiece.y;while(!collides(myPiece.shape,myPiece.x,gy+1))gy++;return gy}
+function hardDrop(){while(!collides(myPiece.shape,myPiece.x,myPiece.y+1))myPiece.y++;lock()}
 function updateScoreDisplay(){
-  const se=document.getElementById('score-me');
-  const le=document.getElementById('lines-me');
-  const lv=document.getElementById('level-me');
-  if(se) se.textContent=myScore;
-  if(le) le.textContent=myLines;
-  if(lv) lv.textContent=myLevel;
+  const s=document.getElementById('score-me'),l=document.getElementById('lines-me'),v=document.getElementById('level-me');
+  if(s)s.textContent=myScore;if(l)l.textContent=myLines;if(v)v.textContent=myLevel;
 }
-
 function syncBoard(){
-  if(isSolo||!roomRef) return;
-  // Serialize board as flat array of colors
+  if(isSolo||!roomRef||gameOver) return;
   const flat=myBoard.map(r=>r.map(c=>c||0));
-  roomRef.child('players/'+myId).update({board:JSON.stringify(flat),score:myScore});
+  roomRef.collection('players').doc(myId).update({board:JSON.stringify(flat),score:myScore}).catch(()=>{});
 }
-
 function endGame(){
   gameOver=true;
-  if(!isSolo && roomRef){
-    roomRef.child('players/'+myId+'/alive').set(false);
-    // Check if game is over for all
-    checkWinner();
+  if(syncTimer){clearInterval(syncTimer);syncTimer=null}
+  if(!isSolo&&roomRef){
+    roomRef.collection('players').doc(myId).update({alive:false}).catch(()=>{});
   }
   showGameOver();
 }
-
 function checkWinner(){
   const ids=Object.keys(players);
   if(ids.length<=1) return;
   const alive=ids.filter(id=>players[id]?.alive);
-  if(alive.length<=1 && alive[0]===myId){
-    // I won!
+  if(alive.length<=1&&alive[0]===myId&&!gameOver){
     gameOver=true;
+    if(syncTimer){clearInterval(syncTimer);syncTimer=null}
     const el=document.getElementById('game-over');
     el.classList.add('show');
     document.getElementById('go-title').textContent='🏆 승리!';
@@ -500,7 +484,6 @@ function checkWinner(){
     document.getElementById('go-score').textContent='점수: '+myScore+' | 라인: '+myLines;
   }
 }
-
 function showGameOver(){
   const el=document.getElementById('game-over');
   el.classList.add('show');
@@ -511,91 +494,36 @@ function showGameOver(){
 // ========== RENDER ==========
 function draw(){
   if(!canvases.me) return;
-  const ctx=canvases.me.board;
-  const W=COLS*BLOCK, H=ROWS*BLOCK;
+  const ctx=canvases.me.board,W=COLS*BLOCK,H=ROWS*BLOCK;
   ctx.clearRect(0,0,W,H);
-
-  // Grid
-  ctx.strokeStyle='#151515';
-  ctx.lineWidth=1;
-  for(let r=0;r<ROWS;r++){
-    for(let c=0;c<COLS;c++){
-      ctx.strokeRect(c*BLOCK,r*BLOCK,BLOCK,BLOCK);
+  ctx.strokeStyle='#151515';ctx.lineWidth=1;
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)ctx.strokeRect(c*BLOCK,r*BLOCK,BLOCK,BLOCK);
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(myBoard[r][c])drawBlock(ctx,c,r,myBoard[r][c],BLOCK);
+  if(myPiece&&!gameOver){
+    const gy=ghostY(),s=myPiece.shape;
+    for(let r=0;r<s.length;r++)for(let c=0;c<s[r].length;c++)if(s[r][c]){
+      ctx.fillStyle='rgba(16,185,129,0.15)';ctx.fillRect((myPiece.x+c)*BLOCK,(gy+r)*BLOCK,BLOCK,BLOCK);
+      ctx.strokeStyle='rgba(16,185,129,0.3)';ctx.strokeRect((myPiece.x+c)*BLOCK,(gy+r)*BLOCK,BLOCK,BLOCK);
     }
+    for(let r=0;r<s.length;r++)for(let c=0;c<s[r].length;c++)if(s[r][c])drawBlock(ctx,myPiece.x+c,myPiece.y+r,myPiece.color,BLOCK);
   }
-
-  // Board
-  for(let r=0;r<ROWS;r++){
-    for(let c=0;c<COLS;c++){
-      if(myBoard[r][c]){
-        drawBlock(ctx,c,r,myBoard[r][c],BLOCK);
-      }
-    }
-  }
-
-  if(myPiece && !gameOver){
-    // Ghost
-    const gy=ghostY();
-    const s=myPiece.shape;
-    for(let r=0;r<s.length;r++){
-      for(let c=0;c<s[r].length;c++){
-        if(s[r][c]){
-          ctx.fillStyle='rgba(16,185,129,0.15)';
-          ctx.fillRect((myPiece.x+c)*BLOCK,(gy+r)*BLOCK,BLOCK,BLOCK);
-          ctx.strokeStyle='rgba(16,185,129,0.3)';
-          ctx.strokeRect((myPiece.x+c)*BLOCK,(gy+r)*BLOCK,BLOCK,BLOCK);
-        }
-      }
-    }
-
-    // Current piece
-    for(let r=0;r<s.length;r++){
-      for(let c=0;c<s[r].length;c++){
-        if(s[r][c]){
-          drawBlock(ctx,myPiece.x+c,myPiece.y+r,myPiece.color,BLOCK);
-        }
-      }
-    }
-  }
-
-  // Preview
   if(myNext){
-    const pctx=canvases.me.preview;
-    pctx.clearRect(0,0,4*BLOCK,4*BLOCK);
-    const s=myNext.shape;
-    const ox=Math.floor((4-s[0].length)/2);
-    const oy=Math.floor((4-s.length)/2);
-    for(let r=0;r<s.length;r++){
-      for(let c=0;c<s[r].length;c++){
-        if(s[r][c]) drawBlock(pctx,ox+c,oy+r,myNext.color,BLOCK);
-      }
-    }
+    const pctx=canvases.me.preview;pctx.clearRect(0,0,4*BLOCK,4*BLOCK);
+    const s=myNext.shape,ox=Math.floor((4-s[0].length)/2),oy=Math.floor((4-s.length)/2);
+    for(let r=0;r<s.length;r++)for(let c=0;c<s[r].length;c++)if(s[r][c])drawBlock(pctx,ox+c,oy+r,myNext.color,BLOCK);
   }
 }
-
 function drawBlock(ctx,x,y,color,size){
-  ctx.fillStyle=color;
-  ctx.fillRect(x*size+1,y*size+1,size-2,size-2);
-  ctx.fillStyle='rgba(255,255,255,0.15)';
-  ctx.fillRect(x*size+1,y*size+1,size-2,3);
-  ctx.fillRect(x*size+1,y*size+1,3,size-2);
+  ctx.fillStyle=color;ctx.fillRect(x*size+1,y*size+1,size-2,size-2);
+  ctx.fillStyle='rgba(255,255,255,0.15)';ctx.fillRect(x*size+1,y*size+1,size-2,3);ctx.fillRect(x*size+1,y*size+1,3,size-2);
 }
-
 function drawRemoteBoard(id,boardJson,blockSize){
-  const c=canvases[id];
-  if(!c) return;
+  const c=canvases[id];if(!c) return;
   try{
-    const board=JSON.parse(boardJson);
-    const ctx=c.board;
-    const W=COLS*blockSize, H=ROWS*blockSize;
-    ctx.clearRect(0,0,W,H);
-    for(let r=0;r<ROWS;r++){
-      for(let c2=0;c2<COLS;c2++){
-        if(board[r]&&board[r][c2]){
-          ctx.fillStyle=board[r][c2];
-          ctx.fillRect(c2*blockSize+1,r*blockSize+1,blockSize-2,blockSize-2);
-        }
-      }
+    const board=JSON.parse(boardJson),ctx=c.board;
+    ctx.clearRect(0,0,COLS*blockSize,ROWS*blockSize);
+    for(let r=0;r<ROWS;r++)for(let c2=0;c2<COLS;c2++)if(board[r]&&board[r][c2]){
+      ctx.fillStyle=board[r][c2];ctx.fillRect(c2*blockSize+1,r*blockSize+1,blockSize-2,blockSize-2);
     }
   }catch(e){}
 }
@@ -606,65 +534,44 @@ function gameLoop(){
   if(gameOver) return;
   const now=Date.now();
   if(now-lastDrop>dropInterval){
-    if(myPiece && !collides(myPiece.shape,myPiece.x,myPiece.y+1)){
-      myPiece.y++;
-    } else if(myPiece){
-      lock();
-    }
+    if(myPiece&&!collides(myPiece.shape,myPiece.x,myPiece.y+1))myPiece.y++;
+    else if(myPiece)lock();
     lastDrop=now;
-    syncBoard();
   }
-  draw();
-  requestAnimationFrame(gameLoop);
+  draw();requestAnimationFrame(gameLoop);
 }
 
 // ========== CONTROLS ==========
 function handleKey(e){
   if(gameOver||!myPiece) return;
   switch(e.key){
-    case 'ArrowLeft':
-      if(!collides(myPiece.shape,myPiece.x-1,myPiece.y)) myPiece.x--;
-      e.preventDefault(); break;
-    case 'ArrowRight':
-      if(!collides(myPiece.shape,myPiece.x+1,myPiece.y)) myPiece.x++;
-      e.preventDefault(); break;
-    case 'ArrowDown':
-      if(!collides(myPiece.shape,myPiece.x,myPiece.y+1)){myPiece.y++;myScore+=1}
-      e.preventDefault(); break;
+    case 'ArrowLeft':if(!collides(myPiece.shape,myPiece.x-1,myPiece.y))myPiece.x--;e.preventDefault();break;
+    case 'ArrowRight':if(!collides(myPiece.shape,myPiece.x+1,myPiece.y))myPiece.x++;e.preventDefault();break;
+    case 'ArrowDown':if(!collides(myPiece.shape,myPiece.x,myPiece.y+1)){myPiece.y++;myScore+=1}e.preventDefault();break;
     case 'ArrowUp':
-      const rotated=rotate(myPiece.shape);
-      if(!collides(rotated,myPiece.x,myPiece.y)) myPiece.shape=rotated;
-      else if(!collides(rotated,myPiece.x-1,myPiece.y)){myPiece.shape=rotated;myPiece.x--}
-      else if(!collides(rotated,myPiece.x+1,myPiece.y)){myPiece.shape=rotated;myPiece.x++}
-      e.preventDefault(); break;
-    case ' ':
-      hardDrop();
-      e.preventDefault(); break;
+      const rot=rotate(myPiece.shape);
+      if(!collides(rot,myPiece.x,myPiece.y))myPiece.shape=rot;
+      else if(!collides(rot,myPiece.x-1,myPiece.y)){myPiece.shape=rot;myPiece.x--}
+      else if(!collides(rot,myPiece.x+1,myPiece.y)){myPiece.shape=rot;myPiece.x++}
+      e.preventDefault();break;
+    case ' ':hardDrop();e.preventDefault();break;
   }
   draw();
 }
-
 function mobileInput(action){
   if(gameOver||!myPiece) return;
   switch(action){
-    case 'left':
-      if(!collides(myPiece.shape,myPiece.x-1,myPiece.y)) myPiece.x--;break;
-    case 'right':
-      if(!collides(myPiece.shape,myPiece.x+1,myPiece.y)) myPiece.x++;break;
-    case 'down':
-      if(!collides(myPiece.shape,myPiece.x,myPiece.y+1)){myPiece.y++;myScore+=1}break;
-    case 'rotate':
-      const r=rotate(myPiece.shape);
-      if(!collides(r,myPiece.x,myPiece.y)) myPiece.shape=r;break;
+    case 'left':if(!collides(myPiece.shape,myPiece.x-1,myPiece.y))myPiece.x--;break;
+    case 'right':if(!collides(myPiece.shape,myPiece.x+1,myPiece.y))myPiece.x++;break;
+    case 'down':if(!collides(myPiece.shape,myPiece.x,myPiece.y+1)){myPiece.y++;myScore+=1}break;
+    case 'rotate':const r=rotate(myPiece.shape);if(!collides(r,myPiece.x,myPiece.y))myPiece.shape=r;break;
     case 'drop':hardDrop();break;
   }
   draw();
 }
 
-// Cleanup on page leave
-window.addEventListener('beforeunload',()=>{
-  if(roomRef) roomRef.child('players/'+myId).remove();
-});
+// Auto-focus nickname input
+document.getElementById('nick-input').focus();
 </script>
 </body>
 </html>
