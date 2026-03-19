@@ -8,6 +8,11 @@ service cloud.firestore {
         allow read, write: if true;
       }
     }
+    // Tetris ranking
+    match /tetris_ranking/{docId} {
+      allow read: if true;
+      allow create: if true;
+    }
 
     // Existing collections - keep default deny unless other rules exist
     match /swks_users/{userId} {
