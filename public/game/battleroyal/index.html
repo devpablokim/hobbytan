@@ -8,9 +8,9 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a0a;--card:#111;--card2:#161616;--accent:#10b981;--accent2:#059669;--white:#fff;--gray:#888;--border:#222;--red:#ef4444;--gold:#f59e0b;--purple:#8b5cf6}
-body{background:var(--bg);color:var(--white);font-family:'Pretendard Variable',system-ui,sans-serif;height:100vh;height:100dvh;overflow:hidden;-webkit-user-select:none;user-select:none}
+body{background:var(--bg);color:var(--white);font-family:'Pretendard Variable',system-ui,sans-serif;height:100vh;height:100dvh;overflow:hidden;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 h1,h2,h3{font-weight:800}
-.btn{background:var(--accent);color:var(--bg);border:none;padding:12px 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin:4px 0;border-radius:4px}
+.btn{background:var(--accent);color:var(--bg);border:none;padding:14px 24px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin:4px 0;border-radius:4px}
 .btn:active{transform:scale(.97)}
 .btn-secondary{background:transparent;border:2px solid var(--accent);color:var(--accent)}
 .btn-danger{background:var(--red);color:#fff}
@@ -39,7 +39,7 @@ textarea{resize:none;min-height:50px}
 .chat-panel{display:flex;flex-direction:column;flex:1;min-height:0}
 .chat-header{padding:8px 10px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--accent)}
 .chat-msgs{flex:1;overflow-y:auto;padding:6px;display:flex;flex-direction:column;gap:2px;min-height:0}
-.chat-msg{font-size:13px;line-height:1.4;word-break:break-word}
+.chat-msg{font-size:14px;line-height:1.5;word-break:break-word}
 .chat-msg .cn{color:var(--gray);font-weight:700}
 .chat-msg .ct{color:#ccc}
 .chat-sys{color:var(--gray);font-style:italic;font-size:12px}
@@ -53,9 +53,9 @@ textarea{resize:none;min-height:50px}
 #game{display:none;height:100vh;height:100dvh}
 #game-container{display:flex;width:100%;height:100%}
 #game-main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
-#game-sidebar{width:300px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow-y:auto}
-.game-hud{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px;flex-shrink:0;flex-wrap:wrap;gap:6px;font-weight:600}
-.hud-item{display:flex;align-items:center;gap:4px;font-size:14px}
+#game-sidebar{width:320px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow-y:auto}
+.game-hud{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);font-size:16px;flex-shrink:0;flex-wrap:wrap;gap:8px;font-weight:600}
+.hud-item{display:flex;align-items:center;gap:5px;font-size:16px}
 .timer-bar{width:100%;height:6px;background:#1a1a1a;flex-shrink:0}
 .timer-fill{height:100%;background:var(--accent);transition:width 1s linear}
 .timer-fill.warn{background:var(--red)}
@@ -65,12 +65,12 @@ textarea{resize:none;min-height:50px}
 
 /* WEAPON CARD (bigger, more visual) */
 .weapon-card{background:linear-gradient(135deg,#1a1a1a,#111);border:1px solid var(--border);padding:12px;margin:6px;text-align:center;border-radius:8px;position:relative}
-.weapon-card .wemoji{font-size:48px}
-.weapon-card .wname{font-size:16px;font-weight:700;color:var(--accent);margin-top:4px}
+.weapon-card .wemoji{font-size:56px}
+.weapon-card .wname{font-size:18px;font-weight:700;color:var(--accent);margin-top:4px}
 .weapon-card .wtype{font-size:11px;color:var(--gray);background:#1a1a1a;display:inline-block;padding:3px 10px;border-radius:10px;margin-top:2px}
 .weapon-card .wstats{display:flex;justify-content:center;gap:14px;margin-top:8px;font-size:13px}
 .weapon-card .wstat{display:flex;flex-direction:column;align-items:center}
-.weapon-card .wstat-val{font-weight:800;font-size:18px;color:var(--accent)}
+.weapon-card .wstat-val{font-weight:800;font-size:22px;color:var(--accent)}
 .weapon-card .wstat-label{font-size:10px;color:var(--gray)}
 .weapon-card .wspecial{font-size:12px;color:var(--gold);margin-top:6px;padding:5px 10px;background:rgba(245,158,11,.1);border-radius:4px;display:inline-block}
 
@@ -78,19 +78,19 @@ textarea{resize:none;min-height:50px}
 .inv-section{padding:6px;border-bottom:1px solid var(--border)}
 .inv-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
 .inv-slots{display:flex;gap:4px;flex-wrap:wrap}
-.inv-slot{width:56px;height:56px;background:#1a1a1a;border:2px solid var(--border);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:10px}
-.inv-slot.empty{color:#333;font-size:24px}
+.inv-slot{width:64px;height:64px;background:#1a1a1a;border:2px solid var(--border);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:11px}
+.inv-slot.empty{color:#333;font-size:28px}
 .inv-slot.selected{border:2px solid var(--accent);background:#0a1a0a}
 .inv-slot.equipped{border-color:var(--gold)}
-.inv-slot .slot-emoji{font-size:26px}
-.inv-slot .slot-name{font-size:8px;color:var(--gray);overflow:hidden;white-space:nowrap;max-width:52px;text-overflow:ellipsis}
+.inv-slot .slot-emoji{font-size:30px}
+.inv-slot .slot-name{font-size:9px;color:var(--gray);overflow:hidden;white-space:nowrap;max-width:60px;text-overflow:ellipsis}
 .craft-btn{margin-top:4px;padding:4px 10px;font-size:10px;font-weight:700;background:var(--purple);color:var(--white);border:none;border-radius:4px;cursor:pointer;display:none}
 .craft-btn.show{display:inline-block}
 
 /* Player list */
 .plist{border-bottom:1px solid var(--border);padding:6px;max-height:180px;overflow-y:auto}
-.plist-row{display:flex;align-items:center;gap:6px;padding:4px 0;font-size:13px}
-.plist-row .pemoji{font-size:20px}
+.plist-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:15px}
+.plist-row .pemoji{font-size:24px}
 .plist-row .pname{flex:1;font-weight:600}
 .plist-row .php{color:var(--accent);font-weight:700}
 .plist-row.dead{opacity:.4;text-decoration:line-through}
@@ -101,18 +101,18 @@ textarea{resize:none;min-height:50px}
 .battle-title{font-size:24px;font-weight:800;color:var(--red);margin-top:20px}
 .battle-fighters{display:flex;gap:16px;align-items:center;margin:8px 0;flex-wrap:wrap;justify-content:center}
 .battle-fighter{text-align:center;min-width:120px;background:var(--card);border:1px solid var(--border);padding:12px;border-radius:8px}
-.bf-emoji{font-size:32px}
-.bf-name{font-size:14px;font-weight:700;margin-top:4px}
-.bf-weapon{font-size:11px;color:var(--accent);margin-top:2px}
-.bf-hp{font-size:20px;font-weight:800;margin-top:4px;color:var(--accent)}
-.bf-vs{font-size:32px;font-weight:800;color:var(--red)}
+.bf-emoji{font-size:48px}
+.bf-name{font-size:18px;font-weight:700;margin-top:6px}
+.bf-weapon{font-size:14px;color:var(--accent);margin-top:4px}
+.bf-hp{font-size:24px;font-weight:800;margin-top:6px;color:var(--accent)}
+.bf-vs{font-size:40px;font-weight:800;color:var(--red)}
 .strategy-section{width:100%;max-width:500px;margin:8px 0}
 .strategy-section label{font-size:12px;color:var(--accent);font-weight:700}
 .strategy-timer{font-size:11px;color:var(--gold);margin:4px 0}
-.battle-log{background:#111;border:1px solid var(--border);padding:12px;width:100%;max-width:500px;font-size:15px;line-height:1.8;max-height:300px;overflow-y:auto;border-radius:6px}
-.round-entry{margin:6px 0;padding:8px;background:#0a0a0a;border-left:3px solid var(--accent);border-radius:0 4px 4px 0}
-.round-label{font-size:10px;color:var(--accent);font-weight:700;margin-bottom:4px}
-.battle-result{font-size:22px;font-weight:800;margin-top:8px}
+.battle-log{background:#111;border:1px solid var(--border);padding:14px;width:100%;max-width:600px;font-size:17px;line-height:1.8;max-height:350px;overflow-y:auto;border-radius:6px}
+.round-entry{margin:8px 0;padding:10px;background:#0a0a0a;border-left:3px solid var(--accent);border-radius:0 4px 4px 0;font-size:16px}
+.round-label{font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px}
+.battle-result{font-size:26px;font-weight:800;margin-top:10px}
 
 /* LOOT modal */
 #loot-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:550;justify-content:center;align-items:center;flex-direction:column;gap:12px}
@@ -141,8 +141,8 @@ textarea{resize:none;min-height:50px}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
 /* TURN BANNER */
-#turn-banner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;font-weight:800;color:var(--accent);text-shadow:0 0 20px rgba(16,185,129,.5);z-index:10;display:none;pointer-events:none;text-align:center}
-#countdown{font-size:72px;font-weight:800;color:var(--accent);display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999;text-shadow:0 0 40px rgba(16,185,129,.5)}
+#turn-banner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:34px;font-weight:800;color:var(--accent);text-shadow:0 0 20px rgba(16,185,129,.5);z-index:10;display:none;pointer-events:none;text-align:center}
+#countdown{font-size:96px;font-weight:800;color:var(--accent);display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999;text-shadow:0 0 40px rgba(16,185,129,.5)}
 
 /* Mobile */
 #mobile-menu-btn{display:none;position:fixed;top:6px;right:6px;z-index:100;background:var(--card);border:1px solid var(--border);color:var(--white);width:36px;height:36px;font-size:16px;cursor:pointer;border-radius:6px;align-items:center;justify-content:center}
@@ -152,18 +152,32 @@ textarea{resize:none;min-height:50px}
 #mob-sidebar.open{right:0}
 #move-pad{display:none;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);z-index:50;background:rgba(0,0,0,.85);padding:8px;border-radius:12px;border:1px solid var(--border)}
 .pad-row{display:flex;justify-content:center;gap:4px;margin:2px 0}
-.pad-btn{width:58px;height:58px;background:var(--card);border:2px solid var(--border);color:var(--white);font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:8px}
+.pad-btn{width:64px;height:64px;background:var(--card);border:2px solid var(--border);color:var(--white);font-size:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;-webkit-tap-highlight-color:transparent}
 .pad-btn:active{background:var(--accent);color:var(--bg)}
-.pad-btn.stay{font-size:10px;font-weight:700}
+.pad-btn.stay{font-size:12px;font-weight:700}
 
 @media(max-width:768px){
   #lobby{flex-direction:column}
-  #lobby-left{max-height:45vh;flex:none;gap:6px}
+  #lobby-left{max-height:45vh;flex:none;gap:6px;padding:10px}
   #lobby-right{width:100%;flex:1;border-left:none;border-top:1px solid var(--border)}
   #game-sidebar{display:none}
   #mobile-menu-btn{display:flex}
   #mob-sidebar{display:flex}
   #move-pad{display:block}
+  .game-hud{padding:6px 10px;font-size:13px;gap:4px}
+  .hud-item{font-size:13px;gap:3px}
+  #map-container{touch-action:none}
+  .battle-title{font-size:20px}
+  .bf-emoji{font-size:36px}
+  .bf-name{font-size:15px}
+  .bf-hp{font-size:20px}
+  .bf-vs{font-size:30px}
+  .battle-log{font-size:14px;max-height:250px}
+  .round-entry{font-size:14px;padding:8px}
+  .strategy-section{max-width:90vw}
+  .strategy-section textarea{font-size:16px}
+  #craft-modal h2{font-size:20px}
+  .pickup-toast{bottom:220px;font-size:16px}
 }
 @media(min-width:769px){#mobile-menu-btn,#mob-sidebar,#mob-overlay{display:none!important}}
 </style>
@@ -173,8 +187,8 @@ textarea{resize:none;min-height:50px}
 <!-- LOBBY -->
 <div id="lobby">
   <div id="lobby-left">
-    <h1 style="font-size:28px;color:var(--accent)">⚔️ <span style="color:var(--white)">BATTLE</span> ROYALE</h1>
-    <p style="color:var(--gray);font-size:11px">HOBBYTAN AI — 최대 16인 턴제 배틀로얄 | AI 전투 내러티브</p>
+    <h1 style="font-size:36px;color:var(--accent)">⚔️ <span style="color:var(--white)">BATTLE</span> ROYALE</h1>
+    <p style="color:var(--gray);font-size:14px">HOBBYTAN AI — 최대 16인 턴제 배틀로얄 | AI 전투 내러티브</p>
     <div class="lobby-box" id="nick-box">
       <p style="color:var(--accent);font-weight:700;font-size:14px;margin-bottom:6px">닉네임을 입력하세요</p>
       <input type="text" id="nick-input" placeholder="닉네임 (2~8자)" maxlength="8" autocomplete="off">
@@ -541,8 +555,8 @@ function initGame(){
   document.getElementById('game').style.display='block';
   if(window.innerWidth<=768){document.getElementById('move-pad').style.display='block';document.getElementById('mobile-menu-btn').style.display='flex'}
   canvas=document.getElementById('map-canvas');
-  const avail=Math.min(window.innerWidth-(window.innerWidth>768?300:0)-10,window.innerHeight-60,700);
-  TILE=Math.max(24,Math.floor(avail/MAP));
+  const avail=Math.min(window.innerWidth-(window.innerWidth>768?320:0)-10,window.innerHeight-60,900);
+  TILE=Math.max(32,Math.floor(avail/MAP));
   canvas.width=MAP*TILE;canvas.height=MAP*TILE;
   ctx=canvas.getContext('2d');
   canvas.addEventListener('click',onMapClick);
@@ -551,18 +565,20 @@ function initGame(){
   updateHUD();drawMap();
 }
 
+let deadlockTimer=null;
 function onRoomUpdate(d){
   currentTurn=d.turn||1;
   if(d.mapItems)mapItems=JSON.parse(d.mapItems);
+  if(deadlockTimer){clearTimeout(deadlockTimer);deadlockTimer=null}
   if(d.phase==='move'){
-    inBattle=false;
+    inBattle=false;resolving=false;
     document.getElementById('wait-overlay').classList.remove('show');
     document.getElementById('battle-overlay').classList.remove('show');
     pendingMove=null;
     document.getElementById('move-indicator').style.display='none';
     startTurnTimer();
   }
-  if(d.phase==='resolve')stopTurnTimer();
+  if(d.phase==='resolve'){stopTurnTimer();if(isHost)deadlockTimer=setTimeout(()=>{console.warn('Deadlock recovery: forcing nextTurn');nextTurn().catch(()=>{})},15000)}
   if(d.phase==='battle'){
     stopTurnTimer();
     const bp=d.battlePair;
@@ -598,16 +614,17 @@ function selMove(dx,dy){
   drawMap();
 }
 
+let resolving=false;
 async function submitMove(){
   if(!pendingMove)pendingMove={dx:0,dy:0};
   await roomRef.collection('players').doc(myId).update({pendingDx:pendingMove.dx,pendingDy:pendingMove.dy}).catch(()=>{});
-  if(isHost)await resolveTurn();
+  if(isHost&&!resolving){resolving=true;try{await resolveTurn()}catch(e){console.error('resolveTurn error:',e);await nextTurn().catch(()=>{})}finally{resolving=false}}
 }
 
 async function resolveTurn(){
-  // Bot moves — parallel with 3s timeout, fallback to random
+  // Bot moves — parallel with 3s timeout per bot, 8s total timeout, fallback to random
   const botIds=Object.keys(players).filter(id=>players[id].isBot&&players[id].alive);
-  const botMoves=botIds.map(async bid=>{
+  const botMovesPromise=Promise.allSettled(botIds.map(async bid=>{
     const bot=players[bid];
     let dx=0,dy=0;
     try{
@@ -617,8 +634,9 @@ async function resolveTurn(){
       if(r.ok){const j=await r.json();dx=Math.max(-1,Math.min(1,j.dx||0));dy=Math.max(-1,Math.min(1,j.dy||0))}
     }catch(e){const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*9)];dx=d[0];dy=d[1]}
     return roomRef.collection('players').doc(bid).update({x:Math.max(0,Math.min(MAP-1,bot.x+dx)),y:Math.max(0,Math.min(MAP-1,bot.y+dy))}).catch(()=>{});
-  });
-  await Promise.allSettled(botMoves);
+  }));
+  // Total 8s timeout for all bot moves
+  await Promise.race([botMovesPromise,new Promise(r=>setTimeout(r,8000))]);
   // Human moves
   const humanUpdates=Object.keys(players).filter(id=>!players[id].isBot&&players[id].alive).map(hid=>{
     const p=players[hid],dx=p.pendingDx||0,dy=p.pendingDy||0;
@@ -642,7 +660,7 @@ async function resolveTurn(){
         const me=players[myId];
         const canSee=!myAlive||!me||(Math.abs(p.x-me.x)<=1&&Math.abs(p.y-me.y)<=1);
         const who=canSee?p.name:'???';
-        addSysChat(`📦 ${who}이(가) ${gw(mapItems[key].id).emoji} ${gw(mapItems[key].id).name}을(를) 발견!`);
+        addSysChat(`📦 ${who}가 ${gw(mapItems[key].id).emoji} ${gw(mapItems[key].id).name}을(를) 발견!`);
       }
       delete mapItems[key];
       await roomRef.update({mapItems:JSON.stringify(mapItems)}).catch(()=>{});
