@@ -153,7 +153,7 @@ textarea{resize:none;min-height:50px}
 #mob-sidebar .inv-section{flex-shrink:0}
 #mob-sidebar .plist{flex-shrink:0;max-height:120px;overflow-y:auto}
 #mob-sidebar .chat-panel{flex:1;min-height:0;display:flex;flex-direction:column}
-#mob-sidebar .chat-msgs{flex:1;min-height:80px;overflow-y:auto}
+#mob-sidebar .chat-msgs{flex:1;min-height:80px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 #mob-sidebar.open{right:0}
 /* Move pad removed — mobile uses map tap */
 
@@ -628,19 +628,20 @@ async function resolveTurn(){
     let dx=0,dy=0;
     try{
       const ctrl=new AbortController();const tid=setTimeout(()=>ctrl.abort(),3000);
-      const r=await fetch(API_BOT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actionType:'move',botName:bot.name,botWeapon:gw(bot.weapon),botHp:bot.hp,mapSize:MAP,botX:bot.x,botY:bot.y,nearbyPlayers:Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=2&&Math.abs(p.y-bot.y)<=2).map(p=>p.name).join(',')||'없음'}),signal:ctrl.signal});
+      const r=await fetch(API_BOT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actionType:'move',botName:bot.name,botWeapon:gw(bot.weapon),botHp:bot.hp,mapSize:MAP,botX:bot.x,botY:bot.y,nearbyPlayers:Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=1&&Math.abs(p.y-bot.y)<=1).map(p=>p.name).join(',')||'없음'}),signal:ctrl.signal});
       clearTimeout(tid);
       if(r.ok){const j=await r.json();dx=Math.max(-1,Math.min(1,j.dx||0));dy=Math.max(-1,Math.min(1,j.dy||0))}
     }catch(e){
       // Fallback: 가장 가까운 적 방향 or 중앙으로 이동
-      const targets=Object.values(players).filter(p=>p.alive&&p.name!==bot.name);
-      if(targets.length>0){
-        let nearest=targets[0],minD=999;
-        targets.forEach(t=>{const d=Math.abs(t.x-bot.x)+Math.abs(t.y-bot.y);if(d<minD){minD=d;nearest=t}});
-        dx=Math.sign(nearest.x-bot.x);dy=Math.sign(nearest.y-bot.y);
+      // Bot fog: only see 1-tile radius, same as players
+      const visible=Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=1&&Math.abs(p.y-bot.y)<=1);
+      if(visible.length>0){
+        const t=visible[0];dx=Math.sign(t.x-bot.x);dy=Math.sign(t.y-bot.y);
       }else{
-        const cx=Math.floor(MAP/2);const cy=Math.floor(MAP/2);
-        dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y);
+        // No visible enemies: random wander toward center
+        const cx=Math.floor(MAP/2),cy=Math.floor(MAP/2);
+        if(Math.random()<0.5){dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y)}
+        else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*9)];dx=d[0];dy=d[1]}
       }
     }
     return roomRef.collection('players').doc(bid).update({x:Math.max(0,Math.min(MAP-1,bot.x+dx)),y:Math.max(0,Math.min(MAP-1,bot.y+dy))}).catch(()=>{});
