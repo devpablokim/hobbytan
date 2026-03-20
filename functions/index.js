@@ -1,10 +1,11 @@
 const { onRequest } = require("firebase-functions/v2/https");
-const OPENAI_KEY = { value: () => process.env.OPENAI_API_KEY };
+const { defineSecret } = require("firebase-functions/params");
+const openaiKey = defineSecret("OPENAI_API_KEY");
 
 async function callOpenAI(messages, opts = {}) {
   const resp = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { "Authorization": `Bearer ${OPENAI_KEY.value()}`, "Content-Type": "application/json" },
+    headers: { "Authorization": `Bearer ${openaiKey.value()}`, "Content-Type": "application/json" },
     body: JSON.stringify({ model: "gpt-4o-mini", messages, temperature: opts.temp || 0.9, max_tokens: opts.maxTokens || 1000, response_format: { type: "json_object" } }),
   });
   if (!resp.ok) throw new Error(`OpenAI ${resp.status}: ${await resp.text()}`);
@@ -12,7 +13,7 @@ async function callOpenAI(messages, opts = {}) {
   return JSON.parse(data.choices[0].message.content);
 }
 
-exports.brcombat = onRequest({ region: "asia-northeast3", cors: true }, async (req, res) => {
+exports.brcombat = onRequest({ region: "asia-northeast3", cors: true, secrets: [openaiKey] }, async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
   try {
     const { playerA, playerB } = req.body;
@@ -53,7 +54,7 @@ exports.brcombat = onRequest({ region: "asia-northeast3", cors: true }, async (r
   }
 });
 
-exports.brbotaction = onRequest({ region: "asia-northeast3", cors: true }, async (req, res) => {
+exports.brbotaction = onRequest({ region: "asia-northeast3", cors: true, secrets: [openaiKey] }, async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
   try {
     const { actionType, botName, botWeapon, botHp, mapSize, botX, botY, nearbyPlayers, opponentWeapon, opponentHp } = req.body;
