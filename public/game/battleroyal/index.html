@@ -875,7 +875,9 @@ function openCraft(){
   renderCraftItems();
 }
 function renderCraftItems(){
-  document.getElementById('craft-items').innerHTML=inventory.map((w,i)=>`<div class="inv-slot ${craftSelection.includes(i)?'selected':''}" onclick="toggleCraftSel(${i})"><div class="slot-emoji">${w.emoji}</div><div class="slot-name">${w.name}</div></div>`).join('');
+  document.getElementById('craft-items').innerHTML=inventory.map((w,i)=>`<div class="inv-slot ${craftSelection.includes(i)?'selected':''}" onclick="toggleCraftSel(${i})" style="cursor:pointer;min-width:70px;min-height:70px"><div class="slot-emoji">${w.emoji}</div><div class="slot-name">${w.name}</div></div>`).join('');
+  const btn=document.getElementById('craft-go-btn');
+  if(btn)btn.style.opacity=craftSelection.length===2?'1':'0.4';
 }
 function toggleCraftSel(i){
   const idx=craftSelection.indexOf(i);
