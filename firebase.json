@@ -2,6 +2,13 @@
   "firestore": {
     "rules": "firestore.rules"
   },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "battleroyal-api",
+      "runtime": "nodejs20"
+    }
+  ],
   "hosting": {
     "source": ".",
     "site": "hobbytan-ai",
