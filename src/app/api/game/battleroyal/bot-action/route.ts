@@ -14,14 +14,19 @@ export async function POST(req: NextRequest) {
     let prompt = '';
 
     if (actionType === 'move') {
-      prompt = `당신은 배틀로얄 게임의 AI 봇 "${botName}"입니다.
+      prompt = `당신은 배틀로얄 게임의 공격적인 AI 전사 "${botName}"입니다.
 무기: ${botWeapon.emoji} ${botWeapon.name} (ATK:${botWeapon.atk}, DEF:${botWeapon.def}, SPD:${botWeapon.spd}, 특수:${botWeapon.specName})
 HP: ${botHp}/100
 현재 위치: (${botX}, ${botY}) — 맵 크기 ${mapSize}x${mapSize}
 주변 감지된 플레이어: ${nearbyPlayers || '없음'}
 
+## 행동 규칙 (반드시 따를 것):
+1. 주변에 플레이어가 있으면 **반드시 그 방향으로 이동하여 전투**하라. 도망 금지.
+2. 주변에 아무도 없으면 맵 중앙(${Math.floor(mapSize/2)},${Math.floor(mapSize/2)}) 방향으로 이동하라. 중앙에 적이 모인다.
+3. HP가 30 이하여도 도망치지 마라. 한판 승부로 역전하라.
+4. 대기(0,0)는 주변에 적이 있을 때만 허용 (매복).
+
 8방향(↖↑↗←→↙↓↘) 또는 대기 중 하나를 선택하세요.
-전략적으로 생각하세요. HP가 낮으면 도망, 높으면 사냥.
 
 반드시 아래 JSON 형식으로만 응답:
 {"dx": -1~1, "dy": -1~1, "reason": "이유 한줄"}
