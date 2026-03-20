@@ -18,6 +18,17 @@ service cloud.firestore {
       allow read: if true;
       allow create: if true;
     }
+    // Battle Royale
+    match /br_rooms/{roomId} {
+      allow read, write: if true;
+      match /{sub}/{docId} {
+        allow read, write: if true;
+      }
+    }
+    match /br_lobby_chat/{docId} {
+      allow read: if true;
+      allow create: if true;
+    }
 
     // Existing collections - keep default deny unless other rules exist
     match /swks_users/{userId} {
