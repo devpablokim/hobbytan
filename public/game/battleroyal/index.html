@@ -39,10 +39,10 @@ textarea{resize:none;min-height:50px}
 .chat-panel{display:flex;flex-direction:column;flex:1;min-height:0}
 .chat-header{padding:8px 10px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--accent)}
 .chat-msgs{flex:1;overflow-y:auto;padding:6px;display:flex;flex-direction:column;gap:2px;min-height:0}
-.chat-msg{font-size:11px;line-height:1.3;word-break:break-word}
+.chat-msg{font-size:13px;line-height:1.4;word-break:break-word}
 .chat-msg .cn{color:var(--gray);font-weight:700}
 .chat-msg .ct{color:#ccc}
-.chat-sys{color:var(--gray);font-style:italic;font-size:10px}
+.chat-sys{color:var(--gray);font-style:italic;font-size:12px}
 .chat-input-row{display:flex;border-top:1px solid var(--border);padding:4px}
 .chat-input-row input{flex:1;background:#1a1a1a;border:1px solid var(--border);color:var(--white);padding:7px;font-size:12px;font-family:inherit;border-radius:4px 0 0 4px;text-align:left}
 .chat-input-row button{background:var(--accent);color:var(--bg);border:none;padding:7px 12px;font-weight:700;font-size:12px;cursor:pointer;border-radius:0 4px 4px 0}
@@ -54,9 +54,9 @@ textarea{resize:none;min-height:50px}
 #game-container{display:flex;width:100%;height:100%}
 #game-main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
 #game-sidebar{width:300px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow-y:auto}
-.game-hud{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--card);border-bottom:1px solid var(--border);font-size:11px;flex-shrink:0;flex-wrap:wrap;gap:4px}
-.hud-item{display:flex;align-items:center;gap:3px}
-.timer-bar{width:100%;height:5px;background:#1a1a1a;flex-shrink:0}
+.game-hud{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px;flex-shrink:0;flex-wrap:wrap;gap:6px;font-weight:600}
+.hud-item{display:flex;align-items:center;gap:4px;font-size:14px}
+.timer-bar{width:100%;height:6px;background:#1a1a1a;flex-shrink:0}
 .timer-fill{height:100%;background:var(--accent);transition:width 1s linear}
 .timer-fill.warn{background:var(--red)}
 #map-container{flex:1;display:flex;justify-content:center;align-items:center;overflow:hidden;position:relative;background:#050505}
@@ -65,32 +65,32 @@ textarea{resize:none;min-height:50px}
 
 /* WEAPON CARD (bigger, more visual) */
 .weapon-card{background:linear-gradient(135deg,#1a1a1a,#111);border:1px solid var(--border);padding:12px;margin:6px;text-align:center;border-radius:8px;position:relative}
-.weapon-card .wemoji{font-size:36px}
-.weapon-card .wname{font-size:14px;font-weight:700;color:var(--accent);margin-top:4px}
-.weapon-card .wtype{font-size:9px;color:var(--gray);background:#1a1a1a;display:inline-block;padding:2px 8px;border-radius:10px;margin-top:2px}
-.weapon-card .wstats{display:flex;justify-content:center;gap:10px;margin-top:6px;font-size:11px}
+.weapon-card .wemoji{font-size:48px}
+.weapon-card .wname{font-size:16px;font-weight:700;color:var(--accent);margin-top:4px}
+.weapon-card .wtype{font-size:11px;color:var(--gray);background:#1a1a1a;display:inline-block;padding:3px 10px;border-radius:10px;margin-top:2px}
+.weapon-card .wstats{display:flex;justify-content:center;gap:14px;margin-top:8px;font-size:13px}
 .weapon-card .wstat{display:flex;flex-direction:column;align-items:center}
-.weapon-card .wstat-val{font-weight:800;font-size:14px;color:var(--accent)}
-.weapon-card .wstat-label{font-size:8px;color:var(--gray)}
-.weapon-card .wspecial{font-size:10px;color:var(--gold);margin-top:6px;padding:4px 8px;background:rgba(245,158,11,.1);border-radius:4px;display:inline-block}
+.weapon-card .wstat-val{font-weight:800;font-size:18px;color:var(--accent)}
+.weapon-card .wstat-label{font-size:10px;color:var(--gray)}
+.weapon-card .wspecial{font-size:12px;color:var(--gold);margin-top:6px;padding:5px 10px;background:rgba(245,158,11,.1);border-radius:4px;display:inline-block}
 
 /* INVENTORY */
 .inv-section{padding:6px;border-bottom:1px solid var(--border)}
 .inv-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
 .inv-slots{display:flex;gap:4px;flex-wrap:wrap}
-.inv-slot{width:50px;height:50px;background:#1a1a1a;border:1px solid var(--border);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:9px}
-.inv-slot.empty{color:#333;font-size:20px}
+.inv-slot{width:56px;height:56px;background:#1a1a1a;border:2px solid var(--border);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:10px}
+.inv-slot.empty{color:#333;font-size:24px}
 .inv-slot.selected{border:2px solid var(--accent);background:#0a1a0a}
 .inv-slot.equipped{border-color:var(--gold)}
-.inv-slot .slot-emoji{font-size:22px}
-.inv-slot .slot-name{font-size:7px;color:var(--gray);overflow:hidden;white-space:nowrap;max-width:46px;text-overflow:ellipsis}
+.inv-slot .slot-emoji{font-size:26px}
+.inv-slot .slot-name{font-size:8px;color:var(--gray);overflow:hidden;white-space:nowrap;max-width:52px;text-overflow:ellipsis}
 .craft-btn{margin-top:4px;padding:4px 10px;font-size:10px;font-weight:700;background:var(--purple);color:var(--white);border:none;border-radius:4px;cursor:pointer;display:none}
 .craft-btn.show{display:inline-block}
 
 /* Player list */
 .plist{border-bottom:1px solid var(--border);padding:6px;max-height:180px;overflow-y:auto}
-.plist-row{display:flex;align-items:center;gap:4px;padding:3px 0;font-size:10px}
-.plist-row .pemoji{font-size:16px}
+.plist-row{display:flex;align-items:center;gap:6px;padding:4px 0;font-size:13px}
+.plist-row .pemoji{font-size:20px}
 .plist-row .pname{flex:1;font-weight:600}
 .plist-row .php{color:var(--accent);font-weight:700}
 .plist-row.dead{opacity:.4;text-decoration:line-through}
@@ -109,7 +109,7 @@ textarea{resize:none;min-height:50px}
 .strategy-section{width:100%;max-width:500px;margin:8px 0}
 .strategy-section label{font-size:12px;color:var(--accent);font-weight:700}
 .strategy-timer{font-size:11px;color:var(--gold);margin:4px 0}
-.battle-log{background:#111;border:1px solid var(--border);padding:10px;width:100%;max-width:500px;font-size:13px;line-height:1.8;max-height:250px;overflow-y:auto;border-radius:6px}
+.battle-log{background:#111;border:1px solid var(--border);padding:12px;width:100%;max-width:500px;font-size:15px;line-height:1.8;max-height:300px;overflow-y:auto;border-radius:6px}
 .round-entry{margin:6px 0;padding:8px;background:#0a0a0a;border-left:3px solid var(--accent);border-radius:0 4px 4px 0}
 .round-label{font-size:10px;color:var(--accent);font-weight:700;margin-bottom:4px}
 .battle-result{font-size:22px;font-weight:800;margin-top:8px}
@@ -152,7 +152,7 @@ textarea{resize:none;min-height:50px}
 #mob-sidebar.open{right:0}
 #move-pad{display:none;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);z-index:50;background:rgba(0,0,0,.85);padding:8px;border-radius:12px;border:1px solid var(--border)}
 .pad-row{display:flex;justify-content:center;gap:4px;margin:2px 0}
-.pad-btn{width:48px;height:48px;background:var(--card);border:1px solid var(--border);color:var(--white);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px}
+.pad-btn{width:58px;height:58px;background:var(--card);border:2px solid var(--border);color:var(--white);font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:8px}
 .pad-btn:active{background:var(--accent);color:var(--bg)}
 .pad-btn.stay{font-size:10px;font-weight:700}
 
@@ -541,8 +541,8 @@ function initGame(){
   document.getElementById('game').style.display='block';
   if(window.innerWidth<=768){document.getElementById('move-pad').style.display='block';document.getElementById('mobile-menu-btn').style.display='flex'}
   canvas=document.getElementById('map-canvas');
-  const avail=Math.min(window.innerWidth-(window.innerWidth>768?300:0)-20,window.innerHeight-80,600);
-  TILE=Math.floor(avail/MAP);
+  const avail=Math.min(window.innerWidth-(window.innerWidth>768?300:0)-10,window.innerHeight-60,700);
+  TILE=Math.max(24,Math.floor(avail/MAP));
   canvas.width=MAP*TILE;canvas.height=MAP*TILE;
   ctx=canvas.getContext('2d');
   canvas.addEventListener('click',onMapClick);
@@ -605,22 +605,26 @@ async function submitMove(){
 }
 
 async function resolveTurn(){
-  // Bot moves
+  // Bot moves — parallel with 3s timeout, fallback to random
   const botIds=Object.keys(players).filter(id=>players[id].isBot&&players[id].alive);
-  for(const bid of botIds){
+  const botMoves=botIds.map(async bid=>{
     const bot=players[bid];
     let dx=0,dy=0;
     try{
-      const r=await fetch(API_BOT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actionType:'move',botName:bot.name,botWeapon:gw(bot.weapon),botHp:bot.hp,mapSize:MAP,botX:bot.x,botY:bot.y,nearbyPlayers:Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=2&&Math.abs(p.y-bot.y)<=2).map(p=>p.name).join(',')||'없음'})});
+      const ctrl=new AbortController();const tid=setTimeout(()=>ctrl.abort(),3000);
+      const r=await fetch(API_BOT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actionType:'move',botName:bot.name,botWeapon:gw(bot.weapon),botHp:bot.hp,mapSize:MAP,botX:bot.x,botY:bot.y,nearbyPlayers:Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=2&&Math.abs(p.y-bot.y)<=2).map(p=>p.name).join(',')||'없음'}),signal:ctrl.signal});
+      clearTimeout(tid);
       if(r.ok){const j=await r.json();dx=Math.max(-1,Math.min(1,j.dx||0));dy=Math.max(-1,Math.min(1,j.dy||0))}
     }catch(e){const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*9)];dx=d[0];dy=d[1]}
-    await roomRef.collection('players').doc(bid).update({x:Math.max(0,Math.min(MAP-1,bot.x+dx)),y:Math.max(0,Math.min(MAP-1,bot.y+dy))}).catch(()=>{});
-  }
+    return roomRef.collection('players').doc(bid).update({x:Math.max(0,Math.min(MAP-1,bot.x+dx)),y:Math.max(0,Math.min(MAP-1,bot.y+dy))}).catch(()=>{});
+  });
+  await Promise.allSettled(botMoves);
   // Human moves
-  for(const hid of Object.keys(players).filter(id=>!players[id].isBot&&players[id].alive)){
+  const humanUpdates=Object.keys(players).filter(id=>!players[id].isBot&&players[id].alive).map(hid=>{
     const p=players[hid],dx=p.pendingDx||0,dy=p.pendingDy||0;
-    await roomRef.collection('players').doc(hid).update({x:Math.max(0,Math.min(MAP-1,p.x+dx)),y:Math.max(0,Math.min(MAP-1,p.y+dy)),pendingDx:0,pendingDy:0}).catch(()=>{});
-  }
+    return roomRef.collection('players').doc(hid).update({x:Math.max(0,Math.min(MAP-1,p.x+dx)),y:Math.max(0,Math.min(MAP-1,p.y+dy)),pendingDx:0,pendingDy:0}).catch(()=>{});
+  });
+  await Promise.allSettled(humanUpdates);
   await roomRef.update({phase:'resolve'});
   // Item pickup
   const snap=await roomRef.collection('players').get();
@@ -634,7 +638,11 @@ async function resolveTurn(){
         inv.push(mapItems[key].id);
         await roomRef.collection('players').doc(id).update({inv:JSON.stringify(inv)}).catch(()=>{});
         if(id===myId){inventory.push(gw(mapItems[key].id));showPickup(gw(mapItems[key].id))}
-        addSysChat(`📦 ${p.name}이(가) ${gw(mapItems[key].id).emoji} ${gw(mapItems[key].id).name}을(를) 발견!`);
+        // 자기 시야 밖이면 ??? 표시
+        const me=players[myId];
+        const canSee=!myAlive||!me||(Math.abs(p.x-me.x)<=1&&Math.abs(p.y-me.y)<=1);
+        const who=canSee?p.name:'???';
+        addSysChat(`📦 ${who}이(가) ${gw(mapItems[key].id).emoji} ${gw(mapItems[key].id).name}을(를) 발견!`);
       }
       delete mapItems[key];
       await roomRef.update({mapItems:JSON.stringify(mapItems)}).catch(()=>{});
@@ -823,7 +831,7 @@ function drawMap(){
     ctx.strokeStyle=vis?'#222':'#0c0c0c';ctx.strokeRect(x*TILE,y*TILE,TILE,TILE);
     // Map items
     const k=x+'_'+y;
-    if(mapItems[k]&&vis){ctx.font=`${TILE*0.6}px serif`;ctx.textAlign='center';ctx.fillText(gw(mapItems[k].id).emoji,x*TILE+TILE/2,y*TILE+TILE*0.7)}
+    if(mapItems[k]&&vis){ctx.font=`${TILE*0.7}px serif`;ctx.textAlign='center';ctx.fillText(gw(mapItems[k].id).emoji,x*TILE+TILE/2,y*TILE+TILE*0.72)}
   }
   // Players (big emoji avatars)
   Object.entries(players).forEach(([id,p])=>{
@@ -834,15 +842,15 @@ function drawMap(){
     // Background circle
     ctx.fillStyle=isMe?'rgba(16,185,129,0.3)':p.isBot?'rgba(100,100,100,0.3)':'rgba(239,68,68,0.3)';
     ctx.beginPath();ctx.arc(p.x*TILE+TILE/2,p.y*TILE+TILE/2,TILE/2.2,0,Math.PI*2);ctx.fill();
-    // Avatar emoji
-    ctx.font=`${TILE*0.55}px serif`;ctx.textAlign='center';
-    ctx.fillText(p.avatar||'🤖',p.x*TILE+TILE/2,p.y*TILE+TILE*0.65);
+    // Avatar emoji (big)
+    ctx.font=`${TILE*0.65}px serif`;ctx.textAlign='center';
+    ctx.fillText(p.avatar||'🤖',p.x*TILE+TILE/2,p.y*TILE+TILE*0.6);
     // Name below
-    ctx.fillStyle=isMe?'#10b981':'#ccc';ctx.font=`bold ${Math.max(7,TILE/4)}px sans-serif`;
-    ctx.fillText(p.name.substring(0,4),p.x*TILE+TILE/2,p.y*TILE+TILE-1);
-    // Weapon emoji above
-    ctx.font=`${TILE*0.3}px serif`;
-    ctx.fillText(gw(p.weapon).emoji,p.x*TILE+TILE-4,p.y*TILE+10);
+    ctx.fillStyle=isMe?'#10b981':'#ccc';ctx.font=`bold ${Math.max(8,TILE/3.2)}px sans-serif`;
+    ctx.fillText(p.name.substring(0,4),p.x*TILE+TILE/2,p.y*TILE+TILE-2);
+    // Weapon emoji (top-right corner, bigger)
+    ctx.font=`${TILE*0.38}px serif`;
+    ctx.fillText(gw(p.weapon).emoji,p.x*TILE+TILE-2,p.y*TILE+12);
   });
   // Move preview
   if(pendingMove&&me&&myAlive){
