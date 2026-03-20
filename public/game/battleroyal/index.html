@@ -344,7 +344,9 @@ textarea{resize:none;min-height:50px}
 <script>
 firebase.initializeApp({apiKey:"AIzaSyDxnIFPnFdSVR6IKuBMRm5ZQynO0ORrlzI",authDomain:"hobbytan-ai.firebaseapp.com",projectId:"hobbytan-ai",storageBucket:"hobbytan-ai.firebasestorage.app",messagingSenderId:"820555571498",appId:"1:820555571498:web:eb5c2de98d3b6c18e43cb9"});
 const db=firebase.firestore();
-const MAP=20,MAX_P=16,TURN_TIME=20,STRAT_TIME=30;
+const MAP=12,MAX_P=16,TURN_TIME=20,STRAT_TIME=30;
+// 자기장(storm) 시스템: 10턴 후부터 2턴마다 경계 1칸 축소
+let stormBorder=0; // 0=축소 없음, 1=외곽1칸 금지...
 const API_COMBAT="https://asia-northeast3-hobbytan-ai.cloudfunctions.net/brcombat";
 const API_BOT="https://asia-northeast3-hobbytan-ai.cloudfunctions.net/brbotaction";
 
@@ -534,9 +536,9 @@ setInterval(async()=>{
       await roomRef.collection('players').doc('bot_'+i).set({name:bots[i-total]||'봇'+i,avatar:AVATARS[i%AVATARS.length],ready:true,alive:true,hp:100,x:bx,y:by,weapon:bw.id,inv:JSON.stringify([bw.id]),isBot:true,pendingDx:0,pendingDy:0,ts:Date.now()});
     }
   }
-  // Spawn map items (30 random unique weapons)
+  // Spawn map items (15 random unique weapons — 12x12 맵 기준)
   const items={};
-  for(let i=0;i<30;i++){const w=uniqueWeapon(),x=Math.floor(Math.random()*MAP),y=Math.floor(Math.random()*MAP);items[x+'_'+y]={id:w.id}}
+  for(let i=0;i<15;i++){const w=uniqueWeapon(),x=Math.floor(Math.random()*MAP),y=Math.floor(Math.random()*MAP);items[x+'_'+y]={id:w.id}}
   await roomRef.update({state:'countdown',mapItems:JSON.stringify(items)});
 },1000);
 
@@ -632,7 +634,18 @@ async function resolveTurn(){
       const r=await fetch(API_BOT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actionType:'move',botName:bot.name,botWeapon:gw(bot.weapon),botHp:bot.hp,mapSize:MAP,botX:bot.x,botY:bot.y,nearbyPlayers:Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=2&&Math.abs(p.y-bot.y)<=2).map(p=>p.name).join(',')||'없음'}),signal:ctrl.signal});
       clearTimeout(tid);
       if(r.ok){const j=await r.json();dx=Math.max(-1,Math.min(1,j.dx||0));dy=Math.max(-1,Math.min(1,j.dy||0))}
-    }catch(e){const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*9)];dx=d[0];dy=d[1]}
+    }catch(e){
+      // Fallback: 가장 가까운 적 방향 or 중앙으로 이동
+      const targets=Object.values(players).filter(p=>p.alive&&p.name!==bot.name);
+      if(targets.length>0){
+        let nearest=targets[0],minD=999;
+        targets.forEach(t=>{const d=Math.abs(t.x-bot.x)+Math.abs(t.y-bot.y);if(d<minD){minD=d;nearest=t}});
+        dx=Math.sign(nearest.x-bot.x);dy=Math.sign(nearest.y-bot.y);
+      }else{
+        const cx=Math.floor(MAP/2);const cy=Math.floor(MAP/2);
+        dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y);
+      }
+    }
     return roomRef.collection('players').doc(bid).update({x:Math.max(0,Math.min(MAP-1,bot.x+dx)),y:Math.max(0,Math.min(MAP-1,bot.y+dy))}).catch(()=>{});
   }));
   // Total 8s timeout for all bot moves
@@ -686,28 +699,71 @@ function showPickup(w){
 }
 
 async function nextTurn(){
+  const nextT=(currentTurn||1)+1;
   const snap=await roomRef.collection('players').get();
   const alive=[];snap.forEach(d=>{if(d.data().alive)alive.push(d.id)});
   if(alive.length<=1){
     const w=alive.length===1?players[alive[0]]?.name:'없음';
     await roomRef.update({state:'finished',winner:w});return;
   }
-  // Random item spawn (10% per turn per empty tile within range)
+  // 자기장 축소: 10턴 후부터 2턴마다 경계 1칸 축소
+  if(nextT>=10&&nextT%2===0){
+    const maxBorder=Math.floor(MAP/2)-1;
+    if(stormBorder<maxBorder){
+      stormBorder++;
+      addSysChat(`🌀 자기장 축소! 외곽 ${stormBorder}칸이 위험 지역입니다!`);
+      // 자기장 밖 플레이어에게 데미지
+      for(const[id,p]of Object.entries(players)){
+        if(!p.alive)continue;
+        if(p.x<stormBorder||p.x>=MAP-stormBorder||p.y<stormBorder||p.y>=MAP-stormBorder){
+          const newHp=Math.max(0,p.hp-15);
+          await roomRef.collection('players').doc(id).update({hp:newHp,alive:newHp>0}).catch(()=>{});
+          if(newHp<=0)addSysChat(`🌀 ${p.name}이(가) 자기장에 의해 전사!`);
+          else addSysChat(`🌀 ${p.name}이(가) 자기장 데미지 -15 (HP:${newHp})`);
+        }
+      }
+    }
+  }
+  // Random item spawn (30% chance)
   if(Math.random()<0.3){
-    const x=Math.floor(Math.random()*MAP),y=Math.floor(Math.random()*MAP),k=x+'_'+y;
+    const x=stormBorder+Math.floor(Math.random()*(MAP-stormBorder*2));
+    const y=stormBorder+Math.floor(Math.random()*(MAP-stormBorder*2));
+    const k=x+'_'+y;
     if(!mapItems[k]){const w=uniqueWeapon();mapItems[k]={id:w.id};addSysChat(`✨ 어딘가에 새 아이템이 나타났습니다!`)}
   }
-  await roomRef.update({phase:'move',turn:(currentTurn||1)+1,battlePair:null,mapItems:JSON.stringify(mapItems)});
+  await roomRef.update({phase:'move',turn:nextT,battlePair:null,mapItems:JSON.stringify(mapItems)});
 }
 
 async function autoResolveBattle(aId,bId,ps){
   const a=ps[aId],b=ps[bId],aw=gw(a.weapon),bw=gw(b.weapon);
-  const aDmg=Math.max(5,aw.atk-Math.floor(bw.def/2)+Math.floor(Math.random()*10)-5);
-  const bDmg=Math.max(5,bw.atk-Math.floor(aw.def/2)+Math.floor(Math.random()*10)-5);
-  const aHp=Math.max(0,a.hp-bDmg),bHp=Math.max(0,b.hp-aDmg);
+  let aHp=a.hp,bHp=b.hp;
+  const rounds=3;
+  const logs=[];
+  for(let r=1;r<=rounds;r++){
+    if(aHp<=0||bHp<=0)break;
+    // 각 라운드: ATK 기반 데미지 + 랜덤 보정 + 크리티컬(20%)
+    const aCrit=Math.random()<0.2;const bCrit=Math.random()<0.2;
+    let aDmg=Math.max(8,aw.atk-Math.floor(bw.def/3)+Math.floor(Math.random()*12));
+    let bDmg=Math.max(8,bw.atk-Math.floor(aw.def/3)+Math.floor(Math.random()*12));
+    if(aCrit)aDmg=Math.floor(aDmg*1.8);
+    if(bCrit)bDmg=Math.floor(bDmg*1.8);
+    bHp=Math.max(0,bHp-aDmg);
+    aHp=Math.max(0,aHp-bDmg);
+    logs.push(`R${r}: ${a.name}(${aw.emoji}) → ${aDmg}${aCrit?'💥':''} | ${b.name}(${bw.emoji}) → ${bDmg}${bCrit?'💥':''}`);
+  }
   await roomRef.collection('players').doc(aId).update({hp:aHp,alive:aHp>0});
   await roomRef.collection('players').doc(bId).update({hp:bHp,alive:bHp>0});
-  if(!aHp||!bHp)addSysChat(`⚔️ ${a.name} vs ${b.name} → ${aHp<=0?a.name+' 전사!':''}${bHp<=0?b.name+' 전사!':''}`);
+  const summary=`⚔️ ${a.name}(${aw.emoji}) vs ${b.name}(${bw.emoji}) — 3합 전투!\n${logs.join('\n')}`;
+  addSysChat(summary);
+  if(aHp<=0)addSysChat(`💀 ${a.name} 전사! (HP:0)`);
+  if(bHp<=0)addSysChat(`💀 ${b.name} 전사! (HP:0)`);
+  if(aHp>0&&bHp>0)addSysChat(`양측 생존 — ${a.name}(HP:${aHp}) vs ${b.name}(HP:${bHp})`);
+  // 승자가 패자 무기 획득
+  if(aHp<=0&&bHp>0){
+    const bInv=JSON.parse(b.inv||'[]');if(bInv.length<5){bInv.push(a.weapon);await roomRef.collection('players').doc(bId).update({inv:JSON.stringify(bInv)}).catch(()=>{});}
+  }else if(bHp<=0&&aHp>0){
+    const aInv=JSON.parse(a.inv||'[]');if(aInv.length<5){aInv.push(b.weapon);await roomRef.collection('players').doc(aId).update({inv:JSON.stringify(aInv)}).catch(()=>{});}
+  }
 }
 
 // ===== BATTLE PHASE =====
@@ -874,6 +930,18 @@ function drawMap(){
   if(pendingMove&&me&&myAlive){
     const nx=me.x+pendingMove.dx,ny=me.y+pendingMove.dy;
     ctx.strokeStyle='rgba(16,185,129,0.8)';ctx.lineWidth=2;ctx.strokeRect(nx*TILE+2,ny*TILE+2,TILE-4,TILE-4);ctx.lineWidth=1;
+  }
+  // 자기장 시각화
+  if(stormBorder>0){
+    for(let y=0;y<MAP;y++)for(let x=0;x<MAP;x++){
+      if(x<stormBorder||x>=MAP-stormBorder||y<stormBorder||y>=MAP-stormBorder){
+        ctx.fillStyle='rgba(239,68,68,0.25)';ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+      }
+    }
+    // 자기장 경계선
+    ctx.strokeStyle='rgba(239,68,68,0.6)';ctx.lineWidth=2;
+    ctx.strokeRect(stormBorder*TILE,stormBorder*TILE,(MAP-stormBorder*2)*TILE,(MAP-stormBorder*2)*TILE);
+    ctx.lineWidth=1;
   }
   // Moveable hints
   if(me&&myAlive&&!inBattle){for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=me.x+dx,ny=me.y+dy;if(nx>=0&&nx<MAP&&ny>=0&&ny<MAP){ctx.strokeStyle='rgba(16,185,129,0.15)';ctx.strokeRect(nx*TILE+1,ny*TILE+1,TILE-2,TILE-2)}}}
