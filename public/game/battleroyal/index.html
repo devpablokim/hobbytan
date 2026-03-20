@@ -685,8 +685,15 @@ async function resolveTurn(){
   alive.forEach(([id,p])=>{const k=p.x+','+p.y;if(!cells[k])cells[k]=[];cells[k].push(id)});
   let battleFound=false;
   for(const ids of Object.values(cells)){
-    if(ids.length>=2){await roomRef.update({phase:'battle',battlePair:{a:ids[0],b:ids[1]}});battleFound=true;
-      if(ps[ids[0]].isBot&&ps[ids[1]].isBot){await autoResolveBattle(ids[0],ids[1],ps);setTimeout(()=>nextTurn(),2000)}
+    if(ids.length>=2){
+      console.log('[resolveTurn] Battle detected:',ids[0],ps[ids[0]]?.name,'vs',ids[1],ps[ids[1]]?.name,'bots:',ps[ids[0]]?.isBot,ps[ids[1]]?.isBot);
+      await roomRef.update({phase:'battle',battlePair:{a:ids[0],b:ids[1]}});battleFound=true;
+      if(ps[ids[0]].isBot&&ps[ids[1]].isBot){
+        console.log('[resolveTurn] Auto-resolving bot-bot battle...');
+        await autoResolveBattle(ids[0],ids[1],ps);
+        console.log('[resolveTurn] Bot-bot battle resolved, scheduling nextTurn in 3s');
+        setTimeout(()=>nextTurn(),3000);
+      }
       break;
     }
   }
@@ -735,35 +742,39 @@ async function nextTurn(){
 }
 
 async function autoResolveBattle(aId,bId,ps){
+  try{
   const a=ps[aId],b=ps[bId],aw=gw(a.weapon),bw=gw(b.weapon);
   let aHp=a.hp,bHp=b.hp;
-  const rounds=3;
-  const logs=[];
-  for(let r=1;r<=rounds;r++){
-    if(aHp<=0||bHp<=0)break;
-    // 각 라운드: ATK 기반 데미지 + 랜덤 보정 + 크리티컬(20%)
+  const logs=[];let rd=0;
+  // Fight until one HP reaches 0 (max 10 rounds safety)
+  while(aHp>0&&bHp>0&&rd<10){rd++;
     const aCrit=Math.random()<0.2;const bCrit=Math.random()<0.2;
+    const miracle=Math.random()<0.25;const who=Math.random()>.5?'A':'B';
     let aDmg=Math.max(8,aw.atk-Math.floor(bw.def/3)+Math.floor(Math.random()*12));
     let bDmg=Math.max(8,bw.atk-Math.floor(aw.def/3)+Math.floor(Math.random()*12));
     if(aCrit)aDmg=Math.floor(aDmg*1.8);
     if(bCrit)bDmg=Math.floor(bDmg*1.8);
+    if(miracle&&who==='A'){aDmg=Math.floor(aDmg*2);bDmg=Math.floor(bDmg/2)}
+    if(miracle&&who==='B'){bDmg=Math.floor(bDmg*2);aDmg=Math.floor(aDmg/2)}
     bHp=Math.max(0,bHp-aDmg);
     aHp=Math.max(0,aHp-bDmg);
-    logs.push(`R${r}: ${a.name}(${aw.emoji}) → ${aDmg}${aCrit?'💥':''} | ${b.name}(${bw.emoji}) → ${bDmg}${bCrit?'💥':''}`);
+    logs.push(`R${rd}: ${a.name}→${aDmg}${aCrit?'💥':''}${miracle&&who==='A'?'🌟':''} | ${b.name}→${bDmg}${bCrit?'💥':''}${miracle&&who==='B'?'🌟':''}`);
   }
+  console.log('[autoResolveBattle]',a.name,'HP:',a.hp,'→',aHp,'|',b.name,'HP:',b.hp,'→',bHp);
   await roomRef.collection('players').doc(aId).update({hp:aHp,alive:aHp>0});
   await roomRef.collection('players').doc(bId).update({hp:bHp,alive:bHp>0});
-  const summary=`⚔️ ${a.name}(${aw.emoji}) vs ${b.name}(${bw.emoji}) — 3합 전투!\n${logs.join('\n')}`;
-  addSysChat(summary);
-  if(aHp<=0)addSysChat(`💀 ${a.name} 전사! (HP:0)`);
-  if(bHp<=0)addSysChat(`💀 ${b.name} 전사! (HP:0)`);
-  if(aHp>0&&bHp>0)addSysChat(`양측 생존 — ${a.name}(HP:${aHp}) vs ${b.name}(HP:${bHp})`);
+  const winner=bHp<=0?a.name:aHp<=0?b.name:'무승부';
+  addSysChat(`⚔️ ${a.name}(${aw.emoji}) vs ${b.name}(${bw.emoji}) → ${winner} 승리! [${rd}라운드]`);
+  logs.forEach(l=>addSysChat(l));
+  if(aHp<=0)addSysChat(`💀 ${a.name} 전사!`);
+  if(bHp<=0)addSysChat(`💀 ${b.name} 전사!`);
   // 승자가 패자 무기 획득
   if(aHp<=0&&bHp>0){
     const bInv=JSON.parse(b.inv||'[]');if(bInv.length<5){bInv.push(a.weapon);await roomRef.collection('players').doc(bId).update({inv:JSON.stringify(bInv)}).catch(()=>{});}
   }else if(bHp<=0&&aHp>0){
     const aInv=JSON.parse(a.inv||'[]');if(aInv.length<5){aInv.push(b.weapon);await roomRef.collection('players').doc(aId).update({inv:JSON.stringify(aInv)}).catch(()=>{});}
   }
+  }catch(e){console.error('[autoResolveBattle] ERROR:',e)}
 }
 
 // ===== BATTLE PHASE =====
