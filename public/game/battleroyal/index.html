@@ -659,7 +659,7 @@ function startReadyCheck(isBonus){
       if(isBonus&&combatants.has(d.id))return; // skip combatants in bonus
       aliveHumans.push(p);
     }});
-    if(aliveHumans.length>0&&aliveHumans.every(p=>p.moveSubmitted)){
+    if(aliveHumans.length===0||(aliveHumans.length>0&&aliveHumans.every(p=>p.moveSubmitted))){
       stopReadyCheck();stopTurnTimer();
       if(isBonus){if(!resolving){resolving=true;try{await resolveBonusTurn()}catch(e){await nextTurn().catch(()=>{})}finally{resolving=false}}}
       else{if(!resolving){resolving=true;try{await resolveTurn()}catch(e){await nextTurn().catch(()=>{})}finally{resolving=false}}}
@@ -699,12 +699,13 @@ function onRoomUpdate(d){
     document.getElementById('battle-overlay').classList.remove('show');
     pendingMove=null;
     document.getElementById('move-indicator').style.display='none';
-    // If I was in combat, I can't move in bonus phase
+    // Host always manages bonus timer (even if combatant)
+    startTurnTimer(BONUS_TIME);
+    if(isHost)startReadyCheck(true);
     if(combatants.has(myId)){
       setHudHint('⏳ 비전투원 보너스 이동 중...');
       const stayBtn=document.getElementById('stay-btn');if(stayBtn)stayBtn.style.display='none';
     }else{
-      startTurnTimer(BONUS_TIME);startReadyCheck(true);
       setHudHint('⚡ 보너스 이동! (비전투원)');
       const stayBtn=document.getElementById('stay-btn');if(stayBtn)stayBtn.style.display='inline-block';
       addSysChat('⚡ 전투에 참여하지 않은 플레이어에게 보너스 이동 기회!');
@@ -750,8 +751,11 @@ async function submitMove(){
   if(isHost&&!resolving){resolving=true;try{await resolveTurn()}catch(e){console.error('resolveTurn error:',e);await nextTurn().catch(()=>{})}finally{resolving=false}}
 }
 async function submitBonusMove(){
-  if(!pendingMove)pendingMove={dx:0,dy:0};
-  await roomRef.collection('players').doc(myId).update({pendingDx:pendingMove.dx,pendingDy:pendingMove.dy,moveSubmitted:true}).catch(()=>{});
+  // Combatant: don't submit move, just trigger resolve if host
+  if(!combatants.has(myId)){
+    if(!pendingMove)pendingMove={dx:0,dy:0};
+    await roomRef.collection('players').doc(myId).update({pendingDx:pendingMove.dx,pendingDy:pendingMove.dy,moveSubmitted:true}).catch(()=>{});
+  }
   if(isHost&&!resolving){resolving=true;try{await resolveBonusTurn()}catch(e){console.error('resolveBonusTurn error:',e);await nextTurn().catch(()=>{})}finally{resolving=false}}
 }
 
@@ -865,6 +869,15 @@ async function startBonusMovePhase(){
   // Players NOT in combat this turn get a bonus move
   const aliveNonCombatants=Object.keys(players).filter(id=>players[id].alive&&!combatants.has(id));
   if(aliveNonCombatants.length===0){await nextTurn();return}
+  // If no non-combatant HUMANS, just do bot moves immediately and skip to nextTurn
+  const nonCombatHumans=aliveNonCombatants.filter(id=>!players[id].isBot);
+  if(nonCombatHumans.length===0){
+    await doBotMoves(combatants);
+    const snap=await roomRef.collection('players').get();
+    const ps={};snap.forEach(d=>ps[d.id]=d.data());
+    await doItemPickup(ps);
+    await nextTurn();return;
+  }
   // Reset pending moves for bonus
   const resets=aliveNonCombatants.map(id=>roomRef.collection('players').doc(id).update({pendingDx:0,pendingDy:0,moveSubmitted:false}).catch(()=>{}));
   await Promise.allSettled(resets);
