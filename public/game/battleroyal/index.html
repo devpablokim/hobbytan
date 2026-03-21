@@ -164,6 +164,22 @@ textarea{resize:none;min-height:50px}
 /* STORM PULSE */
 @keyframes stormPulse{0%,100%{opacity:.2}50%{opacity:.4}}
 
+/* TUTORIAL OVERLAY */
+#tutorial-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:800;justify-content:center;align-items:center;flex-direction:column;gap:16px;padding:20px;text-align:center}
+#tutorial-overlay.show{display:flex}
+.tut-item{font-size:20px;line-height:1.6;color:var(--white)}
+.tut-item span{color:var(--accent);font-weight:700}
+.tut-dismiss{color:var(--gray);font-size:13px;margin-top:10px;cursor:pointer}
+.tut-dismiss:hover{color:var(--white)}
+
+/* HUD HINT */
+#hud-hint{color:var(--accent);font-size:13px;font-weight:600;animation:hintPulse 2s ease infinite}
+@keyframes hintPulse{0%,100%{opacity:.7}50%{opacity:1}}
+
+/* CRAFT PULSE */
+@keyframes craftPulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 8px var(--purple)}}
+.craft-btn.pulse{animation:craftPulse 1.5s ease infinite}
+
 /* TURN BANNER */
 #turn-banner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:34px;font-weight:800;color:var(--accent);text-shadow:0 0 20px rgba(16,185,129,.5);z-index:10;display:none;pointer-events:none;text-align:center}
 #countdown{font-size:96px;font-weight:800;color:var(--accent);display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999;text-shadow:0 0 40px rgba(16,185,129,.5)}
@@ -267,6 +283,7 @@ textarea{resize:none;min-height:50px}
         <div class="hud-item">👥 <span id="hud-alive">0</span></div>
         <div class="hud-item">🔄 턴 <span id="hud-turn">0</span></div>
         <div class="hud-item">⏱️ <span id="hud-timer">20</span>s</div>
+        <div class="hud-item" id="hud-hint">🗺️ 맵을 탭하여 이동</div>
       </div>
       <div class="timer-bar"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
       <div class="move-indicator" id="move-indicator"></div>
@@ -312,6 +329,18 @@ textarea{resize:none;min-height:50px}
 <!-- Kill Feed -->
 <div id="kill-feed"></div>
 
+<!-- Tutorial -->
+<div id="tutorial-overlay" onclick="closeTutorial()">
+  <h2 style="font-size:28px;color:var(--accent)">⚔️ 배틀로얄 가이드</h2>
+  <div class="tut-item">🗺️ <span>맵을 탭</span>해서 이동 (인접 1칸)</div>
+  <div class="tut-item">⚔️ 적과 <span>같은 칸</span>이면 자동 전투!</div>
+  <div class="tut-item">📦 바닥 아이템은 <span>자동 줍기</span></div>
+  <div class="tut-item">🔮 아이템 2개 이상 → <span>조합</span> 가능</div>
+  <div class="tut-item">⏱️ 매 턴 <span>20초</span> — 초과 시 제자리 대기</div>
+  <div class="tut-item">🌀 10턴 후 <span>자기장</span> 축소 시작!</div>
+  <div class="tut-dismiss">탭하여 시작 →</div>
+</div>
+
 <!-- BATTLE -->
 <div id="battle-overlay">
   <div class="battle-title">⚔️ 전투 발생!</div>
@@ -337,6 +366,7 @@ textarea{resize:none;min-height:50px}
 <!-- CRAFT -->
 <div id="craft-modal">
   <h2 style="font-size:24px;color:var(--purple)">🔮 아이템 조합</h2>
+  <p style="color:var(--gray);font-size:13px;max-width:300px">2개 선택 → 성공 시 강화 합성 / 실패 시 💩<br><span id="craft-rate" style="color:var(--accent)"></span></p>
   <div id="craft-items" style="display:flex;gap:12px;margin:10px 0"></div>
   <div class="craft-result" id="craft-result-emoji" style="display:none"></div>
   <p id="craft-result-text" style="font-size:16px;font-weight:700;display:none"></p>
@@ -583,6 +613,7 @@ function initGame(){
   canvas.width=MAP*TILE;canvas.height=MAP*TILE;
   ctx=canvas.getContext('2d');
   canvas.addEventListener('click',onMapClick);
+  showTutorial();
   // Load map items
   roomRef.get().then(s=>{if(s.exists&&s.data().mapItems)mapItems=JSON.parse(s.data().mapItems)});
   updateHUD();drawMap();
@@ -601,10 +632,12 @@ function onRoomUpdate(d){
     document.getElementById('move-indicator').style.display='none';
     startTurnTimer();
     showTurnBanner(currentTurn);
+    if(stormBorder>0){const me=players[myId];if(me&&me.alive){const dL=Math.max(0,stormBorder-me.x),dR=Math.max(0,me.x-(MAP-stormBorder-1)),dT=Math.max(0,stormBorder-me.y),dB=Math.max(0,me.y-(MAP-stormBorder-1));if(Math.max(dL,dR,dT,dB)>0)setHudHint('⚠️ 자기장 밖! 안쪽으로 이동');else setHudHint('🗺️ 맵을 탭하여 이동')}}
+    else setHudHint('🗺️ 맵을 탭하여 이동');
   }
-  if(d.phase==='resolve'){stopTurnTimer();if(isHost)deadlockTimer=setTimeout(()=>{console.warn('Deadlock recovery: forcing nextTurn');nextTurn().catch(()=>{})},15000)}
+  if(d.phase==='resolve'){stopTurnTimer();setHudHint('⏳ 처리 중...');if(isHost)deadlockTimer=setTimeout(()=>{console.warn('Deadlock recovery: forcing nextTurn');nextTurn().catch(()=>{})},15000)}
   if(d.phase==='battle'){
-    stopTurnTimer();screenShake();
+    stopTurnTimer();screenShake();setHudHint('⚔️ 전투 중!');
     const bp=d.battlePair;
     if(bp&&(bp.a===myId||bp.b===myId))showBattlePhase(bp);
     else if(bp){document.getElementById('wait-overlay').classList.add('show');document.getElementById('wait-info').textContent=`${players[bp.a]?.name||'?'} vs ${players[bp.b]?.name||'?'}`}
@@ -745,6 +778,15 @@ function screenShake(){
   const c=document.getElementById('game-main');if(!c)return;
   c.classList.add('shaking');setTimeout(()=>c.classList.remove('shaking'),400);
 }
+function showTutorial(){
+  if(localStorage.getItem('br_tut_seen'))return;
+  document.getElementById('tutorial-overlay').classList.add('show');
+}
+function closeTutorial(){
+  document.getElementById('tutorial-overlay').classList.remove('show');
+  localStorage.setItem('br_tut_seen','1');
+}
+function setHudHint(text){const h=document.getElementById('hud-hint');if(h)h.textContent=text}
 
 async function nextTurn(){
   const nextT=(currentTurn||1)+1;
@@ -936,19 +978,29 @@ function renderCraftItems(){
   document.getElementById('craft-items').innerHTML=inventory.map((w,i)=>`<div class="inv-slot ${craftSelection.includes(i)?'selected':''}" onclick="toggleCraftSel(${i})" style="cursor:pointer;min-width:70px;min-height:70px"><div class="slot-emoji">${w.emoji}</div><div class="slot-name">${w.name}</div></div>`).join('');
   const btn=document.getElementById('craft-go-btn');
   if(btn)btn.style.opacity=craftSelection.length===2?'1':'0.4';
+  const rateEl=document.getElementById('craft-rate');
+  if(rateEl&&craftSelection.length===2){const a=inventory[craftSelection[0]],b=inventory[craftSelection[1]];const r=getCraftRate(a,b);rateEl.textContent=`성공률: ${Math.round(r*100)}%`}
+  else if(rateEl)rateEl.textContent='';
 }
 function toggleCraftSel(i){
   const idx=craftSelection.indexOf(i);
   if(idx>=0)craftSelection.splice(idx,1);else if(craftSelection.length<2)craftSelection.push(i);
   renderCraftItems();
 }
+function getCraftRate(a,b){
+  if(a.type==='전설'||b.type==='전설')return 0.40;
+  if(a.type==='장난감'||b.type==='장난감')return 0.65;
+  if(a.type===b.type)return 0.70;
+  return 0.55;
+}
 async function doCraft(){
   if(craftSelection.length!==2){alert('2개 선택');return}
   document.getElementById('craft-go-btn').style.display='none';
-  const success=Math.random()<0.55;
+  const a=inventory[craftSelection[0]],b=inventory[craftSelection[1]];
+  const rate=getCraftRate(a,b);
+  const success=Math.random()<rate;
   const re=document.getElementById('craft-result-emoji'),rt=document.getElementById('craft-result-text');
   if(success){
-    const a=inventory[craftSelection[0]],b=inventory[craftSelection[1]];
     const newW={id:900+Math.floor(Math.random()*99),name:a.name.substring(0,3)+b.name.substring(0,3),emoji:Math.random()>.5?a.emoji:b.emoji,type:'조합',atk:Math.floor((a.atk+b.atk)*1.2),def:Math.floor((a.def+b.def)*1.1),spd:Math.floor((a.spd+b.spd)/2),specName:a.specName+'+'+b.specName,specDesc:'조합 특수능력'};
     re.textContent='✨';re.style.display='block';
     rt.innerHTML=`<span style="color:var(--accent)">조합 성공! ${newW.emoji} ${newW.name} (ATK:${newW.atk})</span>`;rt.style.display='block';
@@ -1017,7 +1069,7 @@ function drawMap(){
     ctx.lineWidth=1;
   }
   // Moveable hints
-  if(me&&myAlive&&!inBattle){for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=me.x+dx,ny=me.y+dy;if(nx>=0&&nx<MAP&&ny>=0&&ny<MAP){ctx.strokeStyle='rgba(16,185,129,0.15)';ctx.strokeRect(nx*TILE+1,ny*TILE+1,TILE-2,TILE-2)}}}
+  if(me&&myAlive&&!inBattle){for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=me.x+dx,ny=me.y+dy;if(nx>=0&&nx<MAP&&ny>=0&&ny<MAP){ctx.fillStyle='rgba(16,185,129,0.08)';ctx.fillRect(nx*TILE,ny*TILE,TILE,TILE);ctx.strokeStyle='rgba(16,185,129,0.25)';ctx.strokeRect(nx*TILE+1,ny*TILE+1,TILE-2,TILE-2)}}}
 }
 
 // ===== HUD =====
@@ -1032,7 +1084,7 @@ function updateHUD(){
     ['sidebar-weapon','mob-weapon'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=wh});
   }
   // Inventory
-  const invH=`<div class="inv-title"><span>🎒 인벤토리 (${inventory.length}/5)</span><button class="craft-btn ${inventory.length>=2?'show':''}" onclick="openCraft()">🔮 조합</button></div><div class="inv-slots">${inventory.map((w,i)=>`<div class="inv-slot ${w.id===myWeapon?.id?'equipped':''}" onclick="equipItem(${i})" title="${w.name}\nATK:${w.atk} DEF:${w.def} SPD:${w.spd}"><div class="slot-emoji">${w.emoji}</div><div class="slot-name">${w.name}</div></div>`).join('')}${Array(Math.max(0,5-inventory.length)).fill('<div class="inv-slot empty">+</div>').join('')}</div>`;
+  const invH=`<div class="inv-title"><span>🎒 인벤토리 (${inventory.length}/5)</span><button class="craft-btn ${inventory.length>=2?'show pulse':''}" onclick="openCraft()">🔮 조합</button></div><div class="inv-slots">${inventory.map((w,i)=>`<div class="inv-slot ${w.id===myWeapon?.id?'equipped':''}" onclick="equipItem(${i})" title="${w.name}\nATK:${w.atk} DEF:${w.def} SPD:${w.spd}"><div class="slot-emoji">${w.emoji}</div><div class="slot-name">${w.name}</div></div>`).join('')}${Array(Math.max(0,5-inventory.length)).fill('<div class="inv-slot empty">+</div>').join('')}</div>`;
   ['sidebar-inv','mob-inv'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=invH});
   // Players
   const me=players[myId];
