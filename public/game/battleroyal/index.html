@@ -528,6 +528,18 @@ let visitedTiles=new Set(); // my trail: 'x_y' keys
 let readyCheckIv=null; // interval for checking all-ready
 let isBonusPhase=false; // true during bonusMove
 
+// ===== BOT NAMES (loaded from names.json) =====
+let koreanNames=[];
+fetch('names.json').then(r=>r.json()).then(n=>{koreanNames=n}).catch(()=>{koreanNames=['민준','서윤','지호','수아','예준','하은','도윤','시우','서연','지민','주원','하린','우진','지유','현우']});
+function getRandomBotNames(count){
+  const shuffled=[...koreanNames].sort(()=>Math.random()-0.5);
+  return shuffled.slice(0,count);
+}
+
+// ===== BOT BEHAVIOR PROFILES =====
+const BOT_PERSONALITIES=['aggressive','cautious','explorer','camper','hunter'];
+function getBotPersonality(){return BOT_PERSONALITIES[Math.floor(Math.random()*BOT_PERSONALITIES.length)]}
+
 // ===== LOBBY =====
 function setNick(){const n=document.getElementById('nick-input').value.trim();if(n.length<2){alert('2자 이상');return}myNick=n;myAvatar=AVATARS[Math.floor(Math.random()*AVATARS.length)];document.getElementById('nick-box').style.display='none';document.getElementById('create-join').style.display='block';document.getElementById('nick-display').textContent=myAvatar+' '+n;startGlobalChat()}
 document.getElementById('nick-input').addEventListener('keydown',e=>{if(e.key==='Enter')setNick()});
@@ -609,10 +621,11 @@ setInterval(async()=>{
   if(ids.length<1||!ids.every(id=>players[id].ready))return;
   const total=Object.keys(players).length;
   if(total<MAX_P){
-    const bots=['알파봇','베타봇','감마봇','델타봇','엡실론','제타봇','에타봇','세타봇','이오타','카파봇','람다봇','뮤봇','뉴봇','크시봇','오미크론','파이봇'];
+    const botNames=getRandomBotNames(MAX_P-total);
     for(let i=total;i<MAX_P;i++){
       const bw=uniqueWeapon(),bx=Math.floor(Math.random()*MAP),by=Math.floor(Math.random()*MAP);
-      await roomRef.collection('players').doc('bot_'+i).set({name:bots[i-total]||'봇'+i,avatar:AVATARS[i%AVATARS.length],ready:true,alive:true,hp:100,x:bx,y:by,weapon:bw.id,inv:JSON.stringify([bw.id]),isBot:true,pendingDx:0,pendingDy:0,ts:Date.now()});
+      const personality=getBotPersonality();
+      await roomRef.collection('players').doc('bot_'+i).set({name:botNames[i-total]||'플레이어'+i,avatar:AVATARS[i%AVATARS.length],ready:true,alive:true,hp:100,x:bx,y:by,weapon:bw.id,inv:JSON.stringify([bw.id]),isBot:true,personality,pendingDx:0,pendingDy:0,moveSubmitted:false,ts:Date.now()});
     }
   }
   // Spawn map items (15 random unique weapons — 12x12 맵 기준)
@@ -763,7 +776,8 @@ async function submitBonusMove(){
 
 function botFallbackMove(bot){
   let dx=0,dy=0;
-  // Priority 1: Storm escape — if in storm, move toward safe center
+  const personality=bot.personality||'aggressive';
+  // Priority 1: Storm escape — ALWAYS move toward safe center
   if(stormBorder>0){
     const dL=Math.max(0,stormBorder-bot.x),dR=Math.max(0,bot.x-(MAP-stormBorder-1)),dT=Math.max(0,stormBorder-bot.y),dB=Math.max(0,bot.y-(MAP-stormBorder-1));
     if(Math.max(dL,dR,dT,dB)>0){
@@ -771,13 +785,49 @@ function botFallbackMove(bot){
       return{dx:Math.sign(cx-bot.x),dy:Math.sign(cy-bot.y)};
     }
   }
-  // Priority 2: Chase visible enemy (100% aggression)
   const visible=Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=1&&Math.abs(p.y-bot.y)<=1);
-  if(visible.length>0){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
-  // Priority 3: Wander toward center
   const cx=Math.floor(MAP/2),cy=Math.floor(MAP/2);
-  if(Math.random()<0.6){dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y)}
-  else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*9)];dx=d[0];dy=d[1]}
+  // Priority 2: Personality-based behavior
+  if(personality==='aggressive'){
+    // 100% chase, low HP doesn't matter
+    if(visible.length>0){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    // Move toward center aggressively
+    if(Math.random()<0.8){dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y)}
+    else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1]}
+  }else if(personality==='cautious'){
+    // Flee if low HP, chase only if high HP
+    if(visible.length>0&&bot.hp<40){
+      const t=visible[0];return{dx:-Math.sign(t.x-bot.x),dy:-Math.sign(t.y-bot.y)} // flee
+    }
+    if(visible.length>0&&bot.hp>=40){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    // Stay near edges, move slowly
+    if(Math.random()<0.4){dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y)}
+    else if(Math.random()<0.3){dx=0;dy=0} // stay put
+    else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1]}
+  }else if(personality==='explorer'){
+    // Prioritize unvisited areas, items. Chase only if bumped into
+    if(visible.length>0&&Math.random()<0.7){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    // Move toward items if visible
+    const nearItems=Object.keys(mapItems).map(k=>{const[x,y]=k.split('_').map(Number);return{x,y,dist:Math.abs(x-bot.x)+Math.abs(y-bot.y)}}).filter(i=>i.dist<=3).sort((a,b)=>a.dist-b.dist);
+    if(nearItems.length>0){const t=nearItems[0];dx=Math.sign(t.x-bot.x);dy=Math.sign(t.y-bot.y)}
+    else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1]}
+  }else if(personality==='camper'){
+    // Stay put mostly, attack only if enemy walks into adjacent
+    if(visible.length>0){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    // 60% stay, 40% move 1 cell
+    if(Math.random()<0.6)return{dx:0,dy:0};
+    const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1];
+  }else if(personality==='hunter'){
+    // Always move toward center (where players concentrate), 100% chase
+    if(visible.length>0){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y);
+    // Add slight randomness
+    if(Math.random()<0.2){const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1]}
+  }else{
+    if(visible.length>0){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    if(Math.random()<0.6){dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y)}
+    else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1]}
+  }
   return{dx,dy};
 }
 
@@ -789,7 +839,9 @@ async function doBotMoves(excludeIds=new Set()){
     try{
       const ctrl=new AbortController();const tid=setTimeout(()=>ctrl.abort(),3000);
       const safeCenter=Math.floor(MAP/2);
-      const r=await fetch(API_BOT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actionType:'move',botName:bot.name,botWeapon:gw(bot.weapon),botHp:bot.hp,mapSize:MAP,botX:bot.x,botY:bot.y,stormBorder,safeCenter,nearbyPlayers:Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=1&&Math.abs(p.y-bot.y)<=1).map(p=>p.name).join(',')||'없음'}),signal:ctrl.signal});
+      const nearbyItems=Object.keys(mapItems).filter(k=>{const[ix,iy]=k.split('_').map(Number);return Math.abs(ix-bot.x)<=2&&Math.abs(iy-bot.y)<=2}).map(k=>{const w=gw(mapItems[k].id);return w.name+'('+w.emoji+')'}).join(',')||'없음';
+      const aliveCount=Object.values(players).filter(p=>p.alive).length;
+      const r=await fetch(API_BOT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actionType:'move',botName:bot.name,botWeapon:gw(bot.weapon),botHp:bot.hp,mapSize:MAP,botX:bot.x,botY:bot.y,stormBorder,safeCenter,personality:bot.personality||'aggressive',turn:currentTurn,aliveCount,nearbyItems,nearbyPlayers:Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=1&&Math.abs(p.y-bot.y)<=1).map(p=>p.name).join(',')||'없음'}),signal:ctrl.signal});
       clearTimeout(tid);
       if(r.ok){const j=await r.json();dx=Math.max(-1,Math.min(1,j.dx||0));dy=Math.max(-1,Math.min(1,j.dy||0))}
     }catch(e){const fb=botFallbackMove(bot);dx=fb.dx;dy=fb.dy}
