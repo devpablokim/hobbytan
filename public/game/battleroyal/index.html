@@ -685,7 +685,7 @@ function onRoomUpdate(d){
     if(stormBorder>0){const me=players[myId];if(me&&me.alive){const dL=Math.max(0,stormBorder-me.x),dR=Math.max(0,me.x-(MAP-stormBorder-1)),dT=Math.max(0,stormBorder-me.y),dB=Math.max(0,me.y-(MAP-stormBorder-1));if(Math.max(dL,dR,dT,dB)>0)setHudHint('⚠️ 자기장 밖! 안쪽으로 이동');else setHudHint('🗺️ 맵을 탭하여 이동')}}
     else setHudHint('🗺️ 맵을 탭하여 이동');
   }
-  if(d.phase==='resolve'||d.phase==='bonusResolve'){stopTurnTimer();stopReadyCheck();setHudHint('⏳ 처리 중...');if(isHost)deadlockTimer=setTimeout(()=>{console.warn('Deadlock recovery: forcing nextTurn');nextTurn().catch(()=>{})},15000)}
+  if(d.phase==='resolve'||d.phase==='bonusResolve'){inBattle=false;stopTurnTimer();stopReadyCheck();setHudHint('⏳ 처리 중...');deadlockTimer=setTimeout(()=>{if(isHost){console.warn('Deadlock recovery (host): forcing nextTurn');nextTurn().catch(()=>{})}else{console.warn('Deadlock detected (non-host): resetting UI state');inBattle=false;resolving=false}},15000)}
   if(d.phase==='battle'){
     stopTurnTimer();stopReadyCheck();screenShake();setHudHint('⚔️ 전투 중!');
     const bp=d.battlePair;
