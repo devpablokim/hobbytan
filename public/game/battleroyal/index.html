@@ -688,6 +688,8 @@ function onRoomUpdate(d){
   if(d.phase==='resolve'||d.phase==='bonusResolve'){inBattle=false;stopTurnTimer();stopReadyCheck();setHudHint('⏳ 처리 중...');deadlockTimer=setTimeout(()=>{if(isHost){console.warn('Deadlock recovery (host): forcing nextTurn');nextTurn().catch(()=>{})}else{console.warn('Deadlock detected (non-host): resetting UI state');inBattle=false;resolving=false}},15000)}
   if(d.phase==='battle'){
     stopTurnTimer();stopReadyCheck();screenShake();setHudHint('⚔️ 전투 중!');
+    // Battle 데드락 방지: 15초 후 강제 복구
+    deadlockTimer=setTimeout(()=>{if(isHost){console.warn('Battle deadlock: forcing bonusMove/nextTurn');startBonusMovePhase().catch(()=>nextTurn().catch(()=>{}))}else{console.warn('Battle deadlock (non-host): resetting UI');inBattle=false;resolving=false;document.getElementById('wait-overlay').classList.remove('show');document.getElementById('battle-overlay').classList.remove('show')}},15000);
     const bp=d.battlePair;
     if(bp&&(bp.a===myId||bp.b===myId))showBattlePhase(bp);
     else if(bp){document.getElementById('wait-overlay').classList.add('show');document.getElementById('wait-info').textContent=`${players[bp.a]?.name||'?'} vs ${players[bp.b]?.name||'?'}`}
@@ -821,26 +823,31 @@ async function doItemPickup(ps){
   if(changed)await roomRef.update({mapItems:JSON.stringify(mapItems)}).catch(()=>{});
 }
 
-async function findAndStartBattle(ps){
-  const alive=Object.entries(ps).filter(([,p])=>p.alive);
-  const cells={};
-  alive.forEach(([id,p])=>{const k=p.x+','+p.y;if(!cells[k])cells[k]=[];cells[k].push(id)});
-  for(const ids of Object.values(cells)){
-    if(ids.length>=2){
-      combatants.add(ids[0]);combatants.add(ids[1]);
-      console.log('[resolveTurn] Battle:',ids[0],ps[ids[0]]?.name,'vs',ids[1],ps[ids[1]]?.name);
-      await roomRef.update({phase:'battle',battlePair:{a:ids[0],b:ids[1]}});
-      if(ps[ids[0]].isBot&&ps[ids[1]].isBot){
-        await autoResolveBattle(ids[0],ids[1],ps);
-        // Check for more battles
-        const snap2=await roomRef.collection('players').get();
-        const ps2={};snap2.forEach(d=>ps2[d.id]=d.data());
-        return findAndStartBattle(ps2);
+async function findAndStartBattle(ps,depth=0){
+  if(depth>10){console.warn('findAndStartBattle: max depth reached, skipping');return false}
+  try{
+    const alive=Object.entries(ps).filter(([,p])=>p.alive);
+    const cells={};
+    alive.forEach(([id,p])=>{const k=p.x+','+p.y;if(!cells[k])cells[k]=[];cells[k].push(id)});
+    for(const ids of Object.values(cells)){
+      if(ids.length>=2){
+        combatants.add(ids[0]);combatants.add(ids[1]);
+        console.log('[findAndStartBattle] Battle:',ids[0],ps[ids[0]]?.name,'vs',ids[1],ps[ids[1]]?.name,'depth:',depth);
+        await roomRef.update({phase:'battle',battlePair:{a:ids[0],b:ids[1]}});
+        if(ps[ids[0]].isBot&&ps[ids[1]].isBot){
+          await autoResolveBattle(ids[0],ids[1],ps);
+          const snap2=await roomRef.collection('players').get();
+          const ps2={};snap2.forEach(d=>ps2[d.id]=d.data());
+          return findAndStartBattle(ps2,depth+1);
+        }
+        return true;
       }
-      return true; // human battle started, wait for resolution
     }
+    return false;
+  }catch(e){
+    console.error('[findAndStartBattle] ERROR at depth',depth,':',e);
+    return false; // fallback: no battle, proceed to bonusMove/nextTurn
   }
-  return false; // no battles
 }
 
 async function resolveTurn(){
