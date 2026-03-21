@@ -189,11 +189,11 @@ textarea{resize:none;min-height:50px}
 #mob-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:150}
 #mob-overlay.show{display:block}
 #mob-sidebar{display:none;position:fixed;top:0;right:-310px;width:290px;max-width:85vw;height:100%;background:var(--card);border-left:1px solid var(--border);z-index:200;transition:right .25s ease;flex-direction:column;overflow:hidden}
-#mob-sidebar .weapon-card{flex-shrink:0;max-height:180px;overflow:hidden}
+#mob-sidebar .weapon-card{flex-shrink:0;max-height:140px;overflow:hidden}
 #mob-sidebar .inv-section{flex-shrink:0}
 #mob-sidebar .plist{flex-shrink:0;max-height:120px;overflow-y:auto}
 #mob-sidebar .chat-panel{flex:1;min-height:0;display:flex;flex-direction:column}
-#mob-sidebar .chat-msgs{flex:1;min-height:80px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#mob-sidebar .chat-msgs{flex:1;min-height:150px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 #mob-sidebar.open{right:0}
 /* Move pad removed — mobile uses map tap */
 
@@ -240,6 +240,7 @@ textarea{resize:none;min-height:50px}
       <p style="color:var(--gray);margin:6px 0;font-size:12px">또는</p>
       <input type="text" id="room-input" class="code-input" placeholder="방 코드" maxlength="6" autocomplete="off">
       <button class="btn btn-secondary" onclick="joinRoom()">참가하기</button>
+      <button class="btn btn-sm btn-gold" onclick="showHallOfFame()" style="margin-top:8px">🏛️ 명예의 전당</button>
       <div id="error-msg"></div>
     </div>
     <div class="lobby-box" id="waiting-room" style="display:none">
@@ -384,9 +385,29 @@ textarea{resize:none;min-height:50px}
 
 <!-- WINNER -->
 <div id="winner-overlay">
-  <h2 id="winner-title" style="font-size:40px;color:var(--gold)">🏆 승리!</h2>
-  <p id="winner-msg" style="color:var(--gray);font-size:18px"></p>
-  <button class="btn" style="max-width:300px" onclick="location.reload()">다시 하기</button>
+  <h2 id="winner-title" style="font-size:48px;color:var(--gold)">🏆 승리!</h2>
+  <div id="winner-avatar" style="font-size:80px;margin:8px 0"></div>
+  <p id="winner-msg" style="color:var(--white);font-size:20px;font-weight:700"></p>
+  <p id="winner-stats" style="color:var(--gray);font-size:14px"></p>
+  <div id="winner-input-section" style="display:none;width:100%;max-width:350px;margin:10px 0">
+    <p style="color:var(--accent);font-size:14px;font-weight:700;margin-bottom:6px">🎤 우승 소감을 남겨주세요!</p>
+    <input type="text" id="winner-comment" placeholder="한마디..." maxlength="50" style="text-align:center;font-size:16px">
+    <button class="btn" onclick="saveToHallOfFame()" style="margin-top:8px">명예의 전당에 기록 ⭐</button>
+  </div>
+  <div id="winner-saved" style="display:none;color:var(--accent);font-size:16px;font-weight:700">⭐ 명예의 전당에 등록되었습니다!</div>
+  <button class="btn btn-secondary" style="max-width:300px;margin-top:8px" onclick="location.reload()">다시 하기</button>
+  <button class="btn btn-sm btn-secondary" style="max-width:200px" onclick="showHallOfFame()">🏛️ 명예의 전당</button>
+</div>
+
+<!-- Hall of Fame -->
+<div id="hof-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);z-index:750;justify-content:center;align-items:flex-start;padding:20px;overflow-y:auto">
+  <div style="width:100%;max-width:500px;margin:0 auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="font-size:28px;color:var(--gold)">🏛️ 명예의 전당</h2>
+      <button class="btn btn-sm btn-secondary" onclick="document.getElementById('hof-overlay').style.display='none'">✕ 닫기</button>
+    </div>
+    <div id="hof-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -499,6 +520,7 @@ let usedWeaponIds=new Set(); // unique items per game
 let canvas,ctx,TILE;
 let craftSelection=[];
 let isHost=false;
+let myKills=0;
 
 // ===== LOBBY =====
 function setNick(){const n=document.getElementById('nick-input').value.trim();if(n.length<2){alert('2자 이상');return}myNick=n;myAvatar=AVATARS[Math.floor(Math.random()*AVATARS.length)];document.getElementById('nick-box').style.display='none';document.getElementById('create-join').style.display='block';document.getElementById('nick-display').textContent=myAvatar+' '+n;startGlobalChat()}
@@ -950,18 +972,56 @@ async function submitStrategy(){
   if(iWon&&inventory.length<5){const lootW=oppW;inventory.push(lootW);showPickup(lootW);
     await roomRef.collection('players').doc(myId).update({inv:JSON.stringify(inventory.map(w=>w.id))}).catch(()=>{})}
   if(!iWon){myAlive=false;addKill(opp.name,myNick,oppW.emoji);setTimeout(()=>{document.getElementById('dead-overlay').classList.add('show');document.getElementById('dead-msg').textContent=opp.name+'에게 당했습니다'},2000)}
-  else{addKill(myNick,opp.name,myWeapon.emoji)}
+  else{myKills++;addKill(myNick,opp.name,myWeapon.emoji)}
   if(isHost)setTimeout(()=>{roomRef.update({phase:'move',turn:(currentTurn||1)+1,battlePair:null}).catch(()=>{})},4000);
 }
 
-function closeBattle(){document.getElementById('battle-overlay').classList.remove('show');inBattle=false}
+function closeBattle(){document.getElementById('battle-overlay').classList.remove('show');inBattle=false;drawMap()}
+
+async function saveToHallOfFame(){
+  const comment=document.getElementById('winner-comment').value.trim()||'...';
+  try{
+    await db.collection('br_hall_of_fame').add({
+      name:myNick,avatar:myAvatar,comment,hp:myHp,kills:myKills,turn:currentTurn,
+      weapon:myWeapon?myWeapon.name:'',weaponEmoji:myWeapon?myWeapon.emoji:'',
+      date:new Date().toISOString(),ts:Date.now()
+    });
+    document.getElementById('winner-input-section').style.display='none';
+    document.getElementById('winner-saved').style.display='block';
+  }catch(e){console.error(e);alert('저장 실패')}
+}
+
+async function showHallOfFame(){
+  const ol=document.getElementById('hof-overlay');ol.style.display='flex';
+  const list=document.getElementById('hof-list');list.innerHTML='<p style="color:var(--gray)">로딩 중...</p>';
+  try{
+    const snap=await db.collection('br_hall_of_fame').orderBy('ts','desc').limit(20).get();
+    if(snap.empty){list.innerHTML='<p style="color:var(--gray)">아직 기록이 없습니다. 첫 번째 챔피언이 되어보세요!</p>';return}
+    list.innerHTML=snap.docs.map((d,i)=>{const h=d.data();const rank=i===0?'👑':i===1?'🥈':i===2?'🥉':`${i+1}`;
+      return`<div style="background:var(--card);border:1px solid ${i<3?'var(--gold)':'var(--border)'};padding:14px;border-radius:8px;display:flex;align-items:center;gap:12px">
+        <span style="font-size:24px;min-width:36px;text-align:center">${rank}</span>
+        <span style="font-size:36px">${h.avatar||'🏆'}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:800;font-size:16px;color:var(--white)">${esc(h.name)}</div>
+          <div style="color:var(--accent);font-size:13px">"${esc(h.comment||'...')}"</div>
+          <div style="color:var(--gray);font-size:11px">HP:${h.hp} | 킬:${h.kills} | ${h.weaponEmoji||''} ${h.weapon||''} | ${new Date(h.date).toLocaleDateString('ko-KR')}</div>
+        </div></div>`}).join('');
+  }catch(e){list.innerHTML='<p style="color:var(--red)">로딩 실패</p>'}
+}
 
 function checkEnd(){
   const alive=Object.entries(players).filter(([,p])=>p.alive);
-  if(alive.length<=1&&gameStarted){const w=alive[0];const isMe=w&&w[0]===myId;
+  if(alive.length<=1&&gameStarted){
+    const w=alive[0];const isMe=w&&w[0]===myId;
+    const wp=w?w[1]:null;
     document.getElementById('winner-overlay').classList.add('show');
-    document.getElementById('winner-title').textContent=isMe?'🏆 승리!':'게임 종료';
-    document.getElementById('winner-msg').textContent=isMe?'최후의 생존자!':`승자: ${w?w[1].name:'없음'}`}
+    document.getElementById('winner-title').textContent=isMe?'🏆 축하합니다!':'게임 종료';
+    document.getElementById('winner-avatar').textContent=wp?wp.avatar||'🏆':'💀';
+    document.getElementById('winner-msg').textContent=isMe?`${myNick}, 최후의 생존자!`:`승자: ${wp?wp.name:'없음'}`;
+    document.getElementById('winner-stats').textContent=isMe?`HP: ${myHp} | 킬: ${myKills} | 턴: ${currentTurn}`:``;
+    if(isMe){document.getElementById('winner-input-section').style.display='block'}
+    stopTurnTimer();
+  }
 }
 
 // ===== CRAFT =====
@@ -1014,7 +1074,7 @@ async function doCraft(){
     myWeapon=POOP;
     await roomRef.collection('players').doc(myId).update({weapon:999,inv:JSON.stringify(inventory.map(w=>w.id))}).catch(()=>{});
   }
-  setTimeout(()=>{closeCraft();updateHUD()},2000);
+  setTimeout(()=>{closeCraft();updateHUD();drawMap()},2000);
 }
 function closeCraft(){document.getElementById('craft-modal').classList.remove('show');craftSelection=[]}
 
