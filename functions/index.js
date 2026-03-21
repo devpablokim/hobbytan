@@ -57,17 +57,35 @@ exports.brcombat = onRequest({ region: "asia-northeast3", cors: true, secrets: [
 exports.brbotaction = onRequest({ region: "asia-northeast3", cors: true, secrets: [openaiKey] }, async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
   try {
-    const { actionType, botName, botWeapon, botHp, mapSize, botX, botY, nearbyPlayers, opponentWeapon, opponentHp } = req.body;
+    const { actionType, botName, botWeapon, botHp, mapSize, botX, botY, nearbyPlayers, opponentWeapon, opponentHp, personality, turn, aliveCount, nearbyItems, stormBorder } = req.body;
+    const personalityDesc = {
+      aggressive: '호전적이고 전투를 즐기는 성격. 적을 보면 무조건 돌진한다. 도망은 치지 않는다.',
+      cautious: '신중하고 조심스러운 성격. HP가 낮으면 도망가고, 유리할 때만 싸운다. 불필요한 전투는 피한다.',
+      explorer: '탐험가 성격. 아이템을 찾아 돌아다니고 맵을 넓게 이동한다. 전투보다 장비 강화를 선호.',
+      camper: '한 곳에 머물며 기다리는 성격. 적이 가까이 오면 공격하지만, 굳이 찾아다니지 않는다.',
+      hunter: '사냥꾼 성격. 중앙으로 이동해 적을 추적한다. 계획적이고 효율적으로 킬을 노린다.'
+    };
+    const pDesc = personalityDesc[personality] || personalityDesc.aggressive;
     let prompt = "";
     if (actionType === "move") {
-      prompt = `당신은 배틀로얄 게임의 AI 봇 "${botName}"입니다.
-무기: ${botWeapon.emoji} ${botWeapon.name} (ATK:${botWeapon.atk}, DEF:${botWeapon.def}, SPD:${botWeapon.spd}, 특수:${botWeapon.specName})
-HP: ${botHp}/100, 위치: (${botX}, ${botY}), 맵 ${mapSize}x${mapSize}
-주변: ${nearbyPlayers || "없음"}
-8방향 또는 대기 중 선택. JSON: {"dx":-1~1,"dy":-1~1,"reason":"이유"}`;
+      prompt = `당신은 배틀로얄 게임의 플레이어 "${botName}"입니다. 사람처럼 생각하고 행동하세요.
+
+[내 성격] ${pDesc}
+[무기] ${botWeapon.emoji} ${botWeapon.name} (ATK:${botWeapon.atk}, DEF:${botWeapon.def}, SPD:${botWeapon.spd}, 특수:${botWeapon.specName})
+[HP] ${botHp}/100
+[위치] (${botX}, ${botY}), 맵 ${mapSize}x${mapSize}
+[턴] ${turn || '?'}, 생존자 ${aliveCount || '?'}명
+[자기장] 외곽 ${stormBorder || 0}칸 위험
+[주변 적] ${nearbyPlayers || "없음"}
+[주변 아이템] ${nearbyItems || "없음"}
+
+내 성격에 맞게 8방향 이동 또는 대기를 선택하세요. 이유도 짧게.
+JSON: {"dx":-1~1,"dy":-1~1,"reason":"한국어 이유 1문장"}`;
     } else {
-      prompt = `당신은 배틀로얄 AI 봇 "${botName}". 무기: ${botWeapon.emoji} ${botWeapon.name} (ATK:${botWeapon.atk}, 특수:${botWeapon.specName}—${botWeapon.specDesc}). HP:${botHp}. 상대: ${opponentWeapon?.emoji} ${opponentWeapon?.name} (ATK:${opponentWeapon?.atk}), HP:${opponentHp}.
-전략 1~2문장 한국어. JSON: {"strategy":"전략"}`;
+      prompt = `당신은 배틀로얄 플레이어 "${botName}". 성격: ${pDesc}
+무기: ${botWeapon.emoji} ${botWeapon.name} (ATK:${botWeapon.atk}, 특수:${botWeapon.specName}—${botWeapon.specDesc}). HP:${botHp}.
+상대: ${opponentWeapon?.emoji} ${opponentWeapon?.name} (ATK:${opponentWeapon?.atk}), HP:${opponentHp}.
+내 성격에 맞는 전투 전략 1~2문장 한국어. JSON: {"strategy":"전략"}`;
     }
     const result = await callOpenAI([{ role: "user", content: prompt }], { temp: 0.8, maxTokens: 200 });
     res.json(result);
