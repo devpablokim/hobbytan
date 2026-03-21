@@ -29,6 +29,10 @@ service cloud.firestore {
       allow read: if true;
       allow create: if true;
     }
+    match /br_hall_of_fame/{docId} {
+      allow read: if true;
+      allow create: if true;
+    }
 
     // Existing collections - keep default deny unless other rules exist
     match /swks_users/{userId} {
