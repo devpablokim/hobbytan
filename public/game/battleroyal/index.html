@@ -140,6 +140,30 @@ textarea{resize:none;min-height:50px}
 .pickup-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--card);border:2px solid var(--gold);padding:10px 20px;border-radius:8px;z-index:300;animation:toastIn .3s ease;font-size:14px;font-weight:700;text-align:center}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
+/* KILL FEED */
+#kill-feed{position:fixed;top:50px;right:10px;z-index:80;display:flex;flex-direction:column;gap:4px;pointer-events:none;max-width:280px}
+.kill-entry{background:rgba(239,68,68,.85);color:#fff;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:700;animation:killIn .3s ease,killOut .5s ease 3s forwards;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@keyframes killIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes killOut{to{opacity:0;transform:translateX(40px)}}
+
+/* SCREEN SHAKE */
+@keyframes shake{0%,100%{transform:translate(0)}10%{transform:translate(-4px,2px)}20%{transform:translate(4px,-2px)}30%{transform:translate(-3px,3px)}40%{transform:translate(3px,-1px)}50%{transform:translate(-2px,2px)}}
+.shaking{animation:shake .4s ease}
+
+/* TURN BANNER ANIM */
+@keyframes turnBannerIn{0%{opacity:0;transform:translate(-50%,-50%) scale(2)}30%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(.8)}}
+#turn-banner.show{display:block;animation:turnBannerIn 1.5s ease forwards}
+
+/* HP BAR (player list) */
+.hp-bar{width:50px;height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:4px}
+.hp-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.hp-fill.high{background:var(--accent)}
+.hp-fill.mid{background:var(--gold)}
+.hp-fill.low{background:var(--red)}
+
+/* STORM PULSE */
+@keyframes stormPulse{0%,100%{opacity:.2}50%{opacity:.4}}
+
 /* TURN BANNER */
 #turn-banner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:34px;font-weight:800;color:var(--accent);text-shadow:0 0 20px rgba(16,185,129,.5);z-index:10;display:none;pointer-events:none;text-align:center}
 #countdown{font-size:96px;font-weight:800;color:var(--accent);display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999;text-shadow:0 0 40px rgba(16,185,129,.5)}
@@ -285,7 +309,8 @@ textarea{resize:none;min-height:50px}
   </div>
 </div>
 
-<!-- Move pad removed: use map tap instead -->
+<!-- Kill Feed -->
+<div id="kill-feed"></div>
 
 <!-- BATTLE -->
 <div id="battle-overlay">
@@ -575,10 +600,11 @@ function onRoomUpdate(d){
     pendingMove=null;
     document.getElementById('move-indicator').style.display='none';
     startTurnTimer();
+    showTurnBanner(currentTurn);
   }
   if(d.phase==='resolve'){stopTurnTimer();if(isHost)deadlockTimer=setTimeout(()=>{console.warn('Deadlock recovery: forcing nextTurn');nextTurn().catch(()=>{})},15000)}
   if(d.phase==='battle'){
-    stopTurnTimer();
+    stopTurnTimer();screenShake();
     const bp=d.battlePair;
     if(bp&&(bp.a===myId||bp.b===myId))showBattlePhase(bp);
     else if(bp){document.getElementById('wait-overlay').classList.add('show');document.getElementById('wait-info').textContent=`${players[bp.a]?.name||'?'} vs ${players[bp.b]?.name||'?'}`}
@@ -703,6 +729,22 @@ function showPickup(w){
   const t=document.createElement('div');t.className='pickup-toast';t.innerHTML=`📦 ${w.emoji} <b>${w.name}</b> 획득!`;
   document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
 }
+function addKill(killer,victim,weapon){
+  const feed=document.getElementById('kill-feed');if(!feed)return;
+  const e=document.createElement('div');e.className='kill-entry';
+  e.textContent=`${killer} ${weapon} → ${victim} 💀`;
+  feed.appendChild(e);setTimeout(()=>e.remove(),3500);
+  if(feed.children.length>5)feed.firstChild.remove();
+}
+function showTurnBanner(turn){
+  const b=document.getElementById('turn-banner');
+  b.textContent=`⚔️ TURN ${turn}`;b.className='';
+  void b.offsetWidth;b.classList.add('show');
+}
+function screenShake(){
+  const c=document.getElementById('game-main');if(!c)return;
+  c.classList.add('shaking');setTimeout(()=>c.classList.remove('shaking'),400);
+}
 
 async function nextTurn(){
   const nextT=(currentTurn||1)+1;
@@ -738,7 +780,7 @@ async function nextTurn(){
           const dmg=10+dist*5+stormTicks[id]*3;
           const newHp=Math.max(0,p.hp-dmg);
           await roomRef.collection('players').doc(id).update({hp:newHp,alive:newHp>0}).catch(()=>{});
-          if(newHp<=0)addSysChat(`🌀 ${p.name}이(가) 자기장에 의해 전사! (-${dmg})`);
+          if(newHp<=0){addSysChat(`🌀 ${p.name}이(가) 자기장에 의해 전사! (-${dmg})`);addKill('🌀자기장',p.name,'⚡')}
           else addSysChat(`🌀 ${p.name} 자기장 피해 -${dmg} (거리:${dist}, 누적:${stormTicks[id]}턴) HP:${newHp}`);
         }else{
           // 안전지대 복귀 시 누적 초기화
@@ -781,8 +823,8 @@ async function autoResolveBattle(aId,bId,ps){
   const winner=bHp<=0?a.name:aHp<=0?b.name:'무승부';
   addSysChat(`⚔️ ${a.name}(${aw.emoji}) vs ${b.name}(${bw.emoji}) → ${winner} 승리! [${rd}라운드]`);
   logs.forEach(l=>addSysChat(l));
-  if(aHp<=0)addSysChat(`💀 ${a.name} 전사!`);
-  if(bHp<=0)addSysChat(`💀 ${b.name} 전사!`);
+  if(aHp<=0){addSysChat(`💀 ${a.name} 전사!`);addKill(b.name,a.name,bw.emoji)}
+  if(bHp<=0){addSysChat(`💀 ${b.name} 전사!`);addKill(a.name,b.name,aw.emoji)}
   // 승자가 패자 무기 획득
   if(aHp<=0&&bHp>0){
     const bInv=JSON.parse(b.inv||'[]');if(bInv.length<5){bInv.push(a.weapon);await roomRef.collection('players').doc(bId).update({inv:JSON.stringify(bInv)}).catch(()=>{});}
@@ -865,7 +907,8 @@ async function submitStrategy(){
   // Loot: winner gets loser's weapon
   if(iWon&&inventory.length<5){const lootW=oppW;inventory.push(lootW);showPickup(lootW);
     await roomRef.collection('players').doc(myId).update({inv:JSON.stringify(inventory.map(w=>w.id))}).catch(()=>{})}
-  if(!iWon){myAlive=false;setTimeout(()=>{document.getElementById('dead-overlay').classList.add('show');document.getElementById('dead-msg').textContent=opp.name+'에게 당했습니다'},2000)}
+  if(!iWon){myAlive=false;addKill(opp.name,myNick,oppW.emoji);setTimeout(()=>{document.getElementById('dead-overlay').classList.add('show');document.getElementById('dead-msg').textContent=opp.name+'에게 당했습니다'},2000)}
+  else{addKill(myNick,opp.name,myWeapon.emoji)}
   if(isHost)setTimeout(()=>{roomRef.update({phase:'move',turn:(currentTurn||1)+1,battlePair:null}).catch(()=>{})},4000);
 }
 
@@ -963,7 +1006,9 @@ function drawMap(){
   if(stormBorder>0){
     for(let y=0;y<MAP;y++)for(let x=0;x<MAP;x++){
       if(x<stormBorder||x>=MAP-stormBorder||y<stormBorder||y>=MAP-stormBorder){
-        ctx.fillStyle='rgba(239,68,68,0.25)';ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+        const sdL=Math.max(0,stormBorder-x),sdR=Math.max(0,x-(MAP-stormBorder-1)),sdT=Math.max(0,stormBorder-y),sdB=Math.max(0,y-(MAP-stormBorder-1));
+        const sd=Math.max(sdL,sdR,sdT,sdB);const sAlpha=Math.min(0.6,0.15+sd*0.08);
+        ctx.fillStyle=`rgba(239,68,68,${sAlpha})`;ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
       }
     }
     // 자기장 경계선
@@ -995,7 +1040,8 @@ function updateHUD(){
     const canSee=!myAlive||!me||id===myId||(Math.abs(p.x-me.x)<=1&&Math.abs(p.y-me.y)<=1);
     const w=gw(p.weapon);
     if(!canSee&&p.alive)return`<div class="plist-row"><span class="pemoji">${p.avatar||'🤖'}</span><span class="pname">${esc(p.name)}</span><span style="font-size:9px;color:var(--gray)">???</span><span class="php" style="color:var(--gray)">❤️???</span></div>`;
-    return`<div class="plist-row ${p.alive?'':'dead'}"><span class="pemoji">${p.avatar||'🤖'}</span><span class="pname">${esc(p.name)}</span><span style="font-size:9px">${w.emoji}</span><span class="php">❤️${p.hp}</span></div>`;
+    const hpPct=Math.max(0,Math.min(100,p.hp));const hpClass=hpPct>60?'high':hpPct>30?'mid':'low';
+    return`<div class="plist-row ${p.alive?'':'dead'}"><span class="pemoji">${p.avatar||'🤖'}</span><span class="pname">${esc(p.name)}</span><span style="font-size:9px">${w.emoji}</span><span class="php">${p.hp}</span><div class="hp-bar"><div class="hp-fill ${hpClass}" style="width:${hpPct}%"></div></div></div>`;
   }).join('');
   ['sidebar-players','mob-players'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=ph});
 }
