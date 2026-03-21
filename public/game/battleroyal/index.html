@@ -285,6 +285,7 @@ textarea{resize:none;min-height:50px}
         <div class="hud-item">🔄 턴 <span id="hud-turn">0</span></div>
         <div class="hud-item">⏱️ <span id="hud-timer">20</span>s</div>
         <div class="hud-item" id="hud-hint">🗺️ 맵을 탭하여 이동</div>
+        <button class="btn-sm btn-secondary" id="stay-btn" onclick="selMove(0,0)" style="padding:5px 12px;font-size:12px;font-weight:700;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;border-radius:4px">📍 대기</button>
       </div>
       <div class="timer-bar"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
       <div class="move-indicator" id="move-indicator"></div>
@@ -338,6 +339,7 @@ textarea{resize:none;min-height:50px}
   <div class="tut-item">📦 바닥 아이템은 <span>자동 줍기</span></div>
   <div class="tut-item">🔮 아이템 2개 이상 → <span>조합</span> 가능</div>
   <div class="tut-item">⏱️ 매 턴 <span>20초</span> — 초과 시 제자리 대기</div>
+  <div class="tut-item">⚡ 전투에 안 걸리면 <span>보너스 이동</span> 가능!</div>
   <div class="tut-item">🌀 10턴 후 <span>자기장</span> 축소 시작!</div>
   <div class="tut-dismiss">탭하여 시작 →</div>
 </div>
@@ -415,7 +417,7 @@ textarea{resize:none;min-height:50px}
 <script>
 firebase.initializeApp({apiKey:"AIzaSyDxnIFPnFdSVR6IKuBMRm5ZQynO0ORrlzI",authDomain:"hobbytan-ai.firebaseapp.com",projectId:"hobbytan-ai",storageBucket:"hobbytan-ai.firebasestorage.app",messagingSenderId:"820555571498",appId:"1:820555571498:web:eb5c2de98d3b6c18e43cb9"});
 const db=firebase.firestore();
-const MAP=12,MAX_P=16,TURN_TIME=20,STRAT_TIME=30;
+const MAP=12,MAX_P=16,TURN_TIME=20,STRAT_TIME=30,BONUS_TIME=10;
 // 자기장(storm) 시스템: 10턴 후부터 2턴마다 경계 1칸 축소
 let stormBorder=0; // 0=축소 없음, 1=외곽1칸 금지...
 let stormTicks={}; // {playerId: 자기장 밖 누적 턴수}
@@ -521,6 +523,10 @@ let canvas,ctx,TILE;
 let craftSelection=[];
 let isHost=false;
 let myKills=0;
+let combatants=new Set(); // who fought this turn
+let visitedTiles=new Set(); // my trail: 'x_y' keys
+let readyCheckIv=null; // interval for checking all-ready
+let isBonusPhase=false; // true during bonusMove
 
 // ===== LOBBY =====
 function setNick(){const n=document.getElementById('nick-input').value.trim();if(n.length<2){alert('2자 이상');return}myNick=n;myAvatar=AVATARS[Math.floor(Math.random()*AVATARS.length)];document.getElementById('nick-box').style.display='none';document.getElementById('create-join').style.display='block';document.getElementById('nick-display').textContent=myAvatar+' '+n;startGlobalChat()}
@@ -536,7 +542,7 @@ async function createRoom(){
   myWeapon=uniqueWeapon();inventory=[myWeapon];
   const sx=Math.floor(Math.random()*MAP),sy=Math.floor(Math.random()*MAP);
   await roomRef.set({state:'lobby',turn:0,phase:'idle',battlePair:null,host:myId,created:firebase.firestore.FieldValue.serverTimestamp()});
-  await roomRef.collection('players').doc(myId).set({name:myNick,avatar:myAvatar,ready:false,alive:true,hp:100,x:sx,y:sy,weapon:myWeapon.id,inv:JSON.stringify([myWeapon.id]),isBot:false,pendingDx:0,pendingDy:0,ts:Date.now()});
+  await roomRef.collection('players').doc(myId).set({name:myNick,avatar:myAvatar,ready:false,alive:true,hp:100,x:sx,y:sy,weapon:myWeapon.id,inv:JSON.stringify([myWeapon.id]),isBot:false,pendingDx:0,pendingDy:0,moveSubmitted:false,ts:Date.now()});
   enterWaiting();
 }
 async function joinRoom(){
@@ -550,7 +556,7 @@ async function joinRoom(){
   if(ps.size>=MAX_P){showError('꽉 참');return}
   myWeapon=uniqueWeapon();inventory=[myWeapon];
   const sx=Math.floor(Math.random()*MAP),sy=Math.floor(Math.random()*MAP);
-  await roomRef.collection('players').doc(myId).set({name:myNick,avatar:myAvatar,ready:false,alive:true,hp:100,x:sx,y:sy,weapon:myWeapon.id,inv:JSON.stringify([myWeapon.id]),isBot:false,pendingDx:0,pendingDy:0,ts:Date.now()});
+  await roomRef.collection('players').doc(myId).set({name:myNick,avatar:myAvatar,ready:false,alive:true,hp:100,x:sx,y:sy,weapon:myWeapon.id,inv:JSON.stringify([myWeapon.id]),isBot:false,pendingDx:0,pendingDy:0,moveSubmitted:false,ts:Date.now()});
   enterWaiting();
 }
 
@@ -642,39 +648,80 @@ function initGame(){
 }
 
 let deadlockTimer=null;
+function stopReadyCheck(){if(readyCheckIv){clearInterval(readyCheckIv);readyCheckIv=null}}
+function startReadyCheck(isBonus){
+  stopReadyCheck();
+  if(!isHost)return;
+  readyCheckIv=setInterval(async()=>{
+    const snap=await roomRef.collection('players').get();
+    const aliveHumans=[];
+    snap.forEach(d=>{const p=d.data();if(!p.isBot&&p.alive){
+      if(isBonus&&combatants.has(d.id))return; // skip combatants in bonus
+      aliveHumans.push(p);
+    }});
+    if(aliveHumans.length>0&&aliveHumans.every(p=>p.moveSubmitted)){
+      stopReadyCheck();stopTurnTimer();
+      if(isBonus){if(!resolving){resolving=true;try{await resolveBonusTurn()}catch(e){await nextTurn().catch(()=>{})}finally{resolving=false}}}
+      else{if(!resolving){resolving=true;try{await resolveTurn()}catch(e){await nextTurn().catch(()=>{})}finally{resolving=false}}}
+    }
+  },500);
+}
+
 function onRoomUpdate(d){
   currentTurn=d.turn||1;
   if(d.mapItems)mapItems=JSON.parse(d.mapItems);
+  if(d.combatantIds)combatants=new Set(d.combatantIds);
   if(deadlockTimer){clearTimeout(deadlockTimer);deadlockTimer=null}
   if(d.phase==='move'){
+    isBonusPhase=false;
     inBattle=false;resolving=false;
     document.getElementById('wait-overlay').classList.remove('show');
     document.getElementById('battle-overlay').classList.remove('show');
     pendingMove=null;
     document.getElementById('move-indicator').style.display='none';
-    startTurnTimer();
+    startTurnTimer();startReadyCheck(false);
     showTurnBanner(currentTurn);
+    const stayBtn=document.getElementById('stay-btn');if(stayBtn)stayBtn.style.display='inline-block';
     if(stormBorder>0){const me=players[myId];if(me&&me.alive){const dL=Math.max(0,stormBorder-me.x),dR=Math.max(0,me.x-(MAP-stormBorder-1)),dT=Math.max(0,stormBorder-me.y),dB=Math.max(0,me.y-(MAP-stormBorder-1));if(Math.max(dL,dR,dT,dB)>0)setHudHint('⚠️ 자기장 밖! 안쪽으로 이동');else setHudHint('🗺️ 맵을 탭하여 이동')}}
     else setHudHint('🗺️ 맵을 탭하여 이동');
   }
-  if(d.phase==='resolve'){stopTurnTimer();setHudHint('⏳ 처리 중...');if(isHost)deadlockTimer=setTimeout(()=>{console.warn('Deadlock recovery: forcing nextTurn');nextTurn().catch(()=>{})},15000)}
+  if(d.phase==='resolve'||d.phase==='bonusResolve'){stopTurnTimer();stopReadyCheck();setHudHint('⏳ 처리 중...');if(isHost)deadlockTimer=setTimeout(()=>{console.warn('Deadlock recovery: forcing nextTurn');nextTurn().catch(()=>{})},15000)}
   if(d.phase==='battle'){
-    stopTurnTimer();screenShake();setHudHint('⚔️ 전투 중!');
+    stopTurnTimer();stopReadyCheck();screenShake();setHudHint('⚔️ 전투 중!');
     const bp=d.battlePair;
     if(bp&&(bp.a===myId||bp.b===myId))showBattlePhase(bp);
     else if(bp){document.getElementById('wait-overlay').classList.add('show');document.getElementById('wait-info').textContent=`${players[bp.a]?.name||'?'} vs ${players[bp.b]?.name||'?'}`}
+  }
+  if(d.phase==='bonusMove'){
+    isBonusPhase=true;
+    inBattle=false;resolving=false;
+    document.getElementById('wait-overlay').classList.remove('show');
+    document.getElementById('battle-overlay').classList.remove('show');
+    pendingMove=null;
+    document.getElementById('move-indicator').style.display='none';
+    // If I was in combat, I can't move in bonus phase
+    if(combatants.has(myId)){
+      setHudHint('⏳ 비전투원 보너스 이동 중...');
+      const stayBtn=document.getElementById('stay-btn');if(stayBtn)stayBtn.style.display='none';
+    }else{
+      startTurnTimer(BONUS_TIME);startReadyCheck(true);
+      setHudHint('⚡ 보너스 이동! (비전투원)');
+      const stayBtn=document.getElementById('stay-btn');if(stayBtn)stayBtn.style.display='inline-block';
+      addSysChat('⚡ 전투에 참여하지 않은 플레이어에게 보너스 이동 기회!');
+    }
   }
   updateHUD();drawMap();
 }
 
 // ===== TIMER =====
-function startTurnTimer(){stopTurnTimer();timerLeft=TURN_TIME;updTimer();turnTimer=setInterval(()=>{timerLeft--;updTimer();if(timerLeft<=0){stopTurnTimer();submitMove()}},1000)}
+function startTurnTimer(customTime){stopTurnTimer();timerLeft=customTime||TURN_TIME;updTimer();turnTimer=setInterval(()=>{timerLeft--;updTimer();if(timerLeft<=0){stopTurnTimer();if(isBonusPhase)submitBonusMove();else submitMove()}},1000)}
 function stopTurnTimer(){if(turnTimer){clearInterval(turnTimer);turnTimer=null}}
 function updTimer(){document.getElementById('hud-timer').textContent=timerLeft;const f=document.getElementById('timer-fill');f.style.width=(timerLeft/TURN_TIME*100)+'%';f.className='timer-fill'+(timerLeft<=10?' warn':'')}
 
 // ===== MOVE =====
 function onMapClick(e){
   if(inBattle||!myAlive)return;
+  if(isBonusPhase&&combatants.has(myId))return;
   const rect=canvas.getBoundingClientRect();
   const cx=e.touches?e.touches[0].clientX:e.clientX;
   const cy=e.touches?e.touches[0].clientY:e.clientY;
@@ -685,61 +732,71 @@ function onMapClick(e){
 }
 function selMove(dx,dy){
   if(inBattle||!myAlive)return;
+  if(isBonusPhase&&combatants.has(myId))return;
   const me=players[myId];if(!me)return;
   const nx=me.x+dx,ny=me.y+dy;
   if(nx<0||nx>=MAP||ny<0||ny>=MAP)return;
   pendingMove={dx,dy};
   const ind=document.getElementById('move-indicator');
   ind.textContent=dx===0&&dy===0?'📍 대기':`🎯 (${nx},${ny})`;ind.style.display='block';
-  roomRef.collection('players').doc(myId).update({pendingDx:dx,pendingDy:dy}).catch(()=>{});
+  roomRef.collection('players').doc(myId).update({pendingDx:dx,pendingDy:dy,moveSubmitted:true}).catch(()=>{});
   drawMap();
 }
 
 let resolving=false;
 async function submitMove(){
   if(!pendingMove)pendingMove={dx:0,dy:0};
-  await roomRef.collection('players').doc(myId).update({pendingDx:pendingMove.dx,pendingDy:pendingMove.dy}).catch(()=>{});
+  await roomRef.collection('players').doc(myId).update({pendingDx:pendingMove.dx,pendingDy:pendingMove.dy,moveSubmitted:true}).catch(()=>{});
   if(isHost&&!resolving){resolving=true;try{await resolveTurn()}catch(e){console.error('resolveTurn error:',e);await nextTurn().catch(()=>{})}finally{resolving=false}}
 }
+async function submitBonusMove(){
+  if(!pendingMove)pendingMove={dx:0,dy:0};
+  await roomRef.collection('players').doc(myId).update({pendingDx:pendingMove.dx,pendingDy:pendingMove.dy,moveSubmitted:true}).catch(()=>{});
+  if(isHost&&!resolving){resolving=true;try{await resolveBonusTurn()}catch(e){console.error('resolveBonusTurn error:',e);await nextTurn().catch(()=>{})}finally{resolving=false}}
+}
 
-async function resolveTurn(){
-  // Bot moves — parallel with 3s timeout per bot, 8s total timeout, fallback to random
-  const botIds=Object.keys(players).filter(id=>players[id].isBot&&players[id].alive);
+function botFallbackMove(bot){
+  let dx=0,dy=0;
+  // Priority 1: Storm escape — if in storm, move toward safe center
+  if(stormBorder>0){
+    const dL=Math.max(0,stormBorder-bot.x),dR=Math.max(0,bot.x-(MAP-stormBorder-1)),dT=Math.max(0,stormBorder-bot.y),dB=Math.max(0,bot.y-(MAP-stormBorder-1));
+    if(Math.max(dL,dR,dT,dB)>0){
+      const cx=Math.floor(MAP/2),cy=Math.floor(MAP/2);
+      return{dx:Math.sign(cx-bot.x),dy:Math.sign(cy-bot.y)};
+    }
+  }
+  // Priority 2: Chase visible enemy (100% aggression)
+  const visible=Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=1&&Math.abs(p.y-bot.y)<=1);
+  if(visible.length>0){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+  // Priority 3: Wander toward center
+  const cx=Math.floor(MAP/2),cy=Math.floor(MAP/2);
+  if(Math.random()<0.6){dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y)}
+  else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*9)];dx=d[0];dy=d[1]}
+  return{dx,dy};
+}
+
+async function doBotMoves(excludeIds=new Set()){
+  const botIds=Object.keys(players).filter(id=>players[id].isBot&&players[id].alive&&!excludeIds.has(id));
   const botMovesPromise=Promise.allSettled(botIds.map(async bid=>{
     const bot=players[bid];
     let dx=0,dy=0;
     try{
       const ctrl=new AbortController();const tid=setTimeout(()=>ctrl.abort(),3000);
-      const r=await fetch(API_BOT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actionType:'move',botName:bot.name,botWeapon:gw(bot.weapon),botHp:bot.hp,mapSize:MAP,botX:bot.x,botY:bot.y,nearbyPlayers:Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=1&&Math.abs(p.y-bot.y)<=1).map(p=>p.name).join(',')||'없음'}),signal:ctrl.signal});
+      const safeCenter=Math.floor(MAP/2);
+      const r=await fetch(API_BOT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actionType:'move',botName:bot.name,botWeapon:gw(bot.weapon),botHp:bot.hp,mapSize:MAP,botX:bot.x,botY:bot.y,stormBorder,safeCenter,nearbyPlayers:Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=1&&Math.abs(p.y-bot.y)<=1).map(p=>p.name).join(',')||'없음'}),signal:ctrl.signal});
       clearTimeout(tid);
       if(r.ok){const j=await r.json();dx=Math.max(-1,Math.min(1,j.dx||0));dy=Math.max(-1,Math.min(1,j.dy||0))}
-    }catch(e){
-      // Fallback: 가장 가까운 적 방향 or 중앙으로 이동
-      // Bot fog: only see 1-tile radius, same as players
-      const visible=Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=1&&Math.abs(p.y-bot.y)<=1);
-      if(visible.length>0){
-        const t=visible[0];dx=Math.sign(t.x-bot.x);dy=Math.sign(t.y-bot.y);
-      }else{
-        // No visible enemies: random wander toward center
-        const cx=Math.floor(MAP/2),cy=Math.floor(MAP/2);
-        if(Math.random()<0.5){dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y)}
-        else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*9)];dx=d[0];dy=d[1]}
-      }
-    }
+    }catch(e){const fb=botFallbackMove(bot);dx=fb.dx;dy=fb.dy}
     return roomRef.collection('players').doc(bid).update({x:Math.max(0,Math.min(MAP-1,bot.x+dx)),y:Math.max(0,Math.min(MAP-1,bot.y+dy))}).catch(()=>{});
   }));
-  // Total 8s timeout for all bot moves
   await Promise.race([botMovesPromise,new Promise(r=>setTimeout(r,8000))]);
-  // Human moves
-  const humanUpdates=Object.keys(players).filter(id=>!players[id].isBot&&players[id].alive).map(hid=>{
-    const p=players[hid],dx=p.pendingDx||0,dy=p.pendingDy||0;
-    return roomRef.collection('players').doc(hid).update({x:Math.max(0,Math.min(MAP-1,p.x+dx)),y:Math.max(0,Math.min(MAP-1,p.y+dy)),pendingDx:0,pendingDy:0}).catch(()=>{});
-  });
-  await Promise.allSettled(humanUpdates);
-  await roomRef.update({phase:'resolve'});
-  // Item pickup
-  const snap=await roomRef.collection('players').get();
-  const ps={};snap.forEach(d=>ps[d.id]=d.data());
+}
+
+async function doItemPickup(ps){
+  // Re-read mapItems from Firestore (fix stale data bug)
+  const roomSnap=await roomRef.get();
+  if(roomSnap.exists&&roomSnap.data().mapItems)mapItems=JSON.parse(roomSnap.data().mapItems);
+  let changed=false;
   for(const[id,p]of Object.entries(ps)){
     if(!p.alive)continue;
     const key=p.x+'_'+p.y;
@@ -749,35 +806,89 @@ async function resolveTurn(){
         inv.push(mapItems[key].id);
         await roomRef.collection('players').doc(id).update({inv:JSON.stringify(inv)}).catch(()=>{});
         if(id===myId){inventory.push(gw(mapItems[key].id));showPickup(gw(mapItems[key].id))}
-        // 자기 시야 밖이면 ??? 표시
         const me=players[myId];
         const canSee=!myAlive||!me||(Math.abs(p.x-me.x)<=1&&Math.abs(p.y-me.y)<=1);
         const who=canSee?p.name:'???';
         addSysChat(`📦 ${who}가 ${gw(mapItems[key].id).emoji} ${gw(mapItems[key].id).name}을(를) 발견!`);
       }
-      delete mapItems[key];
-      await roomRef.update({mapItems:JSON.stringify(mapItems)}).catch(()=>{});
+      delete mapItems[key];changed=true;
     }
   }
-  // Check collisions
+  if(changed)await roomRef.update({mapItems:JSON.stringify(mapItems)}).catch(()=>{});
+}
+
+async function findAndStartBattle(ps){
   const alive=Object.entries(ps).filter(([,p])=>p.alive);
   const cells={};
   alive.forEach(([id,p])=>{const k=p.x+','+p.y;if(!cells[k])cells[k]=[];cells[k].push(id)});
-  let battleFound=false;
   for(const ids of Object.values(cells)){
     if(ids.length>=2){
-      console.log('[resolveTurn] Battle detected:',ids[0],ps[ids[0]]?.name,'vs',ids[1],ps[ids[1]]?.name,'bots:',ps[ids[0]]?.isBot,ps[ids[1]]?.isBot);
-      await roomRef.update({phase:'battle',battlePair:{a:ids[0],b:ids[1]}});battleFound=true;
+      combatants.add(ids[0]);combatants.add(ids[1]);
+      console.log('[resolveTurn] Battle:',ids[0],ps[ids[0]]?.name,'vs',ids[1],ps[ids[1]]?.name);
+      await roomRef.update({phase:'battle',battlePair:{a:ids[0],b:ids[1]}});
       if(ps[ids[0]].isBot&&ps[ids[1]].isBot){
-        console.log('[resolveTurn] Auto-resolving bot-bot battle...');
         await autoResolveBattle(ids[0],ids[1],ps);
-        console.log('[resolveTurn] Bot-bot battle resolved, scheduling nextTurn in 3s');
-        setTimeout(()=>nextTurn(),3000);
+        // Check for more battles
+        const snap2=await roomRef.collection('players').get();
+        const ps2={};snap2.forEach(d=>ps2[d.id]=d.data());
+        return findAndStartBattle(ps2);
       }
-      break;
+      return true; // human battle started, wait for resolution
     }
   }
-  if(!battleFound) await nextTurn();
+  return false; // no battles
+}
+
+async function resolveTurn(){
+  // Bot moves
+  await doBotMoves();
+  // Human moves
+  const humanUpdates=Object.keys(players).filter(id=>!players[id].isBot&&players[id].alive).map(hid=>{
+    const p=players[hid],dx=p.pendingDx||0,dy=p.pendingDy||0;
+    return roomRef.collection('players').doc(hid).update({x:Math.max(0,Math.min(MAP-1,p.x+dx)),y:Math.max(0,Math.min(MAP-1,p.y+dy)),pendingDx:0,pendingDy:0,moveSubmitted:false}).catch(()=>{});
+  });
+  await Promise.allSettled(humanUpdates);
+  // Track my visited tile
+  const me=players[myId];if(me)visitedTiles.add(me.x+'_'+me.y);
+  await roomRef.update({phase:'resolve'});
+  // Item pickup (fresh from Firestore)
+  const snap=await roomRef.collection('players').get();
+  const ps={};snap.forEach(d=>ps[d.id]=d.data());
+  await doItemPickup(ps);
+  // Check collisions → battles
+  combatants=new Set();
+  const battleFound=await findAndStartBattle(ps);
+  if(!battleFound) await startBonusMovePhase();
+}
+
+async function startBonusMovePhase(){
+  // Players NOT in combat this turn get a bonus move
+  const aliveNonCombatants=Object.keys(players).filter(id=>players[id].alive&&!combatants.has(id));
+  if(aliveNonCombatants.length===0){await nextTurn();return}
+  // Reset pending moves for bonus
+  const resets=aliveNonCombatants.map(id=>roomRef.collection('players').doc(id).update({pendingDx:0,pendingDy:0,moveSubmitted:false}).catch(()=>{}));
+  await Promise.allSettled(resets);
+  await roomRef.update({phase:'bonusMove',battlePair:null,combatantIds:Array.from(combatants)});
+}
+
+async function resolveBonusTurn(){
+  // Bonus: non-combatant bots move
+  await doBotMoves(combatants);
+  // Bonus: non-combatant human moves
+  const humanUpdates=Object.keys(players).filter(id=>!players[id].isBot&&players[id].alive&&!combatants.has(id)).map(hid=>{
+    const p=players[hid],dx=p.pendingDx||0,dy=p.pendingDy||0;
+    return roomRef.collection('players').doc(hid).update({x:Math.max(0,Math.min(MAP-1,p.x+dx)),y:Math.max(0,Math.min(MAP-1,p.y+dy)),pendingDx:0,pendingDy:0,moveSubmitted:false}).catch(()=>{});
+  });
+  await Promise.allSettled(humanUpdates);
+  // Track my visited tile
+  const me=players[myId];if(me)visitedTiles.add(me.x+'_'+me.y);
+  await roomRef.update({phase:'bonusResolve'});
+  // Item pickup
+  const snap=await roomRef.collection('players').get();
+  const ps={};snap.forEach(d=>ps[d.id]=d.data());
+  await doItemPickup(ps);
+  // No new battles in bonus phase — go to next turn
+  await nextTurn();
 }
 
 function showPickup(w){
@@ -859,7 +970,11 @@ async function nextTurn(){
     const k=x+'_'+y;
     if(!mapItems[k]){const w=uniqueWeapon();mapItems[k]={id:w.id};addSysChat(`✨ 어딘가에 새 아이템이 나타났습니다!`)}
   }
-  await roomRef.update({phase:'move',turn:nextT,battlePair:null,mapItems:JSON.stringify(mapItems)});
+  // Reset moveSubmitted for all alive players
+  const resetSnap=await roomRef.collection('players').get();
+  const resets=[];resetSnap.forEach(d=>{if(d.data().alive)resets.push(roomRef.collection('players').doc(d.id).update({moveSubmitted:false,pendingDx:0,pendingDy:0}).catch(()=>{}))});
+  await Promise.allSettled(resets);
+  await roomRef.update({phase:'move',turn:nextT,battlePair:null,combatantIds:[],mapItems:JSON.stringify(mapItems)});
 }
 
 async function autoResolveBattle(aId,bId,ps){
@@ -973,7 +1088,13 @@ async function submitStrategy(){
     await roomRef.collection('players').doc(myId).update({inv:JSON.stringify(inventory.map(w=>w.id))}).catch(()=>{})}
   if(!iWon){myAlive=false;addKill(opp.name,myNick,oppW.emoji);setTimeout(()=>{document.getElementById('dead-overlay').classList.add('show');document.getElementById('dead-msg').textContent=opp.name+'에게 당했습니다'},2000)}
   else{myKills++;addKill(myNick,opp.name,myWeapon.emoji)}
-  if(isHost)setTimeout(()=>{roomRef.update({phase:'move',turn:(currentTurn||1)+1,battlePair:null}).catch(()=>{})},4000);
+  if(isHost)setTimeout(async()=>{
+    // After human battle, check for more battles
+    const snap2=await roomRef.collection('players').get();
+    const ps2={};snap2.forEach(d=>ps2[d.id]=d.data());
+    const moreBattles=await findAndStartBattle(ps2);
+    if(!moreBattles)await startBonusMovePhase();
+  },4000);
 }
 
 function closeBattle(){document.getElementById('battle-overlay').classList.remove('show');inBattle=false;drawMap()}
@@ -1084,8 +1205,10 @@ function drawMap(){
   ctx.fillStyle='#050505';ctx.fillRect(0,0,MAP*TILE,MAP*TILE);
   for(let y=0;y<MAP;y++)for(let x=0;x<MAP;x++){
     const vis=!myAlive||(me&&Math.abs(x-me.x)<=1&&Math.abs(y-me.y)<=1);
-    ctx.fillStyle=vis?'#181818':'#080808';ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
-    ctx.strokeStyle=vis?'#222':'#0c0c0c';ctx.strokeRect(x*TILE,y*TILE,TILE,TILE);
+    const visited=visitedTiles.has(x+'_'+y);
+    ctx.fillStyle=vis?'#181818':visited?'#0d1210':'#080808';ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+    if(!vis&&visited){ctx.fillStyle='rgba(16,185,129,0.06)';ctx.fillRect(x*TILE,y*TILE,TILE,TILE)}
+    ctx.strokeStyle=vis?'#222':visited?'#162016':'#0c0c0c';ctx.strokeRect(x*TILE,y*TILE,TILE,TILE);
     // Map items
     const k=x+'_'+y;
     if(mapItems[k]&&vis){ctx.font=`${TILE*0.7}px serif`;ctx.textAlign='center';ctx.fillText(gw(mapItems[k].id).emoji,x*TILE+TILE/2,y*TILE+TILE*0.72)}
