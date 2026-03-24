@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HOBBYTAN AI — AI 파워워크샵 | 5주 만에 AI 슈퍼유저 5명</title>
-<meta name="description" content="조직의 체질을 완전히 바꾸는 5주, 하비탄AI가 만들어드립니다. AI 파워워크샵으로 팀원 5명이 매월 600만원의 업무 가치를 추가 창출합니다.">
-<meta property="og:title" content="HOBBYTAN AI — AI 파워워크샵">
-<meta property="og:description" content="5주 파워워크샵 수료 후, 귀사의 팀원 5명이 매월 600만원의 업무 가치를 추가로 창출합니다.">
+<title>HOBBYTAN AI — AI Transformation Partner</title>
+<meta name="description" content="당신과 AI 기술 사이, 하비탄AI. AI 도입의 모든 단계를 책임지는 유일한 파트너. AX전환 핵심인재를 육성합니다.">
+<meta property="og:title" content="HOBBYTAN AI — AI Transformation Partner">
+<meta property="og:description" content="AI 도입의 모든 단계를 책임지는 유일한 파트너. 50여개 기업이 하비탄과 함께 했습니다.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://hobbytan.com/test_page1">
 <link rel="icon" type="image/svg+xml" href="/logo.svg">
@@ -23,798 +23,599 @@
   --rd: #ef4444;
   --pp: #a78bfa;
   --bl: #60a5fa;
+  --am: #f59e0b;
   --wh: #f0f0f5;
   --gy: #8888a0;
   --gy2: #555566;
   --bd: #1e1e2a;
-  --radius: 16px;
-  --radius-sm: 10px;
+  --r: 16px;
+  --rs: 10px;
   --font: 'Pretendard Variable', system-ui, -apple-system, sans-serif;
 }
-
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--wh); font-family: var(--font); overflow-x: hidden; line-height: 1.7; font-size: 16px; }
-a { color: var(--em); text-decoration: none; transition: color .2s; }
-a:hover { color: var(--em2); }
-img { max-width: 100%; height: auto; }
-
-.wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
-.section { padding: 100px 0; }
-.tc { text-align: center; }
-
-h1 { font-size: clamp(32px, 6vw, 64px); font-weight: 800; line-height: 1.1; letter-spacing: -1px; }
-h2 { font-size: clamp(28px, 4.5vw, 48px); font-weight: 700; line-height: 1.15; letter-spacing: -.5px; }
-h3 { font-size: clamp(18px, 2.5vw, 24px); font-weight: 600; line-height: 1.3; }
-
-/* Buttons */
-.btn { display: inline-flex; align-items: center; gap: 8px; padding: 16px 32px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; font-family: var(--font); transition: all .25s; border-radius: var(--radius-sm); }
-.btn-primary { background: var(--em); color: var(--bg); }
-.btn-primary:hover { background: var(--em2); color: var(--bg); transform: translateY(-1px); box-shadow: 0 8px 30px rgba(16,185,129,.3); }
-.btn-ghost { background: transparent; border: 1.5px solid var(--bd); color: var(--wh); }
-.btn-ghost:hover { border-color: var(--em); color: var(--em); }
-.btn-danger { background: rgba(239,68,68,.15); border: 1.5px solid rgba(239,68,68,.3); color: var(--rd); }
-.btn-danger:hover { background: rgba(239,68,68,.25); }
-
-/* Tag/Badge */
-.tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 600; letter-spacing: .5px; }
-.tag-em { background: var(--em-bg); color: var(--em); border: 1px solid var(--em-bd); }
-.tag-rd { background: rgba(239,68,68,.1); color: var(--rd); border: 1px solid rgba(239,68,68,.25); }
-.tag-pp { background: rgba(167,139,250,.1); color: var(--pp); border: 1px solid rgba(167,139,250,.25); }
-
-/* Cards */
-.card { padding: 28px; background: var(--bg3); border: 1px solid var(--bd); border-radius: var(--radius); transition: all .3s; }
-.card:hover { border-color: rgba(16,185,129,.4); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,.4); }
-.card-glow { border-color: var(--em-bd); background: linear-gradient(135deg, rgba(16,185,129,.06), rgba(16,185,129,.02)); }
-
-/* Grid */
-.grid { display: grid; gap: 20px; }
-.g2 { grid-template-columns: repeat(2, 1fr); }
-.g3 { grid-template-columns: repeat(3, 1fr); }
-.g4 { grid-template-columns: repeat(4, 1fr); }
-.g5 { grid-template-columns: repeat(5, 1fr); }
-
-/* Utility */
-.flex { display: flex; }
-.gap-sm { gap: 8px; }
-.gap { gap: 16px; }
-.gap-lg { gap: 24px; }
-.items-center { align-items: center; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
-.flex-wrap { flex-wrap: wrap; }
-.col { flex-direction: column; }
-.mx-auto { margin-left: auto; margin-right: auto; }
-
-/* Gradient text */
-.grad-text { background: linear-gradient(135deg, #10b981, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.grad-text-warm { background: linear-gradient(135deg, #f59e0b, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--wh);font-family:var(--font);overflow-x:hidden;line-height:1.7;font-size:16px}
+a{color:var(--em);text-decoration:none;transition:color .2s}a:hover{color:var(--em2)}
+img{max-width:100%;height:auto}
+.w{max-width:1140px;margin:0 auto;padding:0 24px}
+.s{padding:100px 0}
+.tc{text-align:center}
+h1{font-size:clamp(32px,6vw,64px);font-weight:800;line-height:1.1;letter-spacing:-1px}
+h2{font-size:clamp(28px,4.5vw,48px);font-weight:700;line-height:1.15;letter-spacing:-.5px}
+h3{font-size:clamp(18px,2.5vw,24px);font-weight:600;line-height:1.3}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:16px 32px;font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:var(--font);transition:all .25s;border-radius:var(--rs)}
+.bp{background:var(--em);color:var(--bg)}.bp:hover{background:var(--em2);color:var(--bg);transform:translateY(-1px);box-shadow:0 8px 30px rgba(16,185,129,.3)}
+.bg{background:transparent;border:1.5px solid var(--bd);color:var(--wh)}.bg:hover{border-color:var(--em);color:var(--em)}
+.bd{background:rgba(239,68,68,.15);border:1.5px solid rgba(239,68,68,.3);color:var(--rd);border-radius:var(--rs)}.bd:hover{background:rgba(239,68,68,.25)}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;letter-spacing:.5px}
+.te{background:var(--em-bg);color:var(--em);border:1px solid var(--em-bd)}
+.tr{background:rgba(239,68,68,.1);color:var(--rd);border:1px solid rgba(239,68,68,.25)}
+.tp{background:rgba(167,139,250,.1);color:var(--pp);border:1px solid rgba(167,139,250,.25)}
+.ta{background:rgba(245,158,11,.1);color:var(--am);border:1px solid rgba(245,158,11,.25)}
+.c{padding:28px;background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);transition:all .3s}
+.c:hover{border-color:rgba(16,185,129,.4);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.cg{border-color:var(--em-bd);background:linear-gradient(135deg,rgba(16,185,129,.06),rgba(16,185,129,.02))}
+.g{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.f{display:flex}.gs{gap:8px}.gp{gap:16px}.gl{gap:24px}.ac{align-items:center}.jc{justify-content:center}.jb{justify-content:space-between}.fw{flex-wrap:wrap}.fc{flex-direction:column}
+.mx{margin-left:auto;margin-right:auto}
+.gt{background:linear-gradient(135deg,#10b981,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;opacity:.6}
+.dv{width:48px;height:3px;background:var(--em);border-radius:2px}
+.ib{width:52px;height:52px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.ie{background:var(--em-bg);border:1px solid var(--em-bd)}
+.ir{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25)}
+.ip{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25)}
+.ia{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25)}
+.nm{width:36px;height:36px;border-radius:50%;background:var(--em-bg);border:1px solid var(--em-bd);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--em);flex-shrink:0}
+.po{text-decoration:line-through;color:var(--gy2)}
 /* Nav */
-.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(6,6,8,.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(30,30,42,.5); height: 72px; display: flex; align-items: center; }
-.nav-inner { max-width: 1140px; margin: 0 auto; width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
-.nav-logo img { height: 30px; }
-.nav-links { display: flex; gap: 32px; }
-.nav-links a { color: var(--gy); font-size: 14px; font-weight: 500; transition: color .2s; }
-.nav-links a:hover { color: var(--wh); }
-.nav-right { display: flex; align-items: center; gap: 16px; }
-.nav-right .btn { padding: 10px 22px; font-size: 13px; }
-.mob-toggle { display: none; background: none; border: none; color: var(--gy); font-size: 24px; cursor: pointer; }
-
-/* Hero glow orb */
-.orb { position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none; opacity: .6; }
-
-/* Divider */
-.divider { width: 48px; height: 3px; background: var(--em); border-radius: 2px; }
-
-/* Icon container */
-.icon-box { width: 52px; height: 52px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-.icon-em { background: var(--em-bg); border: 1px solid var(--em-bd); }
-.icon-rd { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.25); }
-.icon-pp { background: rgba(167,139,250,.1); border: 1px solid rgba(167,139,250,.25); }
-
-/* Number circle */
-.num { width: 36px; height: 36px; border-radius: 50%; background: var(--em-bg); border: 1px solid var(--em-bd); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--em); flex-shrink: 0; }
-
-/* Stat card */
-.stat { text-align: center; padding: 24px 16px; }
-.stat-num { font-size: clamp(28px, 4vw, 44px); font-weight: 800; margin-bottom: 4px; }
-.stat-label { font-size: 13px; color: var(--gy); }
-
-/* Testimonial */
-.testi { padding: 28px; background: var(--bg2); border: 1px solid var(--bd); border-radius: var(--radius); display: flex; flex-direction: column; min-height: 220px; }
-.testi-body { flex: 1; font-size: 14px; color: var(--gy); line-height: 1.8; margin-bottom: 16px; }
-.testi-meta { padding-top: 16px; border-top: 1px solid var(--bd); font-size: 12px; color: var(--gy2); }
-
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,6,8,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(30,30,42,.5);height:72px;display:flex;align-items:center}
+.ni{max-width:1140px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.nl{display:flex;gap:32px}.nl a{color:var(--gy);font-size:14px;font-weight:500;transition:color .2s}.nl a:hover{color:var(--wh)}
+.nr{display:flex;align-items:center;gap:16px}.nr .btn{padding:10px 22px;font-size:13px}
+.mt{display:none;background:none;border:none;color:var(--gy);font-size:24px;cursor:pointer}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}.pulse{animation:pulse 2s infinite}
 /* Responsive */
-@media(max-width: 1024px) {
-  .g3, .g4, .g5 { grid-template-columns: repeat(2, 1fr); }
+@media(max-width:1024px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .s{padding:64px 0}
+  .nl,.nr{display:none}.mt{display:block}
+  .fc-m{flex-direction:column!important}
+  .tc-m{text-align:center!important}
+  .w100-m{width:100%!important}
+  .cta-row .btn{width:100%;justify-content:center}
+  .footer-cols{grid-template-columns:1fr!important}
+  .track-grid{grid-template-columns:1fr!important}
 }
-@media(max-width: 768px) {
-  .g2, .g3, .g4, .g5 { grid-template-columns: 1fr; }
-  .section { padding: 64px 0; }
-  .nav-links, .nav-right { display: none; }
-  .mob-toggle { display: block; }
-  .hero-stats { flex-direction: column; }
-  .price-row { flex-direction: column !important; text-align: center !important; }
-  .price-row > div:last-child { text-align: center !important; }
-  .footer-cols { grid-template-columns: 1fr !important; }
-  .cta-row { flex-direction: column; }
-  .cta-row .btn { width: 100%; justify-content: center; }
-  .comp-table { font-size: 13px; }
-}
-
-/* Smooth scroll offset */
-[id] { scroll-margin-top: 80px; }
-
-/* Pulse */
-@keyframes pulse { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
-.pulse { animation: pulse 2s infinite; }
-
-/* Strikethrough price */
-.price-old { text-decoration: line-through; color: var(--gy2); }
+[id]{scroll-margin-top:80px}
+/* Week table */
+.wk{border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.wk-h{display:grid;grid-template-columns:48px 1fr 2fr;background:var(--bg3);border-bottom:1px solid var(--bd);font-size:13px;font-weight:600;color:var(--gy)}
+.wk-h>div{padding:12px 16px}
+.wk-r{display:grid;grid-template-columns:48px 1fr 2fr;border-bottom:1px solid var(--bd)}
+.wk-r:last-child{border-bottom:none}
+.wk-r>div{padding:14px 16px;font-size:13px}
+.wk-r>div:first-child{color:var(--em);font-weight:700;display:flex;align-items:center;justify-content:center}
+.wk-r>div:nth-child(2){color:var(--wh);font-weight:600}
+.wk-r>div:nth-child(3){color:var(--gy)}
+/* Leak point card */
+.lk{padding:16px;background:rgba(255,255,255,.02);border-radius:var(--rs);border:1px solid var(--bd)}
+.lk-t{font-size:14px;font-weight:600;color:var(--wh);margin-bottom:4px}
+.lk-d{font-size:12px;color:var(--gy)}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="https://hobbytan.com" class="nav-logo">
-      <img src="/logo-white.svg" alt="HOBBYTAN AI" onerror="this.style.display='none'">
-    </a>
-    <div class="nav-links">
-      <a href="#why-now">왜 지금인가</a>
-      <a href="#program">프로그램</a>
+<nav>
+  <div class="ni">
+    <a href="https://hobbytan.com"><img src="/logo-white.svg" alt="HOBBYTAN AI" style="height:30px" onerror="this.style.display='none'"></a>
+    <div class="nl">
+      <a href="#problem">왜 하비탄인가</a>
+      <a href="#program">시그니처 프로그램</a>
       <a href="#curriculum">커리큘럼</a>
+      <a href="#cases">도입 사례</a>
       <a href="#services">서비스</a>
-      <a href="#success">성공 사례</a>
-      <a href="#pricing">가격</a>
+      <a href="#contact">문의</a>
     </div>
-    <div class="nav-right">
-      <a href="#contact" style="color:var(--gy);font-size:13px;font-weight:500">문의하기</a>
-      <a href="#pricing" class="btn btn-primary" style="padding:10px 22px;font-size:13px">무료 상담 신청 →</a>
+    <div class="nr">
+      <a href="#contact" class="btn bp" style="padding:10px 22px;font-size:13px">무료 컨설팅 신청 →</a>
     </div>
-    <button class="mob-toggle" onclick="let l=document.querySelector('.nav-links');l.style.display=l.style.display==='flex'?'none':'flex'">☰</button>
+    <button class="mt" onclick="let l=document.querySelector('.nl');l.style.display=l.style.display==='flex'?'none':'flex'">☰</button>
   </div>
 </nav>
 
-<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<!-- ══════════ HERO ══════════ -->
 <section style="min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:120px 0 80px">
-  <div class="orb" style="top:10%;left:40%;width:700px;height:500px;background:rgba(16,185,129,.07)"></div>
-  <div class="orb" style="top:30%;right:10%;width:400px;height:400px;background:rgba(96,165,250,.05)"></div>
-  <div class="wrap tc" style="position:relative;z-index:1">
-    <div class="tag tag-em" style="margin-bottom:28px">
+  <div class="orb" style="top:10%;left:35%;width:700px;height:500px;background:rgba(16,185,129,.07)"></div>
+  <div class="orb" style="top:40%;right:5%;width:400px;height:400px;background:rgba(96,165,250,.04)"></div>
+  <div class="w tc" style="position:relative;z-index:1">
+    <div class="tag te" style="margin-bottom:28px">
       <span style="width:6px;height:6px;background:var(--em);border-radius:50%" class="pulse"></span>
-      가장 뛰어난 AX 혁신 파트너
+      AI Transformation Partner
     </div>
     <h1 style="margin-bottom:24px">
-      조직의 체질을 완전히 바꾸는 5주,<br>
-      <span class="grad-text">하비탄AI가 만들어드립니다.</span>
+      당신과 AI 기술 사이,<br>
+      <span class="gt">하비탄AI</span>
     </h1>
-    <p style="font-size:clamp(16px,2vw,20px);color:var(--gy);max-width:620px;margin:0 auto 32px">
-      5주 파워워크샵 수료 후, 귀사의 팀원 5명이<br>
-      <span style="color:var(--wh);font-weight:600">매월 600만원의 업무 가치를 추가로 창출합니다.</span>
+    <p style="font-size:clamp(16px,2vw,20px);color:var(--gy);max-width:620px;margin:0 auto 20px">
+      AI 도입의 모든 단계를 책임지는 유일한 파트너
+    </p>
+    <p style="font-size:clamp(14px,1.5vw,16px);color:var(--gy);max-width:560px;margin:0 auto 40px">
+      <strong style="color:var(--wh)">"AI가 복잡하지 않다"</strong>는 철학으로<br>기술 도입의 문턱을 낮춥니다.
     </p>
 
     <!-- Social proof -->
-    <div class="flex items-center justify-center gap flex-wrap hero-stats" style="margin-bottom:40px">
-      <div class="flex items-center gap-sm">
-        <div class="flex" style="margin-right:-6px">
-          <div style="width:34px;height:34px;background:var(--bg3);border:2px solid var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-right:-8px;color:var(--gy)">E</div>
-          <div style="width:34px;height:34px;background:var(--bg3);border:2px solid var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-right:-8px;color:var(--gy)">F</div>
-          <div style="width:34px;height:34px;background:var(--bg3);border:2px solid var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-right:-8px;color:var(--gy)">G</div>
-          <div style="width:34px;height:34px;background:var(--bg3);border:2px solid var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gy)">S</div>
-        </div>
-        <span style="font-size:14px;color:var(--gy)"><strong style="color:var(--wh)">11개</strong> 기업 수료</span>
-      </div>
+    <div class="f ac jc gp fw" style="margin-bottom:40px">
+      <span style="font-size:14px;color:var(--gy)"><strong style="color:var(--em)">50+</strong> 기업 협업</span>
       <div style="width:1px;height:20px;background:var(--bd)"></div>
-      <span style="font-size:14px;color:var(--gy)"><strong style="color:var(--em)">82+</strong> 슈퍼유저 육성</span>
+      <span style="font-size:14px;color:var(--gy)">참여자 만족도 <strong style="color:var(--em)">95%</strong></span>
       <div style="width:1px;height:20px;background:var(--bd)"></div>
-      <span style="font-size:14px;color:var(--gy)">중도포기 <strong style="color:var(--em)">0건</strong></span>
+      <span style="font-size:14px;color:var(--gy)">처리시간 <strong style="color:var(--em)">50% 단축</strong></span>
     </div>
 
     <!-- CTA -->
-    <div class="flex gap justify-center flex-wrap cta-row" style="margin-bottom:56px">
-      <a href="#pricing" class="btn btn-primary">30분 무료 진단 받기 →</a>
-      <a href="#program" class="btn btn-ghost">프로그램 살펴보기</a>
+    <div class="f gp jc fw cta-row" style="margin-bottom:56px">
+      <a href="#contact" class="btn bp">1:1 무료 도입 컨설팅 신청 →</a>
+      <a href="#program" class="btn bg">시그니처 프로그램 보기</a>
     </div>
 
-    <!-- KPI cards -->
-    <div class="grid g3" style="max-width:720px;margin:0 auto">
-      <div class="card" style="text-align:left">
-        <div style="font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--wh);margin-bottom:4px">5주</div>
-        <div style="font-size:13px;color:var(--gy)">AI 슈퍼유저 육성 기간</div>
-      </div>
-      <div class="card card-glow" style="text-align:left">
-        <div style="font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--em);margin-bottom:4px">₩9,600만</div>
-        <div style="font-size:13px;color:var(--gy)">연간 예상 절감 효과 (5인 기준)</div>
-      </div>
-      <div class="card" style="text-align:left">
-        <div style="font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--wh);margin-bottom:4px">12배</div>
-        <div style="font-size:13px;color:var(--gy)">평균 ROI</div>
-      </div>
+    <!-- KPI -->
+    <div class="g g3" style="max-width:720px;margin:0 auto">
+      <div class="c" style="text-align:left"><div style="font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--rd);margin-bottom:4px">78%</div><div style="font-size:13px;color:var(--gy)">AI 도입 기업 비율 (맥킨지 2025)</div></div>
+      <div class="c" style="text-align:left;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.03)"><div style="font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--rd);margin-bottom:4px">20%</div><div style="font-size:13px;color:var(--gy)">실제 성과 체감 비율</div></div>
+      <div class="c cg" style="text-align:left"><div style="font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--em);margin-bottom:4px">18개월</div><div style="font-size:13px;color:var(--gy)">경쟁력 격차 심화 시점 (Gartner 2024)</div></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════ WHY NOW ═══════════════════════════ -->
-<section id="why-now" class="section" style="background:var(--bg2);position:relative;overflow:hidden">
+<!-- ══════════ PROBLEM ══════════ -->
+<section id="problem" class="s" style="background:var(--bg2);position:relative;overflow:hidden">
   <div class="orb" style="top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:400px;background:rgba(239,68,68,.04)"></div>
-  <div class="wrap" style="position:relative;z-index:1">
+  <div class="w" style="position:relative;z-index:1">
     <div class="tc" style="margin-bottom:56px">
-      <div class="tag tag-rd" style="margin-bottom:20px">⚠️ 긴급 경고</div>
-      <h2>지금 도입하지 않으면<br><span style="color:var(--rd)">18개월 후 따라잡을 수 없습니다</span></h2>
-      <p style="font-size:18px;color:var(--gy);max-width:560px;margin:16px auto 0">경쟁사는 이미 AI로 비용을 절감하고, 당신의 고객을 빼앗기고 있습니다.</p>
+      <div class="tag tr" style="margin-bottom:20px">⚠️ 문제 인식</div>
+      <h2>우리 회사의 AI 도입<br><span style="color:var(--rd)">생각만큼 잘 되지 않으시죠</span></h2>
+      <p style="font-size:16px;color:var(--gy);max-width:500px;margin:16px auto 0">AI 도입 78% vs 성과 체감 20%<br><span style="font-size:12px">출처: McKinsey, "The state of AI", March 2025</span></p>
     </div>
 
-    <div class="grid g3" style="margin-bottom:48px">
-      <div class="card" style="border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.03)">
-        <div class="icon-box icon-rd" style="margin-bottom:20px">📉</div>
-        <div style="font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--wh);margin-bottom:8px">₩2.4억</div>
-        <div style="font-size:14px;font-weight:600;color:var(--wh);margin-bottom:4px">AI 미도입 기업의 연간 기회비용</div>
-        <div style="font-size:12px;color:var(--gy)">경쟁사 대비 생산성 격차로 인한 손실</div>
+    <!-- Pain quotes -->
+    <div class="g g3" style="margin-bottom:56px">
+      <div class="c" style="border-color:rgba(239,68,68,.2)">
+        <div style="font-size:28px;margin-bottom:12px">💬</div>
+        <p style="font-size:15px;color:var(--wh);font-weight:500;margin-bottom:8px">"AI 구독을 해줬지만,<br>생산성이 나아지지 않았어요"</p>
+        <p style="font-size:12px;color:var(--gy)">도구만 제공하고 활용법을 모르는 상태</p>
       </div>
-      <div class="card" style="border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.03)">
-        <div class="icon-box icon-rd" style="margin-bottom:20px">⚠️</div>
-        <div style="font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--wh);margin-bottom:8px">18개월</div>
-        <div style="font-size:14px;font-weight:600;color:var(--wh);margin-bottom:4px">경쟁력 회복 불가 시점</div>
-        <div style="font-size:12px;color:var(--gy)">Gartner: AI 격차가 되돌릴 수 없는 지점</div>
+      <div class="c" style="border-color:rgba(239,68,68,.2)">
+        <div style="font-size:28px;margin-bottom:12px">💬</div>
+        <p style="font-size:15px;color:var(--wh);font-weight:500;margin-bottom:8px">"우리 회사에 맞는 걸 다시 만들려니<br>다시 제자리걸음이에요"</p>
+        <p style="font-size:12px;color:var(--gy)">범용 솔루션으로는 우리 업무에 맞지 않음</p>
       </div>
-      <div class="card" style="border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.03)">
-        <div class="icon-box icon-rd" style="margin-bottom:20px">💰</div>
-        <div style="font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--wh);margin-bottom:8px">3.2배</div>
-        <div style="font-size:14px;font-weight:600;color:var(--wh);margin-bottom:4px">AI 도입 기업의 성장률</div>
-        <div style="font-size:12px;color:var(--gy)">비도입 기업 대비 매출 성장률 차이</div>
-      </div>
-    </div>
-
-    <!-- Timeline bar -->
-    <div class="card" style="max-width:800px;margin:0 auto">
-      <div class="flex items-center gap flex-wrap" style="justify-content:space-between">
-        <div style="flex:1;min-width:260px">
-          <div style="font-size:13px;font-weight:600;color:var(--gy);margin-bottom:12px">AI 도입 타이밍별 경쟁력 변화</div>
-          <div style="height:8px;background:var(--bd);border-radius:4px;overflow:hidden"><div style="height:100%;width:33%;background:linear-gradient(90deg,var(--em),#f59e0b);border-radius:4px"></div></div>
-          <div class="flex justify-between" style="margin-top:6px;font-size:11px"><span style="color:var(--em)">지금 도입</span><span style="color:#f59e0b">6개월 후</span><span style="color:var(--rd)">18개월 후</span></div>
-        </div>
-        <div style="text-align:right;min-width:200px">
-          <div style="font-size:18px;font-weight:700;color:var(--wh);margin-bottom:4px">아직 늦지 않았습니다</div>
-          <div style="font-size:14px;color:var(--gy);margin-bottom:12px">지금 시작하면 6개월 안에 경쟁 우위 확보</div>
-          <a href="#pricing" class="btn btn-danger" style="padding:10px 24px;font-size:13px">긴급 상담 신청</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════ PROBLEM ═══════════════════════════ -->
-<section id="program" class="section">
-  <div class="wrap">
-    <div class="tc" style="margin-bottom:56px">
-      <div class="divider mx-auto" style="margin-bottom:20px"></div>
-      <h2>이미 시도해본 방법들,<br><span style="color:var(--gy)">얼마나 낭비했습니까?</span></h2>
-    </div>
-
-    <div class="grid g3" style="margin-bottom:48px">
-      <div class="card" style="position:relative">
-        <div style="position:absolute;top:16px;right:16px;font-size:18px">❌</div>
-        <div style="font-size:20px;font-weight:700;color:var(--wh);margin-bottom:20px">유튜브/인강으로 독학</div>
-        <div style="font-size:13px;display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--gy)">비용</span><span style="color:var(--wh)">₩0</span></div>
-        <div style="font-size:13px;display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--gy)">결과</span><span style="color:var(--rd)">3개월 후 포기</span></div>
-        <div style="font-size:13px;display:flex;justify-content:space-between;margin-bottom:16px"><span style="color:var(--gy)">낭비</span><span style="color:var(--rd);font-weight:600">90시간 낭비</span></div>
-        <div style="border-top:1px solid var(--bd);padding-top:12px;font-size:12px;color:var(--gy)">실무 적용법 부재, 질문 불가</div>
-      </div>
-      <div class="card" style="position:relative">
-        <div style="position:absolute;top:16px;right:16px;font-size:18px">❌</div>
-        <div style="font-size:20px;font-weight:700;color:var(--wh);margin-bottom:20px">외부 AI 컨설팅 업체</div>
-        <div style="font-size:13px;display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--gy)">비용</span><span style="color:var(--wh)">₩3,000만+</span></div>
-        <div style="font-size:13px;display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--gy)">결과</span><span style="color:var(--rd)">보고서만 남음</span></div>
-        <div style="font-size:13px;display:flex;justify-content:space-between;margin-bottom:16px"><span style="color:var(--gy)">낭비</span><span style="color:var(--rd);font-weight:600">₩3,000만 매몰비용</span></div>
-        <div style="border-top:1px solid var(--bd);padding-top:12px;font-size:12px;color:var(--gy)">실행력 없는 전략, 내재화 실패</div>
-      </div>
-      <div class="card" style="position:relative">
-        <div style="position:absolute;top:16px;right:16px;font-size:18px">❌</div>
-        <div style="font-size:20px;font-weight:700;color:var(--wh);margin-bottom:20px">일회성 기업 강연</div>
-        <div style="font-size:13px;display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--gy)">비용</span><span style="color:var(--wh)">₩500만</span></div>
-        <div style="font-size:13px;display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--gy)">결과</span><span style="color:var(--rd)">1주 후 잊혀짐</span></div>
-        <div style="font-size:13px;display:flex;justify-content:space-between;margin-bottom:16px"><span style="color:var(--gy)">낭비</span><span style="color:var(--rd);font-weight:600">₩500만 + 전 직원 시간</span></div>
-        <div style="border-top:1px solid var(--bd);padding-top:12px;font-size:12px;color:var(--gy)">Follow-up 없음, 행동 변화 0</div>
+      <div class="c" style="border-color:rgba(239,68,68,.2)">
+        <div style="font-size:28px;margin-bottom:12px">💬</div>
+        <p style="font-size:15px;color:var(--wh);font-weight:500;margin-bottom:8px">"비싼 돈을 들여 강의를 들어도<br>실행이 되지 않아요"</p>
+        <p style="font-size:12px;color:var(--gy)">이론 교육만으로는 실무 적용 불가</p>
       </div>
     </div>
 
-    <!-- Arrow + Solution -->
-    <div class="tc" style="margin-bottom:32px">
-      <div style="font-size:28px;color:var(--gy2)">↓</div>
-      <div style="font-size:11px;color:var(--gy2);letter-spacing:2px;text-transform:uppercase;margin-top:4px">대안</div>
-    </div>
-
-    <div style="max-width:720px;margin:0 auto">
-      <div class="card card-glow" style="position:relative;padding:36px">
-        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--em);color:var(--bg);padding:5px 18px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.5px">검증된 솔루션</div>
-        <div class="tc" style="margin-bottom:20px">
-          <div style="font-size:22px;font-weight:700;color:var(--wh);margin-bottom:8px">하비탄 AI 파워워크샵</div>
-          <div class="flex items-center justify-center gap-sm flex-wrap">
-            <span style="color:var(--gy)">투자</span>
-            <span class="price-old" style="font-size:14px">₩1,080만</span>
-            <span style="font-size:24px;font-weight:700;color:var(--wh)">₩800만</span>
-            <span style="color:var(--gy)">→</span>
-            <span style="color:var(--gy)">수익</span>
-            <span style="font-size:24px;font-weight:700;color:var(--em)">연 ₩9,600만 가치 창출</span>
-          </div>
-        </div>
-        <div class="grid g2">
-          <div style="font-size:14px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>실무 프로젝트 기반 학습</div>
-          <div style="font-size:14px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>주 2회 피드백 세션</div>
-          <div style="font-size:14px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>습득할 때까지 추적</div>
-          <div style="font-size:14px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>수료 후 90일 팔로업 지원</div>
-        </div>
-        <div class="tc" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--bd)">
-          <a href="#pricing" class="btn btn-primary">파워워크샵 자세히 보기 →</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════ CURRICULUM ═══════════════════════════ -->
-<section id="curriculum" class="section" style="background:var(--bg2)">
-  <div class="wrap">
-    <div class="tc" style="margin-bottom:56px">
-      <div class="divider mx-auto" style="margin-bottom:20px"></div>
-      <div style="font-size:11px;font-weight:600;letter-spacing:3px;color:var(--gy);text-transform:uppercase;margin-bottom:12px">5 WEEK CURRICULUM</div>
-      <h2>5주 후, 당신의 조직에<br><span style="color:var(--gy)">AI 전문가</span>가 생성됩니다</h2>
-    </div>
-
-    <!-- Week cards -->
-    <div class="grid g3" style="margin-bottom:56px">
-      <div class="card">
-        <div style="display:flex;gap:16px">
-          <div class="num">01</div>
-          <div>
-            <div style="font-size:11px;color:var(--gy2);letter-spacing:1px;margin-bottom:8px">WEEK 1-2</div>
-            <h3 style="color:var(--wh);margin-bottom:12px">기초 + 실습</h3>
-            <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><span style="color:var(--em);margin-right:6px">✓</span>AI 도구 세팅 (ChatGPT, Claude, Gemini, Notion AI 등)</div>
-            <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><span style="color:var(--em);margin-right:6px">✓</span>프롬프트 엔지니어링 기본</div>
-            <div style="font-size:13px;color:var(--gy)"><span style="color:var(--em);margin-right:6px">✓</span>개인별 업무 AI 적용 과제</div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div style="display:flex;gap:16px">
-          <div class="num">02</div>
-          <div>
-            <div style="font-size:11px;color:var(--gy2);letter-spacing:1px;margin-bottom:8px">WEEK 3-4</div>
-            <h3 style="color:var(--wh);margin-bottom:12px">심화 + 프로젝트</h3>
-            <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><span style="color:var(--em);margin-right:6px">✓</span>업무별 AI 활용 실습 (마케팅/영업/기획/CS/개발)</div>
-            <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><span style="color:var(--em);margin-right:6px">✓</span>자동화 워크플로우 설계 (Make, Zapier, n8n)</div>
-            <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><span style="color:var(--em);margin-right:6px">✓</span>개인/팀 프로젝트 수행</div>
-            <div style="font-size:13px;color:var(--gy)"><span style="color:var(--em);margin-right:6px">✓</span>주 2회 피드백 세션</div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div style="display:flex;gap:16px">
-          <div class="num">03</div>
-          <div>
-            <div style="font-size:11px;color:var(--gy2);letter-spacing:1px;margin-bottom:8px">WEEK 5</div>
-            <h3 style="color:var(--wh);margin-bottom:12px">통합 + 확산 준비</h3>
-            <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><span style="color:var(--em);margin-right:6px">✓</span>통합 과제 발표 (경쟁 PT)</div>
-            <div style="font-size:13px;color:var(--gy)"><span style="color:var(--em);margin-right:6px">✓</span>수료 및 AI 슈퍼유저 인증</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Premium Exclusive -->
-    <div class="tc" style="margin-bottom:32px">
-      <div class="tag tag-em" style="margin-bottom:16px">Premium Exclusive</div>
-      <h3 style="color:var(--wh);font-size:clamp(20px,3vw,28px)">타 교육에서 볼 수 없는 특별 구성</h3>
-      <p style="color:var(--gy);margin-top:8px">총 <strong style="color:var(--wh)">₩500만원 상당</strong>의 프리미엄 혜택이 포함되어 있습니다</p>
-    </div>
-
-    <div class="grid g4" style="margin-bottom:56px">
-      <div class="card" style="position:relative">
-        <span style="position:absolute;top:16px;right:16px;font-size:10px;color:var(--em);background:var(--em-bg);padding:3px 10px;border-radius:100px;border:1px solid var(--em-bd)">몰입</span>
-        <div class="icon-box icon-em" style="margin-bottom:16px">📅</div>
-        <h3 style="color:var(--wh);font-size:16px;margin-bottom:4px">1박 2일 집중 워크샵</h3>
-        <div style="font-size:12px;color:var(--em);font-weight:600;margin-bottom:12px">₩200만 상당</div>
-        <p style="font-size:13px;color:var(--gy)">일상에서 벗어나 오직 AI에만 집중하는 48시간. 팀 프로젝트, 해커톤, 네트워킹까지.</p>
-      </div>
-      <div class="card" style="position:relative">
-        <span style="position:absolute;top:16px;right:16px;font-size:10px;color:var(--em);background:var(--em-bg);padding:3px 10px;border-radius:100px;border:1px solid var(--em-bd)">전문성</span>
-        <div class="icon-box icon-em" style="margin-bottom:16px">👥</div>
-        <h3 style="color:var(--wh);font-size:16px;margin-bottom:4px">현직 AI 리더 특강</h3>
-        <div style="font-size:12px;color:var(--em);font-weight:600;margin-bottom:12px">₩50만 상당</div>
-        <p style="font-size:13px;color:var(--gy)">책이나 유튜브에서 절대 배울 수 없는 10년차 전문가의 실전 노하우를 직접 듣습니다.</p>
-      </div>
-      <div class="card" style="position:relative">
-        <span style="position:absolute;top:16px;right:16px;font-size:10px;color:var(--em);background:var(--em-bg);padding:3px 10px;border-radius:100px;border:1px solid var(--em-bd)">지속성</span>
-        <div class="icon-box icon-em" style="margin-bottom:16px">🎥</div>
-        <h3 style="color:var(--wh);font-size:16px;margin-bottom:4px">소수정예 온라인 코칭</h3>
-        <div style="font-size:12px;color:var(--em);font-weight:600;margin-bottom:12px">총 10회 × ₩15만</div>
-        <p style="font-size:13px;color:var(--gy)">5인 1그룹으로 진행. 혼자였다면 포기할 지점을 함께 넘습니다. 94% 수료율의 비결.</p>
-      </div>
-      <div class="card" style="position:relative">
-        <span style="position:absolute;top:16px;right:16px;font-size:10px;color:var(--em);background:var(--em-bg);padding:3px 10px;border-radius:100px;border:1px solid var(--em-bd)">책임</span>
-        <div class="icon-box icon-em" style="margin-bottom:16px">💬</div>
-        <h3 style="color:var(--wh);font-size:16px;margin-bottom:4px">수료 후 90일 성과관리</h3>
-        <div style="font-size:12px;color:var(--em);font-weight:600;margin-bottom:12px">₩100만 상당</div>
-        <p style="font-size:13px;color:var(--gy)">프로그램 종료 후에도 전문가가 함께합니다. 배운 것이 진짜 내 것이 될 때까지.</p>
-      </div>
-    </div>
-
-    <!-- What's included summary -->
-    <div class="card" style="max-width:900px;margin:0 auto;border-color:var(--em-bd);overflow:hidden">
-      <div class="tc" style="padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid var(--bd)">
-        <h3 style="font-size:clamp(20px,3vw,28px)"><span style="color:var(--em)">₩800만</span> <span style="font-size:.7em;color:var(--gy);font-weight:400">(5인 팀 기준 · 1인당 ₩160만)</span></h3>
-        <p style="color:var(--gy);font-size:14px">모든 혜택이 포함된 올인원 패키지</p>
-      </div>
-      <div class="grid g3">
-        <div class="flex items-center gap-sm" style="padding:10px;background:rgba(255,255,255,.02);border-radius:var(--radius-sm)"><span style="color:var(--em);font-size:14px">✓</span><div><div style="font-size:13px;color:var(--wh)">5주 실전 커리큘럼 + 교재</div><div style="font-size:11px;color:var(--em);font-weight:600">시장가 ₩150만</div></div></div>
-        <div class="flex items-center gap-sm" style="padding:10px;background:rgba(255,255,255,.02);border-radius:var(--radius-sm)"><span style="color:var(--em);font-size:14px">✓</span><div><div style="font-size:13px;color:var(--wh)">주 2회 온라인 코칭 (총 10회)</div><div style="font-size:11px;color:var(--em);font-weight:600">시장가 ₩150만</div></div></div>
-        <div class="flex items-center gap-sm" style="padding:10px;background:rgba(255,255,255,.02);border-radius:var(--radius-sm)"><span style="color:var(--em);font-size:14px">✓</span><div><div style="font-size:13px;color:var(--wh)">1박 2일 오프라인 워크샵</div><div style="font-size:11px;color:var(--em);font-weight:600">시장가 ₩200만</div></div></div>
-        <div class="flex items-center gap-sm" style="padding:10px;background:rgba(255,255,255,.02);border-radius:var(--radius-sm)"><span style="color:var(--em);font-size:14px">✓</span><div><div style="font-size:13px;color:var(--wh)">현직 AI 리더 특강 1회</div><div style="font-size:11px;color:var(--em);font-weight:600">시장가 ₩50만</div></div></div>
-        <div class="flex items-center gap-sm" style="padding:10px;background:rgba(255,255,255,.02);border-radius:var(--radius-sm)"><span style="color:var(--em);font-size:14px">✓</span><div><div style="font-size:13px;color:var(--wh)">수료 후 90일 팔로업 지원</div><div style="font-size:11px;color:var(--em);font-weight:600">시장가 ₩100만</div></div></div>
-        <div class="flex items-center gap-sm" style="padding:10px;background:rgba(255,255,255,.02);border-radius:var(--radius-sm)"><span style="color:var(--em);font-size:14px">✓</span><div><div style="font-size:13px;color:var(--wh)">프롬프트 템플릿 150종+</div><div style="font-size:11px;color:var(--em);font-weight:600">시장가 ₩80만</div></div></div>
-      </div>
-      <div style="padding:20px 0 0;margin-top:20px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
-        <div><p style="color:var(--wh);font-weight:600">소수정예 <span style="color:var(--em)">5인 1팀</span> 구성</p><p style="font-size:13px;color:var(--gy)">30분 무료 상담으로 우리 팀 ROI를 계산해보세요</p></div>
-        <a href="#pricing" class="btn btn-primary" style="padding:12px 24px;font-size:14px">무료 ROI 계산받기 →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════ SERVICES ═══════════════════════════ -->
-<section id="services" class="section">
-  <div class="wrap">
-    <div style="margin-bottom:56px">
-      <div class="divider" style="margin-bottom:20px"></div>
-      <h2>다양한 AI 밀착 서비스로<br><span style="color:var(--gy)">귀사의 성장을 돕습니다</span></h2>
-      <p style="color:var(--gy);margin-top:12px;max-width:420px">각 서비스는 독립적으로 또는 파워워크샵과 연계하여 제공됩니다.</p>
-    </div>
-
-    <div class="grid g3" style="margin-bottom:48px">
-      <div class="card">
-        <div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">COMMUNITY</div>
-        <div class="icon-box icon-em" style="margin-bottom:16px">👥</div>
-        <h3 style="color:var(--wh);margin-bottom:8px">하비탄 AI 클럽</h3>
-        <p style="font-size:13px;color:var(--gy)">AI 비즈니스 전문가 네트워크. 월별 이벤트와 코워킹. 파워워크샵 수료자 자동 초대.</p>
-      </div>
-      <div class="card">
-        <div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">SETUP</div>
-        <div class="icon-box icon-em" style="margin-bottom:16px">⚙️</div>
-        <h3 style="color:var(--wh);margin-bottom:8px">AI 시스템 설정/대행</h3>
-        <p style="font-size:13px;color:var(--gy)">ChatGPT, Claude, Notion AI 초기 세팅. Make/Zapier 자동화 워크플로우 구축.</p>
-      </div>
-      <div class="card">
-        <div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">DEVELOPMENT</div>
-        <div class="icon-box icon-em" style="margin-bottom:16px">🌐</div>
-        <h3 style="color:var(--wh);margin-bottom:8px">AI 비즈니스 웹사이트 구축</h3>
-        <p style="font-size:13px;color:var(--gy)">AI 기반 랜딩페이지/웹사이트 제작. 컨설팅부터 BM 설계, 개발까지 원스톱.</p>
-      </div>
-      <div class="card">
-        <div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">EDUCATION</div>
-        <div class="icon-box icon-em" style="margin-bottom:16px">🎓</div>
-        <h3 style="color:var(--wh);margin-bottom:8px">AI 역량 강화 교육</h3>
-        <p style="font-size:13px;color:var(--gy)">부모, 구직자, 학생, 공공기관 대상 맞춤형 AI 교육 프로그램. 단기/장기 과정 운영.</p>
-      </div>
-      <div class="card">
-        <div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">SOLUTION</div>
-        <div class="icon-box icon-em" style="margin-bottom:16px">📦</div>
-        <h3 style="color:var(--wh);margin-bottom:8px">자체 AI 서비스</h3>
-        <p style="font-size:13px;color:var(--gy)">ORDER MAKER (발주 자동화), OurSona (페르소나 생성), WEB FIT (가상 피팅), AI조씨 (교육 콘텐츠)</p>
-      </div>
-      <div class="card">
-        <div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">STRATEGY</div>
-        <div class="icon-box icon-em" style="margin-bottom:16px">💡</div>
-        <h3 style="color:var(--wh);margin-bottom:8px">맞춤형 컨설팅</h3>
-        <p style="font-size:13px;color:var(--gy)">AI 도입 로드맵 수립, 비즈니스 모델 설계, 조직 AI 역량 진단.</p>
-      </div>
-    </div>
-
+    <!-- Solution statement -->
     <div class="tc">
-      <p style="color:var(--gy);margin-bottom:20px;max-width:500px;margin-left:auto;margin-right:auto">어떤 서비스가 필요한지 모르겠다면?<br>무료 상담을 통해 맞춤형 솔루션을 찾아드립니다.</p>
-      <a href="#pricing" class="btn btn-primary">무료 상담 신청 →</a>
+      <div class="dv mx" style="margin-bottom:20px"></div>
+      <h3 style="color:var(--wh);font-size:clamp(20px,3vw,28px)">필요한 건 기술의 도입이 아니라<br><span style="color:var(--em)">조직 내부의 설계자</span>입니다</h3>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════ SUCCESS ═══════════════════════════ -->
-<section id="success" class="section" style="background:var(--bg2)">
-  <div class="wrap">
-    <div style="margin-bottom:56px">
-      <div class="divider" style="margin-bottom:20px"></div>
-      <h2>수강생들의 이야기</h2>
-    </div>
-
-    <div class="grid g5" style="margin-bottom:40px">
-      <div class="testi">
-        <div style="margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:var(--wh);letter-spacing:1px">E사</div><div style="font-size:11px;color:var(--gy2);margin-top:2px">IT/소프트웨어</div></div>
-        <div class="testi-body">"외부 컨설팅에 3천만원 썼는데 보고서만 받았습니다. 파워워크샵은 우리 팀이 직접 할 수 있게 만들어줬어요. 기획 인건비가 절반으로 줄었습니다."</div>
-        <div class="testi-meta">김OO 이사 · 5주 수료</div>
-      </div>
-      <div class="testi">
-        <div style="margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:var(--wh);letter-spacing:1px">F사</div><div style="font-size:11px;color:var(--gy2);margin-top:2px">정보통신</div></div>
-        <div class="testi-body">"임원진이 직접 Claude로 보고서를 작성합니다. 이제 'AI 하세요'가 아니라 '저도 쓰고 있어요'가 됐습니다. 리더 AI 활용률이 12%에서 94%로 올랐어요."</div>
-        <div class="testi-meta">박OO 팀장 · 5주 수료</div>
-      </div>
-      <div class="testi">
-        <div style="margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:var(--wh);letter-spacing:1px">G사</div><div style="font-size:11px;color:var(--gy2);margin-top:2px">이커머스</div></div>
-        <div class="testi-body">"매일 4시간 걸리던 발주 업무가 40분으로 줄었습니다. 그 시간에 신규 거래처 영업을 합니다. 팀 전체 생산성이 완전히 달라졌어요."</div>
-        <div class="testi-meta">이OO 과장 · 5주 수료</div>
-      </div>
-      <div class="testi">
-        <div style="margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:var(--wh);letter-spacing:1px">H사</div><div style="font-size:11px;color:var(--gy2);margin-top:2px">제조/물류</div></div>
-        <div class="testi-body">"처음엔 'AI가 뭔 소용이야' 하던 현장 팀장님들이 이제는 먼저 자동화 아이디어를 냅니다. 문화 자체가 바뀌었어요."</div>
-        <div class="testi-meta">최OO 부장 · 5주 수료</div>
-      </div>
-      <div class="testi">
-        <div style="margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:var(--wh);letter-spacing:1px">I사</div><div style="font-size:11px;color:var(--gy2);margin-top:2px">금융/보험</div></div>
-        <div class="testi-body">"규정 검토에 하루 종일 걸리던 게 이제 30분이면 끝납니다. 컴플라이언스 팀 모두가 워크샵 수료했어요."</div>
-        <div class="testi-meta">정OO 차장 · 5주 수료</div>
-      </div>
-    </div>
-
-    <div class="tc" style="padding-top:24px;border-top:1px solid var(--bd)">
-      <p style="color:var(--gy);max-width:600px;margin:0 auto">지금까지 <strong style="color:var(--wh)">11개 기업</strong>의 <strong style="color:var(--wh)">82명</strong>이 파워워크샵을 수료했습니다. 평균 <strong style="color:var(--wh)">12배의 ROI</strong>를 달성했으며, 중도 포기율은 <strong style="color:var(--wh)">0%</strong>입니다.</p>
-      <div style="margin-top:16px"><a href="#pricing" style="color:var(--em);font-weight:600">우리 회사도 시작하기 ↗</a></div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════ WHY HOBBYTAN ═══════════════════════════ -->
-<section class="section" style="position:relative;overflow:hidden">
-  <div class="orb" style="top:50%;left:0;transform:translateY(-50%);width:400px;height:500px;background:rgba(167,139,250,.04)"></div>
-  <div class="wrap" style="position:relative;z-index:1">
+<!-- ══════════ AX 전환 핵심 ══════════ -->
+<section class="s">
+  <div class="w">
     <div class="tc" style="margin-bottom:56px">
-      <div class="tag tag-pp" style="margin-bottom:20px">차별화 포인트</div>
-      <h2>왜 <span style="color:var(--pp)">하비탄 AI</span>만<br>성과를 보장할 수 있는가?</h2>
-      <p style="font-size:18px;color:var(--gy);max-width:560px;margin:16px auto 0">11개 기업이 선택한 이유. 단순 교육이 아닌,<br><strong style="color:var(--wh)">측정 가능한 성과를 만드는 시스템</strong></p>
-    </div>
-
-    <div class="grid g2" style="margin-bottom:48px">
-      <div class="card" style="border-color:rgba(167,139,250,.2);background:rgba(167,139,250,.03)">
-        <div class="flex gap">
-          <div class="icon-box icon-pp">🤝</div>
-          <div>
-            <div class="flex items-center gap-sm flex-wrap" style="margin-bottom:8px">
-              <h3 style="color:var(--wh)">100% 성과 보장</h3>
-              <span style="font-size:10px;background:rgba(167,139,250,.15);color:var(--pp);padding:3px 8px;border-radius:100px;border:1px solid rgba(167,139,250,.3)">중도포기 0건</span>
-            </div>
-            <p style="font-size:13px;color:var(--gy)">11개 기업, 82명 전원 수료. 못 따라오면 추가 세션 무료 제공. 실패하면 전액 환불.</p>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="border-color:rgba(167,139,250,.2);background:rgba(167,139,250,.03)">
-        <div class="flex gap">
-          <div class="icon-box icon-pp">🎓</div>
-          <div>
-            <div class="flex items-center gap-sm flex-wrap" style="margin-bottom:8px">
-              <h3 style="color:var(--wh)">내재화 중심 교육</h3>
-              <span style="font-size:10px;background:rgba(167,139,250,.15);color:var(--pp);padding:3px 8px;border-radius:100px;border:1px solid rgba(167,139,250,.3)">외부 의존도 0%</span>
-            </div>
-            <p style="font-size:13px;color:var(--gy)">컨설팅 보고서가 아닌 '직접 할 수 있는 능력' 전수. 수료 후 외부 도움 없이 독립 운영.</p>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="border-color:rgba(167,139,250,.2);background:rgba(167,139,250,.03)">
-        <div class="flex gap">
-          <div class="icon-box icon-pp">🖥️</div>
-          <div>
-            <div class="flex items-center gap-sm flex-wrap" style="margin-bottom:8px">
-              <h3 style="color:var(--wh)">실시간 AI 트렌드 반영</h3>
-              <span style="font-size:10px;background:rgba(167,139,250,.15);color:var(--pp);padding:3px 8px;border-radius:100px;border:1px solid rgba(167,139,250,.3)">평균 3일 내 업데이트</span>
-            </div>
-            <p style="font-size:13px;color:var(--gy)">GPT-5, Claude 4 출시 시 즉시 커리큘럼 반영. 항상 최신 AI 기술로 교육.</p>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="border-color:rgba(167,139,250,.2);background:rgba(167,139,250,.03)">
-        <div class="flex gap">
-          <div class="icon-box icon-pp">✨</div>
-          <div>
-            <div class="flex items-center gap-sm flex-wrap" style="margin-bottom:8px">
-              <h3 style="color:var(--wh)">실무 즉시 적용</h3>
-              <span style="font-size:10px;background:rgba(167,139,250,.15);color:var(--pp);padding:3px 8px;border-radius:100px;border:1px solid rgba(167,139,250,.3)">첫 주부터 성과</span>
-            </div>
-            <p style="font-size:13px;color:var(--gy)">이론 강의가 아닌 실제 업무 기반 프로젝트. 수료 다음 날부터 바로 업무에 활용.</p>
-          </div>
-        </div>
-      </div>
+      <div class="tag te" style="margin-bottom:20px">SIGNATURE PROGRAM</div>
+      <h2>AX전환의 핵심 키워드</h2>
+      <p style="font-size:16px;color:var(--gy);margin-top:12px">도입보다 중요한 것은 <strong style="color:var(--wh)">내재화 속도</strong>입니다</p>
     </div>
 
     <!-- Comparison table -->
-    <div style="max-width:720px;margin:0 auto;margin-bottom:48px">
-      <div class="tc" style="margin-bottom:20px"><div style="font-size:14px;color:var(--gy)">기존 AI 교육 vs 하비탄 파워워크샵</div></div>
-      <div class="card comp-table" style="padding:0;overflow:hidden">
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-          <div style="padding:14px 16px;background:var(--bg3);border-right:1px solid var(--bd);border-bottom:1px solid var(--bd)"><div style="font-size:12px;color:var(--gy2);letter-spacing:1px">비교 항목</div></div>
-          <div style="padding:14px 16px;background:var(--bg3);border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);text-align:center"><div style="font-size:12px;color:var(--gy2);letter-spacing:1px">기존 AI 교육</div></div>
-          <div style="padding:14px 16px;background:var(--bg3);border-bottom:1px solid var(--bd);text-align:center"><div style="font-size:12px;color:var(--pp);font-weight:600;letter-spacing:1px">하비탄 AI</div></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--bd)">
-          <div style="padding:14px 16px;border-right:1px solid var(--bd)"><div style="font-size:13px;font-weight:600;color:var(--wh)">교육 방식</div></div>
-          <div style="padding:14px 16px;border-right:1px solid var(--bd);text-align:center"><div style="font-size:13px;color:var(--gy)">일방적 강의, 이론 중심</div></div>
-          <div style="padding:14px 16px;text-align:center;background:rgba(167,139,250,.03)"><div style="font-size:13px;color:var(--pp)">실무 프로젝트 기반 실습</div></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--bd)">
-          <div style="padding:14px 16px;border-right:1px solid var(--bd)"><div style="font-size:13px;font-weight:600;color:var(--wh)">수료 후</div></div>
-          <div style="padding:14px 16px;border-right:1px solid var(--bd);text-align:center"><div style="font-size:13px;color:var(--gy)">자료만 남음, 지원 종료</div></div>
-          <div style="padding:14px 16px;text-align:center;background:rgba(167,139,250,.03)"><div style="font-size:13px;color:var(--pp)">90일 팔로업 + 평생 커뮤니티</div></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--bd)">
-          <div style="padding:14px 16px;border-right:1px solid var(--bd)"><div style="font-size:13px;font-weight:600;color:var(--wh)">커리큘럼</div></div>
-          <div style="padding:14px 16px;border-right:1px solid var(--bd);text-align:center"><div style="font-size:13px;color:var(--gy)">6개월~1년 전 자료</div></div>
-          <div style="padding:14px 16px;text-align:center;background:rgba(167,139,250,.03)"><div style="font-size:13px;color:var(--pp)">최신 AI 모델 3일 내 반영</div></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-          <div style="padding:14px 16px;border-right:1px solid var(--bd)"><div style="font-size:13px;font-weight:600;color:var(--wh)">성과 측정</div></div>
-          <div style="padding:14px 16px;border-right:1px solid var(--bd);text-align:center"><div style="font-size:13px;color:var(--gy)">수료증 발급으로 끝</div></div>
-          <div style="padding:14px 16px;text-align:center;background:rgba(167,139,250,.03)"><div style="font-size:13px;color:var(--pp)">ROI 측정, 성과 리포트 제공</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="grid g3" style="max-width:500px;margin:0 auto">
-      <div class="stat" style="border:1px solid rgba(167,139,250,.2);border-radius:var(--radius);background:rgba(167,139,250,.03)"><div class="stat-num" style="color:var(--pp)">100%</div><div class="stat-label">수료율</div></div>
-      <div class="stat" style="border:1px solid rgba(167,139,250,.2);border-radius:var(--radius);background:rgba(167,139,250,.03)"><div class="stat-num" style="color:var(--pp)">3일</div><div class="stat-label">최신 AI 반영</div></div>
-      <div class="stat" style="border:1px solid rgba(167,139,250,.2);border-radius:var(--radius);background:rgba(167,139,250,.03)"><div class="stat-num" style="color:var(--pp)">12배</div><div class="stat-label">평균 ROI</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════ PRICING ═══════════════════════════ -->
-<section id="pricing" class="section" style="background:var(--bg2);position:relative;overflow:hidden">
-  <div class="orb" style="bottom:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:rgba(16,185,129,.06)"></div>
-  <div class="wrap" style="position:relative;z-index:1">
-    <div class="tc" style="margin-bottom:56px">
-      <div class="divider mx-auto" style="margin-bottom:20px"></div>
-      <div style="font-size:11px;font-weight:600;letter-spacing:3px;color:var(--gy);text-transform:uppercase;margin-bottom:12px">투자 가치</div>
-      <h2><span class="price-old" style="font-size:.6em">₩1,080만원</span> ₩800만원 투자,<br><span style="color:var(--em)">₩9,600만원 회수</span></h2>
-      <p style="font-size:18px;color:var(--gy);max-width:560px;margin:16px auto 0">교육비가 아닙니다. 연간 ₩9,600만원을 만들어내는<br>AI 슈퍼유저 5명을 확보하는 투자입니다.</p>
-    </div>
-
-    <!-- Main pricing card -->
     <div style="max-width:900px;margin:0 auto 48px">
-      <div class="card card-glow" style="position:relative;border-width:2px;padding:0;overflow:hidden">
-        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:var(--em);color:var(--bg);padding:6px 20px;border-radius:0 0 var(--radius-sm) var(--radius-sm);font-size:12px;font-weight:700;letter-spacing:.5px">가장 인기 있는 선택</div>
-        <div style="padding:clamp(28px,4vw,48px);padding-top:48px">
-          <div class="flex justify-between flex-wrap gap" style="margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--bd)" class="price-row">
-            <div>
-              <div style="font-size:13px;color:var(--gy);margin-bottom:4px">5인 팀 기준 총 투자금</div>
-              <div class="price-old" style="font-size:clamp(16px,2vw,22px);margin-bottom:2px">₩10,800,000</div>
-              <div style="font-size:clamp(32px,5vw,52px);font-weight:700;color:var(--wh)">₩8,000,000</div>
-              <div style="color:var(--gy);font-size:14px">1인당 <strong style="color:var(--wh)">₩1,600,000</strong></div>
-            </div>
-            <div style="text-align:right">
-              <div style="font-size:13px;color:var(--gy);margin-bottom:4px">예상 연간 수익</div>
-              <div style="font-size:clamp(24px,3vw,36px);font-weight:700;color:var(--em)">₩96,000,000</div>
-              <div style="font-size:13px;color:rgba(16,185,129,.7)">ROI 12배 (실제 수료 기업 평균)</div>
-            </div>
-          </div>
-
-          <!-- Value props -->
-          <div class="grid g4" style="margin-bottom:28px">
-            <div style="padding:16px;background:rgba(255,255,255,.02);border-radius:var(--radius-sm);border:1px solid var(--bd)"><div style="font-size:18px;margin-bottom:8px">⏱️</div><div style="font-size:13px;font-weight:600;color:var(--wh);margin-bottom:4px">5주 집중 프로그램</div><div style="font-size:11px;color:var(--gy)">주 2회 실시간 세션, 1박 2일 오프라인 워크샵 포함</div></div>
-            <div style="padding:16px;background:rgba(255,255,255,.02);border-radius:var(--radius-sm);border:1px solid var(--bd)"><div style="font-size:18px;margin-bottom:8px">👥</div><div style="font-size:13px;font-weight:600;color:var(--wh);margin-bottom:4px">5인 1팀 맞춤 구성</div><div style="font-size:11px;color:var(--gy)">팀 단위 학습으로 내부 확산 기반 마련</div></div>
-            <div style="padding:16px;background:rgba(255,255,255,.02);border-radius:var(--radius-sm);border:1px solid var(--bd)"><div style="font-size:18px;margin-bottom:8px">🛡️</div><div style="font-size:13px;font-weight:600;color:var(--wh);margin-bottom:4px">성과 보장 시스템</div><div style="font-size:11px;color:var(--gy)">습득할 때까지 추가 세션 무료 제공</div></div>
-            <div style="padding:16px;background:rgba(255,255,255,.02);border-radius:var(--radius-sm);border:1px solid var(--bd)"><div style="font-size:18px;margin-bottom:8px">⚡</div><div style="font-size:13px;font-weight:600;color:var(--wh);margin-bottom:4px">즉시 적용 가능</div><div style="font-size:11px;color:var(--gy)">실제 업무 기반 프로젝트로 바로 활용</div></div>
-          </div>
-
-          <!-- Included -->
-          <div style="margin-bottom:28px">
-            <div style="font-size:14px;font-weight:600;color:var(--wh);margin-bottom:12px">포함 내역</div>
-            <div class="grid g2">
-              <div style="font-size:13px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>5주 파워워크샵 전체 커리큘럼</div>
-              <div style="font-size:13px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>주 2회 온라인 스터디 (총 10회)</div>
-              <div style="font-size:13px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>1박 2일 오프라인 집중 워크샵</div>
-              <div style="font-size:13px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>전문가 특강 1회</div>
-              <div style="font-size:13px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>수료 후 90일 팔로업 지원</div>
-              <div style="font-size:13px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>하비탄 AI 클럽 평생 멤버십</div>
-              <div style="font-size:13px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>AI 도구 세팅 가이드 제공</div>
-              <div style="font-size:13px;color:#ccc"><span style="color:var(--em);margin-right:8px">✓</span>실무 템플릿 & 프롬프트 모음집</div>
-            </div>
-          </div>
-
-          <!-- CTA -->
-          <div class="flex gap flex-wrap cta-row">
-            <a href="#contact" class="btn btn-primary" style="flex:1;justify-content:center">무료 상담 신청하기 →</a>
-            <a href="#" class="btn btn-ghost" style="flex:1;justify-content:center">프로그램 안내서 다운로드</a>
-          </div>
+      <div class="c" style="padding:0;overflow:hidden">
+        <!-- Header -->
+        <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;border-bottom:1px solid var(--bd)">
+          <div style="padding:16px 20px;font-size:13px;font-weight:600;color:var(--gy)"></div>
+          <div style="padding:16px 20px;text-align:center;font-size:13px;font-weight:600;color:var(--rd);background:rgba(239,68,68,.03)">미도입 / 부분 도입</div>
+          <div style="padding:16px 20px;text-align:center;font-size:13px;font-weight:600;color:var(--em);background:var(--em-bg)">내재화 조직</div>
+        </div>
+        <!-- Rows -->
+        <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;border-bottom:1px solid var(--bd)">
+          <div style="padding:14px 20px;font-size:14px;font-weight:600;color:var(--wh);border-right:1px solid var(--bd)">에이전트 구축</div>
+          <div style="padding:14px 20px;text-align:center;font-size:13px;color:var(--gy);background:rgba(239,68,68,.02)">자체 구축 불가 / 외주 개발</div>
+          <div style="padding:14px 20px;text-align:center;font-size:13px;color:var(--em);background:rgba(16,185,129,.02)">가능 인력 구비 / 내부 프로세스 개선</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;border-bottom:1px solid var(--bd)">
+          <div style="padding:14px 20px;font-size:14px;font-weight:600;color:var(--wh);border-right:1px solid var(--bd)">반복 업무</div>
+          <div style="padding:14px 20px;text-align:center;font-size:13px;color:var(--gy);background:rgba(239,68,68,.02)">주 15~20h 수작업</div>
+          <div style="padding:14px 20px;text-align:center;font-size:13px;color:var(--em);background:rgba(16,185,129,.02)">주 5h 이내</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;border-bottom:1px solid var(--bd)">
+          <div style="padding:14px 20px;font-size:14px;font-weight:600;color:var(--wh);border-right:1px solid var(--bd)">보고서 정리</div>
+          <div style="padding:14px 20px;text-align:center;font-size:13px;color:var(--gy);background:rgba(239,68,68,.02)">수작업 중심 (복사 붙여넣기)</div>
+          <div style="padding:14px 20px;text-align:center;font-size:13px;color:var(--em);background:rgba(16,185,129,.02)">초안 자동 생성</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;border-bottom:1px solid var(--bd)">
+          <div style="padding:14px 20px;font-size:14px;font-weight:600;color:var(--wh);border-right:1px solid var(--bd)">데이터 분석</div>
+          <div style="padding:14px 20px;text-align:center;font-size:13px;color:var(--gy);background:rgba(239,68,68,.02)">수동 엑셀 / 반 자동화</div>
+          <div style="padding:14px 20px;text-align:center;font-size:13px;color:var(--em);background:rgba(16,185,129,.02)">대시보드 / 자동 리포트 구축</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr">
+          <div style="padding:14px 20px;font-size:14px;font-weight:600;color:var(--wh);border-right:1px solid var(--bd)">의사결정 속도</div>
+          <div style="padding:14px 20px;text-align:center;font-size:13px;color:var(--gy);background:rgba(239,68,68,.02)">보고 지연</div>
+          <div style="padding:14px 20px;text-align:center;font-size:13px;color:var(--em);background:rgba(16,185,129,.02)">실시간 확인</div>
         </div>
       </div>
     </div>
 
-    <!-- Comparison -->
-    <div style="max-width:700px;margin:0 auto">
-      <div class="tc" style="margin-bottom:16px"><div style="font-size:14px;color:var(--gy)">다른 옵션과 비교해보세요</div></div>
-      <div class="card" style="padding:0;overflow:hidden">
-        <div class="flex justify-between items-center" style="padding:16px 20px;border-bottom:1px solid var(--bd)"><span style="color:var(--gy)">외부 AI 컨설팅</span><div class="flex items-center gap-sm"><span style="color:var(--gy)">₩3,000만+</span><span style="font-size:12px;color:var(--gy2)">보고서만 남음</span></div></div>
-        <div class="flex justify-between items-center" style="padding:16px 20px;border-bottom:1px solid var(--bd)"><span style="color:var(--gy)">대기업 AI 교육</span><div class="flex items-center gap-sm"><span style="color:var(--gy)">₩2,000만+</span><span style="font-size:12px;color:var(--gy2)">일회성 강의</span></div></div>
-        <div class="flex justify-between items-center" style="padding:16px 20px;background:var(--em-bg)"><div class="flex items-center gap-sm"><span style="color:var(--em)">✓</span><strong style="color:var(--wh)">하비탄 파워워크샵</strong></div><div class="flex items-center gap-sm"><strong style="color:var(--wh)">₩800만</strong><span style="font-size:12px;color:var(--em)">AI 슈퍼유저 5명</span></div></div>
-      </div>
-      <div class="tc" style="margin-top:16px"><p style="font-size:13px;color:var(--gy2)">개인 참가 또는 10인 이상 단체는 별도 문의 | <a href="#contact" style="color:var(--gy)">맞춤 견적 받기</a></p></div>
+    <div class="tc"><p style="font-size:15px;color:var(--gy);max-width:600px;margin:0 auto">파편화 되어있는 AI 활용을 우리 조직에 맞게 설계할<br><strong style="color:var(--wh)">내부 인력을 구축하는 것이 생산성의 핵심</strong></p></div>
+  </div>
+</section>
+
+<!-- ══════════ 18개월 경쟁력 ══════════ -->
+<section class="s" style="background:var(--bg2)">
+  <div class="w">
+    <div class="tc" style="margin-bottom:56px">
+      <div class="tag tr" style="margin-bottom:20px">⏰ 시간이 없습니다</div>
+      <h2>18개월이면<br><span style="color:var(--rd)">경쟁사에게 뒤쳐질 수 있습니다</span></h2>
+      <p style="font-size:14px;color:var(--gy);margin-top:12px">AI 비도입 기업의 경쟁력 격차 심화 예상 기간은 고작 18개월<br><span style="font-size:12px">출처: Gartner 2024</span></p>
+    </div>
+
+    <div class="tc" style="margin-bottom:48px">
+      <p style="font-size:16px;color:var(--gy);max-width:600px;margin:0 auto">AI는 단순히 자동화를 해주는 것 이상으로<br>직원들이 회사의 미래를 위해 <strong style="color:var(--wh)">깊은 생각과 고민을 할 수 있는<br>전략적 시간을 벌어줍니다</strong></p>
+    </div>
+
+    <!-- Time leak points -->
+    <div style="margin-bottom:32px"><div class="dv" style="margin-bottom:16px"></div><h3 style="color:var(--wh)">우리 회사의 시간이 새는 지점</h3></div>
+    <div class="g g3">
+      <div class="lk"><div class="lk-t">📋 회의 후 정리 및 공유</div><div class="lk-d">회의록 · 액션아이템 · 자동 공유</div></div>
+      <div class="lk"><div class="lk-t">📊 주간/월간 보고</div><div class="lk-d">초안 작성 · 정리 · 결재</div></div>
+      <div class="lk"><div class="lk-t">📧 고객/파트너 대응</div><div class="lk-d">메일 · 문의 · FAQ</div></div>
+      <div class="lk"><div class="lk-t">📦 발주/정산/운영</div><div class="lk-d">반복 입력 · 검증 · 전표</div></div>
+      <div class="lk"><div class="lk-t">🔍 자료 조사/요약</div><div class="lk-d">검색 · 비교 · 정리</div></div>
+      <div class="lk"><div class="lk-t">📈 데이터 취합/시각화</div><div class="lk-d">엑셀 지옥 · 리포트</div></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════ CTA ═══════════════════════════ -->
-<section id="contact" class="section" style="position:relative;overflow:hidden">
+<!-- ══════════ 슈퍼유저 전략 ══════════ -->
+<section id="program" class="s">
+  <div class="w">
+    <div class="tc" style="margin-bottom:56px">
+      <div class="tag te" style="margin-bottom:20px">SIGNATURE PROGRAM</div>
+      <h2>AX전환의 핵심 전략</h2>
+      <p style="font-size:18px;color:var(--gy);margin-top:12px">될성부른 떡잎을 <strong style="color:var(--em)">슈퍼 인재</strong>로 육성합니다</p>
+    </div>
+
+    <div class="g g2" style="max-width:900px;margin:0 auto 48px">
+      <!-- Bad approach -->
+      <div class="c" style="border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.03)">
+        <div style="font-size:14px;font-weight:600;color:var(--rd);margin-bottom:16px">❌ 전직원 대상 AI 강의</div>
+        <p style="font-size:15px;font-weight:600;color:var(--wh);margin-bottom:8px">신기함은 잠깐,<br>원래의 방법으로 회귀</p>
+        <p style="font-size:13px;color:var(--gy);margin-bottom:16px">강의를 통해 "안다"는 착각은 실무에서 도움이 되지 않습니다. 아는 것과 실행은 차이가 있기 때문입니다.</p>
+        <p style="font-size:13px;color:var(--gy)">실행 중심 전략에는 시간과 반복, 그리고 실제 업무 기반의 설계가 필요합니다.</p>
+        <div class="f gs fw" style="margin-top:16px">
+          <span style="font-size:11px;padding:3px 10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:var(--rd);border-radius:100px">#쇼케이스형 교육</span>
+          <span style="font-size:11px;padding:3px 10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:var(--rd);border-radius:100px">#낡은 커리큘럼</span>
+          <span style="font-size:11px;padding:3px 10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:var(--rd);border-radius:100px">#단방향 강의</span>
+        </div>
+      </div>
+      <!-- Good approach -->
+      <div class="c cg">
+        <div style="font-size:14px;font-weight:600;color:var(--em);margin-bottom:16px">✅ 1%의 슈퍼유저 육성</div>
+        <p style="font-size:15px;font-weight:600;color:var(--wh);margin-bottom:8px">내부설계자가<br>조직의 에이전트를 직접 개발 및 확산</p>
+        <p style="font-size:13px;color:var(--gy);margin-bottom:16px">한 명이 바뀌면 팀이 따라옵니다. 팀이 바뀌면 조직이 바뀝니다.</p>
+        <p style="font-size:13px;color:var(--gy)">그래서 하비탄은 "전사 교육"이 아니라 "내부 설계자 1명"을 만드는 전략을 씁니다.</p>
+        <div class="f gs fw" style="margin-top:16px">
+          <span style="font-size:11px;padding:3px 10px;background:var(--em-bg);border:1px solid var(--em-bd);color:var(--em);border-radius:100px">#실전형 교육</span>
+          <span style="font-size:11px;padding:3px 10px;background:var(--em-bg);border:1px solid var(--em-bd);color:var(--em);border-radius:100px">#도메인 최적화</span>
+          <span style="font-size:11px;padding:3px 10px;background:var(--em-bg);border:1px solid var(--em-bd);color:var(--em);border-radius:100px">#집중 멘토링</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Curriculum features -->
+    <div class="g g3" style="max-width:900px;margin:0 auto">
+      <div class="c">
+        <div class="ib ie" style="margin-bottom:16px">⚡</div>
+        <h3 style="color:var(--wh);font-size:16px;margin-bottom:8px">즉시 반영되는 커리큘럼</h3>
+        <p style="font-size:13px;color:var(--gy)">새 AI 모델 발표 시 즉시 검토 후 출시 후 평균 3일 내 커리큘럼 반영. 항상 최신 트렌드를 따라가는 교육.</p>
+      </div>
+      <div class="c">
+        <div class="ib ie" style="margin-bottom:16px">🎯</div>
+        <h3 style="color:var(--wh);font-size:16px;margin-bottom:8px">습득할 때까지 추적 관찰</h3>
+        <p style="font-size:13px;color:var(--gy)">참가자가 습득할 때까지 추적하고 주기적 피드백. "들었다"가 아니라 "할 수 있다"가 목표.</p>
+      </div>
+      <div class="c">
+        <div class="ib ie" style="margin-bottom:16px">🚀</div>
+        <h3 style="color:var(--wh);font-size:16px;margin-bottom:8px">슈퍼유저에서 내부 확산</h3>
+        <p style="font-size:13px;color:var(--gy)">사내 교육이 가능한 수준까지 역량 성장. AI 자동화, AI 서비스를 직접 만드는 수준으로.</p>
+      </div>
+    </div>
+
+    <div class="tc" style="margin-top:32px"><p style="font-size:14px;color:var(--gy)">교육부터 개발까지 우리회사의 AX전환을 이끌 <strong style="color:var(--wh)">핵심인재를 책임지고 양성합니다</strong></p></div>
+  </div>
+</section>
+
+<!-- ══════════ 트랙 구성 ══════════ -->
+<section class="s" style="background:var(--bg2)">
+  <div class="w">
+    <div class="tc" style="margin-bottom:56px">
+      <div class="dv mx" style="margin-bottom:20px"></div>
+      <h2>교육 트랙</h2>
+      <p style="font-size:16px;color:var(--gy);margin-top:12px">리더는 방향성을 잡고, 실무자는 <strong style="color:var(--wh)">실제 작동 가능한 시스템</strong>을 만듭니다</p>
+    </div>
+
+    <div class="g g2 track-grid" style="max-width:900px;margin:0 auto 56px">
+      <!-- Track 1 -->
+      <div class="c" style="border-color:rgba(167,139,250,.25);background:rgba(167,139,250,.03)">
+        <div class="tag tp" style="margin-bottom:16px">트랙 1</div>
+        <h3 style="color:var(--wh);margin-bottom:4px">의사결정 과정</h3>
+        <div style="font-size:28px;font-weight:700;color:var(--pp);margin-bottom:16px">300만원<span style="font-size:14px;color:var(--gy);font-weight:400"> /인</span></div>
+        <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><strong style="color:var(--wh)">목적:</strong> 조직운영의 AX 방향성 설계</div>
+        <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><strong style="color:var(--wh)">대상:</strong> 의사결정자 / 리더</div>
+        <div style="font-size:13px;color:var(--gy);margin-bottom:16px"><strong style="color:var(--wh)">기간:</strong> 공통모듈 + 4주 (주 1회, 2시간) + 1:1 멘토링</div>
+        <div style="border-top:1px solid var(--bd);padding-top:16px">
+          <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><span style="color:var(--pp);margin-right:6px">✓</span>바이브코딩 / 프롬프트 설계 실습 (업무 자동화)</div>
+          <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><span style="color:var(--pp);margin-right:6px">✓</span>ROI / 보안 기준 수립</div>
+          <div style="font-size:13px;color:var(--gy)"><span style="color:var(--pp);margin-right:6px">✓</span>회사 내부의 AX전환 전략 수립</div>
+        </div>
+      </div>
+      <!-- Track 2 -->
+      <div class="c cg">
+        <div class="tag te" style="margin-bottom:16px">트랙 2 · 추천</div>
+        <h3 style="color:var(--wh);margin-bottom:4px">실무자 집중 양성</h3>
+        <div style="font-size:28px;font-weight:700;color:var(--em);margin-bottom:16px">160만원<span style="font-size:14px;color:var(--gy);font-weight:400"> /인</span></div>
+        <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><strong style="color:var(--wh)">목적:</strong> 자체 AX 전환을 위한 내부 리더 양성</div>
+        <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><strong style="color:var(--wh)">대상:</strong> 실무자 (핵심 담당자 1~3명 추천)</div>
+        <div style="font-size:13px;color:var(--gy);margin-bottom:16px"><strong style="color:var(--wh)">기간:</strong> 공통모듈 + 6주 몰입 (주 3회, 일 8시간)</div>
+        <div style="border-top:1px solid var(--bd);padding-top:16px">
+          <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><span style="color:var(--em);margin-right:6px">✓</span>여러 업무를 묶어 워크플로/에이전트화</div>
+          <div style="font-size:13px;color:var(--gy);margin-bottom:6px"><span style="color:var(--em);margin-right:6px">✓</span>실제 데이터로 분석/리포팅 자동화</div>
+          <div style="font-size:13px;color:var(--gy)"><span style="color:var(--em);margin-right:6px">✓</span>사내 배포 가능한 형태로 정리</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CURRICULUM ══════════ -->
+<section id="curriculum" class="s">
+  <div class="w">
+    <div class="tc" style="margin-bottom:56px">
+      <div class="dv mx" style="margin-bottom:20px"></div>
+      <h2>커리큘럼 소개</h2>
+    </div>
+
+    <!-- 공통모듈 -->
+    <div style="margin-bottom:56px">
+      <div class="f ac gp" style="margin-bottom:24px"><div class="tag te">공통모듈</div><p style="font-size:14px;color:var(--gy)">설치/구동환경 세팅과 실습까지 체계적 온보딩 · 매주 1회 · 모든 트랙 참여자 수강</p></div>
+      <div class="wk">
+        <div class="wk-h"><div>#</div><div>구성</div><div>내용</div></div>
+        <div class="wk-r"><div>1</div><div>세팅 & 작업환경 구축</div><div>계정/워크스페이스/저장 구조 세팅</div></div>
+        <div class="wk-r"><div>2</div><div>프롬프트 설계의 실제</div><div>역할/맥락/입력/출력 포맷으로 프로세스 구조화 설계</div></div>
+        <div class="wk-r"><div>3</div><div>바이브코딩 실전</div><div>입력→정리→출력 흐름을 미니 자동화로 구현</div></div>
+        <div class="wk-r"><div>4</div><div>공통 실습</div><div>에이전트 개발 및 배포</div></div>
+        <div class="wk-r"><div>5</div><div>공통 테스트 (검증)</div><div>품질/보안/재현 가능성을 체크리스트로 검증</div></div>
+        <div class="wk-r"><div>6</div><div>운영 루틴 설계</div><div>언제/누가/어떻게 쓰는지 최소 루틴 확정</div></div>
+      </div>
+    </div>
+
+    <!-- 리더 트랙 -->
+    <div style="margin-bottom:56px">
+      <div class="f ac gp" style="margin-bottom:24px"><div class="tag tp">리더 트랙</div><p style="font-size:14px;color:var(--gy)">실습 중심의 의사결정 과정 · 무엇을 할지 정하고 → 직접 만들어보고 → 전략으로 확정</p></div>
+      <div class="wk">
+        <div class="wk-h"><div>#</div><div>구성</div><div>내용</div></div>
+        <div class="wk-r"><div>1</div><div>목표·과제 선정</div><div>업무 후보를 모으고, 시간×빈도×리스크×효과 기준으로 우선순위 확정</div></div>
+        <div class="wk-r"><div>2</div><div>프롬프트 설계</div><div>회사 문서 포맷에 맞는 템플릿(표/체크리스트/메일 형식)으로 직접 설계</div></div>
+        <div class="wk-r"><div>3</div><div>바이브코딩/미니 자동화</div><div>입력→정리→출력 흐름을 간단 자동화로 구현</div></div>
+        <div class="wk-r"><div>4</div><div>적용 범위 설정</div><div>가능 / 조건 필요 / 리스크 높음을 구분</div></div>
+        <div class="wk-r"><div>5</div><div>성공 기준·ROI 설계</div><div>시간/오류/리드타임/사용률 전/후 측정 방식과 목표치 설정</div></div>
+        <div class="wk-r"><div>6</div><div>운영·확산 계획 점검</div><div>기업 내 AX 도입에 대한 전략 수립</div></div>
+      </div>
+    </div>
+
+    <!-- 실무자 트랙 -->
+    <div style="margin-bottom:56px">
+      <div class="f ac gp" style="margin-bottom:24px"><div class="tag te">실무자 트랙</div><p style="font-size:14px;color:var(--gy)">실습 중심 · 문제정의 → 설계 → 구현 → 테스트 → 배포 → 내재화</p></div>
+      <div class="wk">
+        <div class="wk-h"><div>#</div><div>구성</div><div>내용</div></div>
+        <div class="wk-r"><div>1</div><div>문제정의 & 요구사항 (기획)</div><div>현업 업무를 기능 단위로 쪼개고(입력/처리/출력), 요구사항을 문서화</div></div>
+        <div class="wk-r"><div>2</div><div>시스템 설계 (아키텍처)</div><div>데이터 흐름/권한/보안/예외처리/로그까지 포함해 "작동 방식"을 설계</div></div>
+        <div class="wk-r"><div>3</div><div>Claude Code 실전 구현 (빌드)</div><div>실제 기능 구현: 템플릿 엔진, 입력 검증, 출력 포맷, 저장/검색, 간단 UI/CLI</div></div>
+        <div class="wk-r"><div>4</div><div>품질 검증 (테스트)</div><div>케이스별 입력 테스트, 금지 데이터 필터링, 출력 품질 기준, 회귀 테스트</div></div>
+        <div class="wk-r"><div>5</div><div>사내 배포 (Deployment)</div><div>웹앱/슬랙봇/노션 연동/내부 포털 등 환경에 맞춤 + 사용 시나리오 고정</div></div>
+        <div class="wk-r"><div>6</div><div>운영·유지보수 체계 (내재화)</div><div>권한/승인/로그, 업데이트/버전관리, 장애 대응, 담당자 인수인계까지 문서화</div></div>
+      </div>
+    </div>
+
+    <!-- Agent dev areas -->
+    <div>
+      <div class="f ac gp" style="margin-bottom:24px"><div class="tag ta">에이전트 개발</div><h3 style="color:var(--wh);font-size:18px">기업에 필요한 에이전트를 최소 2개 이상 직접 개발</h3></div>
+      <div class="g g4">
+        <div class="lk"><div class="lk-t">📋 주간/월간 보고</div><div class="lk-d">주간 로그, KPI, 이슈 메모</div></div>
+        <div class="lk"><div class="lk-t">📝 회의록/액션아이템</div><div class="lk-d">회의 메모, 결정사항, 액션/기한</div></div>
+        <div class="lk"><div class="lk-t">📧 메일/메신저 응대</div><div class="lk-d">문의 내용, 상황/맥락, 정책/규정</div></div>
+        <div class="lk"><div class="lk-t">📦 발주/품의/정산</div><div class="lk-d">품목/단가, 사유, 증빙/내역</div></div>
+        <div class="lk"><div class="lk-t">💰 재무 리포트/예산</div><div class="lk-d">매출·비용, 예산, 전월 대비</div></div>
+        <div class="lk"><div class="lk-t">🤝 영업 제안/미팅 후속</div><div class="lk-d">고객정보, 미팅메모, 제안 포인트</div></div>
+        <div class="lk"><div class="lk-t">📢 마케팅 콘텐츠</div><div class="lk-d">타겟, 오퍼, 채널/톤앤매너</div></div>
+        <div class="lk"><div class="lk-t">📐 기획/PRD 작성</div><div class="lk-d">문제정의, 요구사항, 사용자 시나리오</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SUCCESS CASES ══════════ -->
+<section id="cases" class="s" style="background:var(--bg2)">
+  <div class="w">
+    <div class="tc" style="margin-bottom:56px">
+      <div class="dv mx" style="margin-bottom:20px"></div>
+      <h2>도입 사례</h2>
+      <p style="font-size:16px;color:var(--gy);margin-top:12px">단순히 "배운다"를 넘어서<br><strong style="color:var(--wh)">"만들고 남기는 교육"</strong>을 통해 기업의 지식자산의 역량을 높입니다</p>
+    </div>
+
+    <div class="g g4" style="margin-bottom:48px">
+      <div class="c">
+        <div style="font-size:12px;font-weight:700;color:var(--wh);letter-spacing:1px;margin-bottom:4px">E사</div>
+        <div style="font-size:11px;color:var(--gy2);margin-bottom:16px">IT 기업</div>
+        <div style="font-size:14px;font-weight:600;color:var(--em);margin-bottom:8px">AI 기반 비즈니스 모델 기획</div>
+        <p style="font-size:13px;color:var(--gy);margin-bottom:16px">프로젝트 투입 인력 최적화</p>
+        <div style="border-top:1px solid var(--bd);padding-top:12px"><div style="font-size:13px;color:var(--wh);font-weight:600">기획 및 개발조직 인건비 <span style="color:var(--em)">50% 절감</span></div></div>
+      </div>
+      <div class="c">
+        <div style="font-size:12px;font-weight:700;color:var(--wh);letter-spacing:1px;margin-bottom:4px">F사</div>
+        <div style="font-size:11px;color:var(--gy2);margin-bottom:16px">정보통신 기업</div>
+        <div style="font-size:14px;font-weight:600;color:var(--em);margin-bottom:8px">리더십 AI 스터디, 임직원 강의</div>
+        <p style="font-size:13px;color:var(--gy);margin-bottom:16px">리더 그룹의 AI 이해도 증진</p>
+        <div style="border-top:1px solid var(--bd);padding-top:12px"><div style="font-size:13px;color:var(--wh);font-weight:600">AI스터디그룹 <span style="color:var(--em)">3차 앵콜 진행 중</span></div></div>
+      </div>
+      <div class="c">
+        <div style="font-size:12px;font-weight:700;color:var(--wh);letter-spacing:1px;margin-bottom:4px">G사</div>
+        <div style="font-size:11px;color:var(--gy2);margin-bottom:16px">이커머스 기업</div>
+        <div style="font-size:14px;font-weight:600;color:var(--em);margin-bottom:8px">발주서/주문서 자동화</div>
+        <p style="font-size:13px;color:var(--gy);margin-bottom:16px">수작업 처리 및 데이터 입력 개선</p>
+        <div style="border-top:1px solid var(--bd);padding-top:12px"><div style="font-size:13px;color:var(--wh);font-weight:600">처리시간 <span style="color:var(--em)">50% 단축</span>, 휴먼에러 <span style="color:var(--em)">30%↓</span></div></div>
+      </div>
+      <div class="c">
+        <div style="font-size:12px;font-weight:700;color:var(--wh);letter-spacing:1px;margin-bottom:4px">S사</div>
+        <div style="font-size:11px;color:var(--gy2);margin-bottom:16px">IT 기업</div>
+        <div style="font-size:14px;font-weight:600;color:var(--em);margin-bottom:8px">비즈니스 모델 기획, AI 스터디</div>
+        <p style="font-size:13px;color:var(--gy);margin-bottom:16px">AI 기반 신규 사업 아이디어 구체화</p>
+        <div style="border-top:1px solid var(--bd);padding-top:12px"><div style="font-size:13px;color:var(--wh);font-weight:600">슈퍼유저 육성 → <span style="color:var(--em)">자체 프로그램 개발</span></div></div>
+      </div>
+    </div>
+
+    <!-- 50+ companies -->
+    <div class="c cg tc" style="max-width:700px;margin:0 auto">
+      <p style="font-size:14px;color:var(--gy);margin-bottom:8px">다양한 산업의 고객들이 하비탄 AI와 함께</p>
+      <h3 style="color:var(--wh)">2025년부터 1년간 <span style="color:var(--em)">50여개의 기업</span>이<br>하비탄과 함께 했습니다</h3>
+      <div class="f gp jc fw" style="margin-top:20px">
+        <div style="font-size:14px;color:var(--gy)">참여자 만족도 <strong style="color:var(--em)">95%</strong></div>
+        <div style="width:1px;height:20px;background:var(--bd)"></div>
+        <div style="font-size:14px;color:var(--gy)">처리시간 <strong style="color:var(--em)">50% 단축</strong></div>
+        <div style="width:1px;height:20px;background:var(--bd)"></div>
+        <div style="font-size:14px;color:var(--gy)">참여조직 전원 <strong style="color:var(--em)">AI툴 활용</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ WHY HOBBYTAN ══════════ -->
+<section class="s" style="position:relative;overflow:hidden">
+  <div class="orb" style="top:50%;left:0;transform:translateY(-50%);width:400px;height:500px;background:rgba(167,139,250,.04)"></div>
+  <div class="w" style="position:relative;z-index:1">
+    <div class="tc" style="margin-bottom:56px">
+      <div class="tag tp" style="margin-bottom:20px">WHY HOBBYTAN AI?</div>
+      <h2>AI의 도입부터 내재화까지</h2>
+      <p style="font-size:16px;color:var(--gy);margin-top:12px">기술에 대한 높은 이해도와 빠른 적응력 — <strong style="color:var(--wh)">하비탄은 다릅니다</strong></p>
+    </div>
+
+    <div class="g g3" style="max-width:900px;margin:0 auto 48px">
+      <div class="c" style="border-color:rgba(167,139,250,.25);background:rgba(167,139,250,.03);text-align:center">
+        <div style="font-size:11px;color:var(--pp);letter-spacing:2px;font-weight:600;margin-bottom:16px">Until You Master</div>
+        <div class="ib ip mx" style="margin-bottom:16px">🤝</div>
+        <h3 style="color:var(--wh);font-size:18px;margin-bottom:8px">끝까지 책임</h3>
+        <p style="font-size:13px;color:var(--gy)">습득할 때까지 추적 관찰 및 주기적 피드백. "할 수 있다"가 완료 기준.</p>
+      </div>
+      <div class="c" style="border-color:rgba(167,139,250,.25);background:rgba(167,139,250,.03);text-align:center">
+        <div style="font-size:11px;color:var(--pp);letter-spacing:2px;font-weight:600;margin-bottom:16px">All-in-One Partnership</div>
+        <div class="ib ip mx" style="margin-bottom:16px">🔗</div>
+        <h3 style="color:var(--wh);font-size:18px;margin-bottom:8px">통합 파트너십</h3>
+        <p style="font-size:13px;color:var(--gy)">기획, 교육, 개발, 유지보수까지. AI 도입의 전 과정을 책임지는 유일한 파트너.</p>
+      </div>
+      <div class="c" style="border-color:rgba(167,139,250,.25);background:rgba(167,139,250,.03);text-align:center">
+        <div style="font-size:11px;color:var(--pp);letter-spacing:2px;font-weight:600;margin-bottom:16px">Always Up-to-date</div>
+        <div class="ib ip mx" style="margin-bottom:16px">⚡</div>
+        <h3 style="color:var(--wh);font-size:18px;margin-bottom:8px">실시간 업데이트</h3>
+        <p style="font-size:13px;color:var(--gy)">새 AI 모델 출시 후 평균 3일 내 커리큘럼 반영. 낡은 템플릿이 아닌, 항상 최신.</p>
+      </div>
+    </div>
+
+    <div class="tc"><p style="font-size:15px;color:var(--gy);max-width:500px;margin:0 auto"><strong style="color:var(--wh)">"AI가 복잡하지 않다"</strong>는 철학으로 기술 도입의 문턱을 낮춥니다.</p></div>
+  </div>
+</section>
+
+<!-- ══════════ SERVICES ══════════ -->
+<section id="services" class="s" style="background:var(--bg2)">
+  <div class="w">
+    <div style="margin-bottom:56px">
+      <div class="dv" style="margin-bottom:20px"></div>
+      <h2>컨설팅과 교육 이상의<br><span style="color:var(--gy)">All-IN-ONE 서비스</span></h2>
+      <p style="color:var(--gy);margin-top:12px;max-width:420px">각 서비스는 독립적으로 또는 파워워크샵과 연계하여 제공됩니다.</p>
+    </div>
+
+    <div class="g g3">
+      <div class="c"><div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">COMMUNITY</div><div class="ib ie" style="margin-bottom:16px">👥</div><h3 style="color:var(--wh);margin-bottom:8px">하비탄 AI 클럽</h3><p style="font-size:13px;color:var(--gy)">AI 비즈니스 전문가 네트워크. 월별 이벤트와 코워킹. 파워워크샵 수료자 자동 초대.</p></div>
+      <div class="c"><div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">SETUP</div><div class="ib ie" style="margin-bottom:16px">⚙️</div><h3 style="color:var(--wh);margin-bottom:8px">AI 시스템 설정/대행</h3><p style="font-size:13px;color:var(--gy)">ChatGPT, Claude, Notion AI 초기 세팅. Make/Zapier 자동화 워크플로우 구축.</p></div>
+      <div class="c"><div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">DEVELOPMENT</div><div class="ib ie" style="margin-bottom:16px">🌐</div><h3 style="color:var(--wh);margin-bottom:8px">AI 비즈니스 웹사이트 구축</h3><p style="font-size:13px;color:var(--gy)">AI 기반 랜딩페이지/웹사이트 제작. 컨설팅부터 BM 설계, 개발까지 원스톱.</p></div>
+      <div class="c"><div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">EDUCATION</div><div class="ib ie" style="margin-bottom:16px">🎓</div><h3 style="color:var(--wh);margin-bottom:8px">AI 역량 강화 교육</h3><p style="font-size:13px;color:var(--gy)">부모, 구직자, 학생, 공공기관 대상 맞춤형 AI 교육 프로그램. 단기/장기 과정 운영.</p></div>
+      <div class="c"><div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">SOLUTION</div><div class="ib ie" style="margin-bottom:16px">📦</div><h3 style="color:var(--wh);margin-bottom:8px">자체 AI 서비스</h3><p style="font-size:13px;color:var(--gy)">ORDER MAKER (발주 자동화), OurSona (페르소나 생성), WEB FIT (가상 피팅), AI조씨 (교육 콘텐츠)</p></div>
+      <div class="c"><div style="font-size:11px;color:var(--gy2);letter-spacing:2px;margin-bottom:20px">STRATEGY</div><div class="ib ie" style="margin-bottom:16px">💡</div><h3 style="color:var(--wh);margin-bottom:8px">맞춤형 컨설팅</h3><p style="font-size:13px;color:var(--gy)">AI 도입 로드맵 수립, 비즈니스 모델 설계, 조직 AI 역량 진단.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CTA ══════════ -->
+<section id="contact" class="s" style="position:relative;overflow:hidden">
   <div class="orb" style="top:0;left:50%;transform:translateX(-50%);width:800px;height:400px;background:rgba(16,185,129,.08)"></div>
-  <div class="wrap" style="position:relative;z-index:1">
+  <div class="w" style="position:relative;z-index:1">
     <div style="max-width:800px;margin:0 auto">
-      <div class="card card-glow" style="border-width:2px;position:relative;padding:clamp(28px,4vw,48px);overflow:hidden">
-        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:var(--em);color:var(--bg);padding:6px 20px;border-radius:0 0 var(--radius-sm) var(--radius-sm);font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px">✨ 한정 모집 중</div>
-        <div class="tc" style="margin-bottom:24px;padding-top:16px">
-          <h2>다음 <span style="color:var(--em)">성공 사례</span>는<br>귀사가 될 차례입니다</h2>
-          <p style="font-size:18px;color:var(--gy);max-width:520px;margin:16px auto 0">11개 기업이 ₩800만원 투자로 연 ₩9,600만원의 가치를 만들었습니다.<br><strong style="color:var(--wh)">30분 무료 상담으로 귀사의 ROI를 계산해 드립니다.</strong></p>
+      <div class="c cg" style="border-width:2px;position:relative;padding:clamp(28px,4vw,48px);overflow:hidden">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:var(--em);color:var(--bg);padding:6px 20px;border-radius:0 0 var(--rs) var(--rs);font-size:12px;font-weight:700">GET STARTED</div>
+        <div class="tc" style="padding-top:16px;margin-bottom:24px">
+          <h2>우리 회사의 AX 전환을<br><span style="color:var(--em)">하비탄과 함께 시작하세요</span></h2>
+          <p style="font-size:16px;color:var(--gy);max-width:500px;margin:16px auto 0">"AI가 복잡하지 않다"는 철학으로<br>기술 도입의 문턱을 낮춥니다.</p>
         </div>
-        <div class="tc" style="margin-bottom:24px">
-          <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 18px;background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:100px">
-            <span style="width:6px;height:6px;background:var(--em);border-radius:50%" class="pulse"></span>
-            <span style="font-size:13px;color:#ccc">다음 기수: 상담 후 일정 확정</span>
-          </div>
+        <div class="f gp jc fw cta-row" style="margin-bottom:24px">
+          <a href="mailto:pablo@hobbytan.com" class="btn bp">1:1 무료 도입 컨설팅 신청하기 →</a>
+          <a href="#program" class="btn bg">프로그램 상세 보기</a>
         </div>
-        <div class="flex gap justify-center flex-wrap cta-row" style="margin-bottom:24px">
-          <a href="mailto:pablo@hobbytan.com" class="btn btn-primary">💬 지금 바로 상담 신청 →</a>
-          <a href="#pricing" class="btn btn-ghost">프로그램 상세 보기</a>
-        </div>
-        <div class="flex gap justify-center flex-wrap" style="font-size:13px;color:var(--gy)">
-          <span><span style="color:var(--em)">🛡️</span> 100% 환불 보장</span>
-          <span><span style="color:var(--em)">⏱️</span> 30분 무료 상담</span>
-          <span><span style="color:var(--em)">📅</span> 48시간 내 응답</span>
+        <div class="f gp jc fw tc" style="font-size:13px;color:var(--gy)">
+          <span>📧 pablo@hobbytan.com</span>
+          <span>📞 010-9394-9848</span>
+          <span>🌐 hobbytan.com</span>
         </div>
       </div>
     </div>
-
-    <!-- Social proof -->
-    <div class="tc" style="margin-top:40px">
-      <p style="font-size:13px;color:var(--gy2);margin-bottom:12px">이미 검증된 기업들의 선택</p>
-      <div class="flex items-center justify-center gap flex-wrap">
-        <span style="font-size:14px;color:var(--gy)"><strong style="color:var(--wh)">11개</strong> 기업 수료</span>
-        <div style="width:1px;height:16px;background:var(--bd)"></div>
-        <span style="font-size:14px;color:var(--gy)">중도 포기 <strong style="color:var(--em)">0건</strong></span>
-        <div style="width:1px;height:16px;background:var(--bd)"></div>
-        <span style="font-size:14px;color:var(--gy)">평균 ROI <strong style="color:var(--em)">12배</strong></span>
-      </div>
-    </div>
-    <div class="tc" style="margin-top:16px"><p style="font-size:12px;color:var(--gy2)">문의: pablo@hobbytan.com | 상담 가능 시간: 평일 09:00-18:00</p></div>
   </div>
 </section>
 
-<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<!-- ══════════ FOOTER ══════════ -->
 <footer style="background:var(--bg);border-top:1px solid var(--bd)">
-  <div class="wrap">
+  <div class="w">
     <div style="padding:56px 0">
-      <div class="grid footer-cols" style="grid-template-columns:2fr 1fr 1fr 1fr;gap:48px">
+      <div class="g footer-cols" style="grid-template-columns:2fr 1fr 1fr 1fr;gap:48px">
         <div>
-          <a href="https://hobbytan.com" style="display:inline-block;margin-bottom:20px">
-            <img src="/logo-white.svg" alt="HOBBYTAN AI" style="height:30px;opacity:.8" onerror="this.outerHTML='<span style=\"font-size:18px;font-weight:800;color:#fff\">HOBBYTAN <span style=\"color:#10b981\">AI</span></span>'">
-          </a>
+          <a href="https://hobbytan.com" style="display:inline-block;margin-bottom:20px"><img src="/logo-white.svg" alt="HOBBYTAN AI" style="height:30px;opacity:.8" onerror="this.outerHTML='<span style=\"font-size:18px;font-weight:800;color:#fff\">HOBBYTAN <span style=\"color:#10b981\">AI</span></span>'"></a>
           <p style="font-size:13px;color:var(--gy);max-width:280px;margin-bottom:20px">당신과 AI 기술 사이, 하비탄 AI<br>AI 도입의 모든 단계를 책임지는 유일한 파트너</p>
-          <a href="mailto:pablo@hobbytan.com" style="font-size:12px;color:var(--gy2)">pablo@hobbytan.com</a>
+          <div style="font-size:12px;color:var(--gy2)">pablo@hobbytan.com<br>010-9394-9848</div>
+        </div>
+        <div>
+          <h4 style="font-size:11px;color:var(--gy2);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px">Program</h4>
+          <div style="font-size:13px;margin-bottom:10px"><a href="#program" style="color:var(--gy2)">시그니처 프로그램</a></div>
+          <div style="font-size:13px;margin-bottom:10px"><a href="#curriculum" style="color:var(--gy2)">커리큘럼</a></div>
+          <div style="font-size:13px"><a href="#cases" style="color:var(--gy2)">도입 사례</a></div>
         </div>
         <div>
           <h4 style="font-size:11px;color:var(--gy2);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px">Services</h4>
-          <div style="font-size:13px;margin-bottom:10px"><a href="#program" style="color:var(--gy2)">AI 파워워크샵</a></div>
           <div style="font-size:13px;margin-bottom:10px"><a href="#services" style="color:var(--gy2)">AI 시스템 설정/대행</a></div>
-          <div style="font-size:13px;margin-bottom:10px"><a href="#services" style="color:var(--gy2)">AI 비즈니스 웹사이트 구축</a></div>
-          <div style="font-size:13px"><a href="#services" style="color:var(--gy2)">맞춤형 컨설팅</a></div>
-        </div>
-        <div>
-          <h4 style="font-size:11px;color:var(--gy2);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px">Resources</h4>
-          <div style="font-size:13px;margin-bottom:10px"><a href="#" style="color:var(--gy2)">하비탄 AI 클럽</a></div>
-          <div style="font-size:13px;margin-bottom:10px"><a href="#success" style="color:var(--gy2)">성공 사례</a></div>
-          <div style="font-size:13px;margin-bottom:10px"><a href="#" style="color:var(--gy2)">블로그</a></div>
-          <div style="font-size:13px"><a href="#" style="color:var(--gy2)">FAQ</a></div>
+          <div style="font-size:13px;margin-bottom:10px"><a href="#services" style="color:var(--gy2)">AI 웹사이트 구축</a></div>
+          <div style="font-size:13px;margin-bottom:10px"><a href="#services" style="color:var(--gy2)">맞춤형 컨설팅</a></div>
+          <div style="font-size:13px"><a href="#services" style="color:var(--gy2)">하비탄 AI 클럽</a></div>
         </div>
         <div>
           <h4 style="font-size:11px;color:var(--gy2);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px">Company</h4>
           <div style="font-size:13px;margin-bottom:10px"><a href="#" style="color:var(--gy2)">회사 소개</a></div>
-          <div style="font-size:13px;margin-bottom:10px"><a href="#" style="color:var(--gy2)">채용</a></div>
-          <div style="font-size:13px"><a href="#contact" style="color:var(--gy2)">연락처</a></div>
+          <div style="font-size:13px;margin-bottom:10px"><a href="#contact" style="color:var(--gy2)">연락처</a></div>
+          <div style="font-size:13px"><a href="#" style="color:var(--gy2)">블로그</a></div>
         </div>
       </div>
     </div>
@@ -826,9 +627,9 @@ h3 { font-size: clamp(18px, 2.5vw, 24px); font-weight: 600; line-height: 1.3; }
         대표: 김탄휴 | 사업자등록번호: 248-87-03842 | 법인등록번호: 110111-0953237<br>
         사업장 소재지: 서울특별시 송파구 송이로26길 16-27, 2,3층(가락동)
       </div>
-      <div class="flex justify-between items-center flex-wrap gap">
+      <div class="f jb ac fw gp">
         <p style="font-size:11px;color:var(--gy2)">&copy; 2026 HOBBYTAN AI Corp. All rights reserved.</p>
-        <div class="flex gap-sm">
+        <div class="f gs">
           <a href="/terms-of-service/" style="font-size:11px;color:var(--gy2)">이용약관</a>
           <a href="/privacy-policy/" style="font-size:11px;color:var(--gy2)">개인정보처리방침</a>
           <a href="/data-deletion/" style="font-size:11px;color:var(--gy2)">데이터 삭제</a>
