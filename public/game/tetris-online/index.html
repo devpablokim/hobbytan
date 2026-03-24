@@ -133,6 +133,10 @@ canvas.preview{border:1px solid var(--border);background:#0a0a0a}
   #mobile-menu-btn{display:flex}
   #mobile-sidebar{display:flex}
   body{overflow:hidden}
+  #game-main{overflow:hidden}
+  #opponents{max-height:15vh;overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;padding:2px 4px}
+  .opp-wrapper{flex-shrink:0}
+  #my-game-area{flex:1;min-height:0;align-items:center;padding-bottom:110px}
 }
 @media(min-width:769px){
   #mobile-menu-btn,#mobile-sidebar,#mobile-sidebar-overlay{display:none!important}
@@ -305,7 +309,7 @@ let currentChatMode='global'; // 'global' or 'room'
 let unsubGlobalChat=null,unsubRoomChat=null;
 
 function isMobile(){return window.innerWidth<=768}
-function calcBlockSize(){if(!isMobile())return 28;const mw=window.innerWidth-70,mh=window.innerHeight-210;return Math.min(Math.floor(mw/COLS),Math.floor(mh/ROWS),28)}
+function calcBlockSize(){if(!isMobile())return 28;const hasOpponents=Object.keys(players).length>1;const extraH=hasOpponents?80:0;const mw=window.innerWidth-70,mh=window.innerHeight-210-extraH;return Math.min(Math.floor(mw/COLS),Math.floor(mh/ROWS),28)}
 
 // ===== GLOBAL CHAT =====
 function startGlobalChat(){
