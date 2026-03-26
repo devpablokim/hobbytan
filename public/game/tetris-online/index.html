@@ -7,7 +7,7 @@
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0a;--card:#111;--accent:#10b981;--accent2:#059669;--white:#fff;--gray:#888;--border:#222}
+:root{--bg:#0a0a0a;--card:#111;--accent:#3b82f6;--accent2:#2563eb;--white:#fff;--gray:#888;--border:#222}
 body{background:var(--bg);color:var(--white);font-family:'Pretendard Variable',system-ui,sans-serif;height:100vh;height:100dvh;overflow:hidden;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 h1,h2,h3{font-weight:800}
 .btn{background:var(--accent);color:var(--bg);border:none;padding:12px 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin:4px 0;border-radius:0;-webkit-appearance:none}
@@ -31,7 +31,7 @@ input::placeholder{color:#555}
 .player-slot.empty{color:#333}
 .player-slot .nick{font-weight:700;font-size:13px}
 #error-msg{color:#ef4444;font-size:12px;margin:4px 0;min-height:16px}
-#countdown{font-size:72px;font-weight:800;color:var(--accent);display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999;text-shadow:0 0 40px rgba(16,185,129,.5)}
+#countdown{font-size:72px;font-weight:800;color:var(--accent);display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999;text-shadow:0 0 40px rgba(59,130,246,.5)}
 
 /* ===== CHAT PANEL (reused in lobby-right, game sidebar, mobile) ===== */
 .chat-panel{display:flex;flex-direction:column;flex:1;min-height:0}
@@ -297,7 +297,7 @@ canvas.preview{border:1px solid var(--border);background:#0a0a0a}
 firebase.initializeApp({apiKey:"AIzaSyDxnIFPnFdSVR6IKuBMRm5ZQynO0ORrlzI",authDomain:"hobbytan-ai.firebaseapp.com",projectId:"hobbytan-ai",storageBucket:"hobbytan-ai.firebasestorage.app",messagingSenderId:"820555571498",appId:"1:820555571498:web:eb5c2de98d3b6c18e43cb9"});
 const db=firebase.firestore();
 const COLS=10,ROWS=20;
-const COLORS=['#10b981','#06b6d4','#f59e0b','#ef4444','#8b5cf6','#ec4899','#3b82f6'];
+const COLORS=['#14b8a6','#06b6d4','#f59e0b','#ef4444','#8b5cf6','#ec4899','#f97316'];
 const SHAPES=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]]];
 
 let myId=Math.random().toString(36).substr(2,8),myNickname='';
@@ -554,7 +554,7 @@ function draw(){
   for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(myBoard[r][c])drawBlock(ctx,c,r,myBoard[r][c],B);
   if(myPiece&&!gameOver){
     const gy=ghostY(),s=myPiece.shape;
-    for(let r=0;r<s.length;r++)for(let c=0;c<s[r].length;c++)if(s[r][c]){ctx.fillStyle='rgba(16,185,129,0.15)';ctx.fillRect((myPiece.x+c)*B,(gy+r)*B,B,B);ctx.strokeStyle='rgba(16,185,129,0.3)';ctx.strokeRect((myPiece.x+c)*B,(gy+r)*B,B,B)}
+    for(let r=0;r<s.length;r++)for(let c=0;c<s[r].length;c++)if(s[r][c]){ctx.fillStyle='rgba(59,130,246,0.15)';ctx.fillRect((myPiece.x+c)*B,(gy+r)*B,B,B);ctx.strokeStyle='rgba(59,130,246,0.3)';ctx.strokeRect((myPiece.x+c)*B,(gy+r)*B,B,B)}
     for(let r=0;r<s.length;r++)for(let c=0;c<s[r].length;c++)if(s[r][c])drawBlock(ctx,myPiece.x+c,myPiece.y+r,myPiece.color,B);
   }
   if(myNext){const pctx=canvases.me.preview,pb=canvases.me.prevBlock,s=myNext.shape,ox=Math.floor((4-s[0].length)/2),oy=Math.floor((4-s.length)/2);pctx.clearRect(0,0,4*pb,4*pb);for(let r=0;r<s.length;r++)for(let c=0;c<s[r].length;c++)if(s[r][c])drawBlock(pctx,ox+c,oy+r,myNext.color,pb)}
