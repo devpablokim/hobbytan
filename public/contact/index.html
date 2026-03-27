@@ -174,8 +174,8 @@ function handleSubmit(e){
   btn.disabled=true;
   btn.innerHTML='<span class="spinner"></span>접수 중...';
 
-  // Call server API (Firestore save + email notification)
-  fetch('/api/contact',{
+  // Call Cloud Function (Firestore save + email notification)
+  fetch('https://asia-northeast3-hobbytan-ai.cloudfunctions.net/contactEmail',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify(d)

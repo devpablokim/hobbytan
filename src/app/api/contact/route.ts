@@ -95,6 +95,7 @@ function getAdminEmailHTML(data: ContactFormData): string {
           <!-- Header -->
           <tr>
             <td style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 32px 40px; text-align: center;">
+              <img src="https://hobbytan.com/logo-white.svg" alt="HOBBYTAN AI" style="height:32px;margin-bottom:16px" />
               <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">새로운 문의가 도착했습니다</h1>
               <p style="margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">하비탄 AI 웹사이트</p>
             </td>
@@ -198,6 +199,7 @@ function getConfirmationEmailHTML(data: ContactFormData): string {
           <!-- Header -->
           <tr>
             <td style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 40px; text-align: center;">
+              <img src="https://hobbytan.com/logo-white.svg" alt="HOBBYTAN AI" style="height:32px;margin-bottom:16px" />
               <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">문의해 주셔서 감사합니다</h1>
             </td>
           </tr>
@@ -389,7 +391,7 @@ export async function POST(request: NextRequest) {
     // Send email to admin
     emailPromises.push(
       mailTransporter.sendMail({
-        from: `"하비탄 AI" <${process.env.SMTP_USER}>`,
+        from: `"하비탄 AI" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
         to: process.env.ADMIN_EMAIL,
         subject: `[문의] ${sanitizedData.name}님이 문의를 남기셨습니다`,
         html: getAdminEmailHTML(sanitizedData),
@@ -402,7 +404,7 @@ export async function POST(request: NextRequest) {
     // Send confirmation email to user
     emailPromises.push(
       mailTransporter.sendMail({
-        from: `"하비탄 AI" <${process.env.SMTP_USER}>`,
+        from: `"하비탄 AI" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
         to: sanitizedData.email,
         subject: "[하비탄 AI] 문의해 주셔서 감사합니다",
         html: getConfirmationEmailHTML(sanitizedData),
