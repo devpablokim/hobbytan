@@ -62,6 +62,11 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true;
     }
+    // Diary entries - authenticated users own data only
+    match /diary_entries/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
     // Contact form submissions - public create only
     match /contacts/{docId} {
       allow create: if true;
