@@ -68,8 +68,7 @@ nav .back:hover{color:#3b82f6}
 <nav>
   <div class="inner">
     <a href="/" class="logo">
-      <img src="/logo-white.svg" alt="HOBBYTAN AI" style="height:26px" onerror="this.style.display='none'">
-      HOBBYTAN AI
+      <img src="/logo-white.svg" alt="HOBBYTAN AI" style="height:26px" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span style="display:none;font-size:18px;font-weight:800">HOBBYTAN AI</span>
     </a>
     <a href="/" class="back">← 홈으로</a>
   </div>
@@ -175,18 +174,30 @@ function handleSubmit(e){
   btn.disabled=true;
   btn.innerHTML='<span class="spinner"></span>접수 중...';
 
-  db.collection('contacts').add({
-    ...d,
-    createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-    status:'new'
-  }).then(()=>{
+  // Call server API (Firestore save + email notification)
+  fetch('/api/contact',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(d)
+  }).then(r=>{
+    if(!r.ok) throw new Error('API error');
     document.getElementById('form-view').style.display='none';
     document.getElementById('success-view').style.display='block';
-  }).catch(err=>{
-    console.error(err);
-    alert('문의 접수 중 오류가 발생했습니다. 이메일(pablo@hobbytan.com)로 직접 연락 부탁드립니다.');
-    btn.disabled=false;
-    btn.innerHTML='문의 접수하기';
+  }).catch(()=>{
+    // Fallback: direct Firestore write
+    db.collection('contacts').add({
+      ...d,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      status:'new'
+    }).then(()=>{
+      document.getElementById('form-view').style.display='none';
+      document.getElementById('success-view').style.display='block';
+    }).catch(err=>{
+      console.error(err);
+      alert('문의 접수 중 오류가 발생했습니다. 이메일(pablo@hobbytan.com)로 직접 연락 부탁드립니다.');
+      btn.disabled=false;
+      btn.innerHTML='문의 접수하기';
+    });
   });
   return false;
 }
