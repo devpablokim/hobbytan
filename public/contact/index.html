@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>문의하기 — HOBBYTAN AI</title>
+<meta name="description" content="하비탄AI에 문의하세요. AI 도입 컨설팅, 교육, 웹사이트 구축 등 무엇이든 도와드립니다.">
+<link rel="icon" href="/favicon.ico">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@font-face{font-family:'Pretendard';src:url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css')}
+body{font-family:'Pretendard',system-ui,-apple-system,sans-serif;background:#0a0a0a;color:#e5e5e5;min-height:100vh;line-height:1.6}
+a{color:inherit;text-decoration:none}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,6,8,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(30,30,42,.5);height:64px;display:flex;align-items:center;padding:0 24px}
+nav .inner{max-width:1100px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+nav .logo{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:800;color:#fff}
+nav .back{font-size:14px;color:#888;display:flex;align-items:center;gap:6px;transition:color .2s}
+nav .back:hover{color:#3b82f6}
+
+/* Container */
+.wrap{max-width:680px;margin:0 auto;padding:100px 20px 60px}
+
+/* Header */
+.page-header{text-align:center;margin-bottom:48px}
+.page-header h1{font-size:clamp(28px,5vw,40px);font-weight:800;color:#fff;margin-bottom:12px}
+.page-header p{font-size:16px;color:#888;max-width:480px;margin:0 auto}
+
+/* Form */
+.form-card{background:#111;border:1px solid #222;padding:clamp(24px,4vw,40px)}
+.field{margin-bottom:20px}
+.field label{display:block;font-size:13px;font-weight:700;color:#ccc;margin-bottom:6px}
+.field label .req{color:#ef4444;margin-left:2px}
+.field input,.field textarea{width:100%;background:#0a0a0a;border:1px solid #333;color:#fff;padding:12px 14px;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;border-radius:0}
+.field input:focus,.field textarea:focus{border-color:#3b82f6}
+.field textarea{min-height:140px;resize:vertical}
+.field .err{font-size:12px;color:#ef4444;margin-top:4px;display:none}
+.field.has-error input,.field.has-error textarea{border-color:#ef4444}
+.field.has-error .err{display:block}
+
+.submit-btn{width:100%;background:#3b82f6;color:#0a0a0a;border:none;padding:14px 24px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;border-radius:0}
+.submit-btn:hover{background:#2563eb}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Contact info */
+.contact-info{margin-top:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.info-item{background:#111;border:1px solid #222;padding:16px;text-align:center}
+.info-item .icon{font-size:20px;margin-bottom:6px}
+.info-item .label{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.info-item .value{font-size:14px;color:#ccc;font-weight:600}
+.info-item a{color:#3b82f6}
+
+/* Success */
+.success{text-align:center;padding:60px 20px}
+.success .check{font-size:64px;margin-bottom:16px}
+.success h2{font-size:24px;color:#fff;margin-bottom:12px}
+.success p{font-size:15px;color:#888;margin-bottom:32px}
+.success .home-btn{display:inline-block;background:#3b82f6;color:#0a0a0a;padding:12px 32px;font-size:15px;font-weight:700;border-radius:0}
+
+/* Spinner */
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(10,10,10,.3);border-top-color:#0a0a0a;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="/" class="logo">
+      <img src="/logo-white.svg" alt="HOBBYTAN AI" style="height:26px" onerror="this.style.display='none'">
+      HOBBYTAN AI
+    </a>
+    <a href="/" class="back">← 홈으로</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <!-- Form View -->
+  <div id="form-view">
+    <div class="page-header">
+      <h1>문의하기</h1>
+      <p>AI 도입, 교육, 컨설팅 등 궁금한 점을 남겨주세요. 빠르게 답변 드리겠습니다.</p>
+    </div>
+
+    <div class="form-card">
+      <form id="contact-form" onsubmit="return handleSubmit(event)">
+        <div class="field" id="f-name">
+          <label>이름 <span class="req">*</span></label>
+          <input type="text" name="name" placeholder="홍길동" autocomplete="name">
+          <div class="err">이름을 입력해 주세요.</div>
+        </div>
+        <div class="field" id="f-email">
+          <label>이메일 <span class="req">*</span></label>
+          <input type="email" name="email" placeholder="example@company.com" autocomplete="email">
+          <div class="err">올바른 이메일을 입력해 주세요.</div>
+        </div>
+        <div class="field" id="f-phone">
+          <label>연락처 <span class="req">*</span></label>
+          <input type="tel" name="phone" placeholder="010-1234-5678" autocomplete="tel">
+          <div class="err">연락처를 입력해 주세요.</div>
+        </div>
+        <div class="field" id="f-company">
+          <label>회사/소속</label>
+          <input type="text" name="company" placeholder="(선택사항)" autocomplete="organization">
+        </div>
+        <div class="field" id="f-message">
+          <label>문의 내용 <span class="req">*</span></label>
+          <textarea name="message" placeholder="문의하실 내용을 자유롭게 작성해 주세요."></textarea>
+          <div class="err">문의 내용을 입력해 주세요.</div>
+        </div>
+        <button type="submit" class="submit-btn" id="submit-btn">문의 접수하기</button>
+      </form>
+    </div>
+
+    <div class="contact-info">
+      <div class="info-item">
+        <div class="icon">📧</div>
+        <div class="label">이메일</div>
+        <div class="value"><a href="mailto:pablo@hobbytan.com">pablo@hobbytan.com</a></div>
+      </div>
+      <div class="info-item">
+        <div class="icon">📞</div>
+        <div class="label">전화</div>
+        <div class="value"><a href="tel:010-9394-9848">010-9394-9848</a></div>
+      </div>
+      <div class="info-item">
+        <div class="icon">📍</div>
+        <div class="label">주소</div>
+        <div class="value">서울 송파구 송이로26길 16-27</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success View -->
+  <div id="success-view" style="display:none">
+    <div class="success">
+      <div class="check">✅</div>
+      <h2>문의가 접수되었습니다</h2>
+      <p>빠른 시일 내에 답변 드리겠습니다.<br>감사합니다.</p>
+      <a href="/" class="home-btn">홈으로 돌아가기</a>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyDxnIFPnFdSVR6IKuBMRm5ZQynO0ORrlzI",authDomain:"hobbytan-ai.firebaseapp.com",projectId:"hobbytan-ai",storageBucket:"hobbytan-ai.firebasestorage.app",messagingSenderId:"820555571498",appId:"1:820555571498:web:eb5c2de98d3b6c18e43cb9"});
+const db=firebase.firestore();
+
+function handleSubmit(e){
+  e.preventDefault();
+  const f=document.getElementById('contact-form');
+  const d={
+    name:f.name.value.trim(),
+    email:f.email.value.trim(),
+    phone:f.phone.value.trim(),
+    company:f.company.value.trim(),
+    message:f.message.value.trim()
+  };
+
+  // Validate
+  let ok=true;
+  ['name','email','phone','message'].forEach(k=>{
+    const el=document.getElementById('f-'+k);
+    if(!d[k]||(k==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d[k]))){
+      el.classList.add('has-error');ok=false;
+    }else{el.classList.remove('has-error')}
+  });
+  if(!ok)return false;
+
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span>접수 중...';
+
+  db.collection('contacts').add({
+    ...d,
+    createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+    status:'new'
+  }).then(()=>{
+    document.getElementById('form-view').style.display='none';
+    document.getElementById('success-view').style.display='block';
+  }).catch(err=>{
+    console.error(err);
+    alert('문의 접수 중 오류가 발생했습니다. 이메일(pablo@hobbytan.com)로 직접 연락 부탁드립니다.');
+    btn.disabled=false;
+    btn.innerHTML='문의 접수하기';
+  });
+  return false;
+}
+
+// Clear error on input
+document.querySelectorAll('.field input,.field textarea').forEach(el=>{
+  el.addEventListener('input',()=>el.closest('.field').classList.remove('has-error'));
+});
+</script>
+</body>
+</html>

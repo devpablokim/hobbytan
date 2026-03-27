@@ -62,5 +62,10 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true;
     }
+    // Contact form submissions - public create only
+    match /contacts/{docId} {
+      allow create: if true;
+      allow read: if request.auth != null;
+    }
   }
 }
