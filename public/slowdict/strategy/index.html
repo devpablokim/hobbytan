@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>슬로우딕트 아줄렌 카밍 마스크 — 한국 시장 판매 전략</title>
+<meta name="description" content="슬로우딕트 아줄렌 카밍 마스크 한국 시장 판매 전략 보고서. HOBBYTAN AI 제작.">
+<link rel="icon" href="/favicon.ico">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Pretendard',system-ui,-apple-system,sans-serif;background:#0a0a0a;color:#e5e5e5;line-height:1.7}
+a{color:inherit;text-decoration:none}
+:root{--em:#10b981;--em2:#059669;--bl:#3b82f6;--bl2:#2563eb;--bg:#0a0a0a;--card:#111;--bd:#222;--gy:#999;--gy2:#666;--wh:#fff;--rd:#ef4444;--am:#f59e0b}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,6,8,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(30,30,42,.5);height:56px;display:flex;align-items:center;padding:0 24px}
+nav .inner{max-width:1100px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+nav .back{font-size:13px;color:var(--gy);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--bl)}
+
+.w{max-width:1000px;margin:0 auto;padding:0 20px}
+.s{padding:clamp(48px,8vw,80px) 0}
+.tc{text-align:center}
+.card{background:var(--card);border:1px solid var(--bd);padding:clamp(20px,3vw,32px)}
+.g{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.tag-em{color:var(--em)}
+.tag-bl{color:var(--bl)}
+.sh{font-size:clamp(24px,4vw,36px);font-weight:800;color:var(--wh);margin-bottom:16px}
+.sp{font-size:15px;color:var(--gy);max-width:640px}
+
+/* Hero */
+.hero{padding:100px 0 60px;position:relative;overflow:hidden;border-bottom:1px solid var(--bd)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:var(--bl);padding:8px 18px;font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:24px}
+.hero h1{font-size:clamp(28px,5vw,48px);font-weight:800;color:var(--wh);line-height:1.2;margin-bottom:16px}
+.hero h1 .bl{color:var(--bl)}
+.hero h1 .em{color:var(--em)}
+.hero-sub{font-size:clamp(15px,2vw,18px);color:var(--gy);max-width:600px;margin:0 auto 32px}
+.hero-stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat .val{font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--bl)}
+.hero-stat .lbl{font-size:12px;color:var(--gy2);margin-top:4px}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(140px);pointer-events:none;opacity:.5}
+
+/* Comp table */
+.comp-grid{display:grid;grid-template-columns:140px repeat(3,1fr);gap:0;border:1px solid var(--bd);font-size:13px}
+.comp-grid>div{padding:12px 14px;border-bottom:1px solid var(--bd);border-right:1px solid var(--bd)}
+.comp-grid>div:nth-child(4n){border-right:none}
+.comp-grid .ch{background:#181818;font-weight:700;color:var(--wh);font-size:12px;text-transform:uppercase;letter-spacing:1px}
+.comp-grid .rl{color:var(--gy2);font-weight:600}
+.comp-grid .hl{background:rgba(59,130,246,.05);color:var(--bl);font-weight:600}
+
+/* Timeline */
+.phase{position:relative;padding-left:28px;margin-bottom:40px}
+.phase::before{content:'';position:absolute;left:7px;top:8px;bottom:-32px;width:2px;background:var(--bd)}
+.phase:last-child::before{bottom:8px}
+.phase-dot{position:absolute;left:0;top:6px;width:16px;height:16px;border-radius:50%;border:3px solid var(--bg)}
+.phase-dot.p1{background:var(--bl)}
+.phase-dot.p2{background:var(--em)}
+.phase-dot.p3{background:var(--am)}
+.phase-label{font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
+.phase-title{font-size:18px;font-weight:700;color:var(--wh);margin-bottom:8px}
+.phase-items{list-style:none;padding:0}
+.phase-items li{font-size:14px;color:var(--gy);padding:4px 0;padding-left:18px;position:relative}
+.phase-items li::before{content:'→';position:absolute;left:0;color:var(--bl)}
+
+/* KPI bars */
+.kpi-bar{margin-bottom:16px}
+.kpi-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.kpi-label{color:var(--wh);font-weight:600}
+.kpi-val{color:var(--bl);font-weight:700}
+.kpi-track{height:6px;background:var(--bd)}
+.kpi-fill{height:100%;transition:width .6s}
+
+/* Funnel */
+.funnel{display:flex;flex-direction:column;align-items:center;gap:0}
+.funnel-step{padding:20px;text-align:center;width:100%;position:relative;border:1px solid var(--bd);border-bottom:none}
+.funnel-step:last-child{border-bottom:1px solid var(--bd)}
+.funnel-step .f-title{font-size:16px;font-weight:700;color:var(--wh);margin-bottom:4px}
+.funnel-step .f-desc{font-size:13px;color:var(--gy)}
+.funnel-step .f-price{font-size:15px;font-weight:700;color:var(--bl);margin-top:6px}
+.funnel-arrow{color:var(--bd);font-size:20px;margin:4px 0}
+
+/* Content cards */
+.cc{border-left:3px solid var(--bl);padding-left:16px;margin-bottom:20px}
+.cc-tag{font-size:11px;color:var(--bl);font-weight:700;letter-spacing:1px;margin-bottom:4px}
+.cc-title{font-size:15px;font-weight:700;color:var(--wh);margin-bottom:4px}
+.cc-desc{font-size:13px;color:var(--gy)}
+
+/* Risk */
+.risk{padding:16px;border:1px solid var(--bd);margin-bottom:12px}
+.risk-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.risk-level{font-size:11px;font-weight:700;padding:2px 8px}
+.risk-high{background:rgba(239,68,68,.15);color:var(--rd)}
+.risk-mid{background:rgba(245,158,11,.15);color:var(--am)}
+.risk-low{background:rgba(16,185,129,.15);color:var(--em)}
+.risk-title{font-size:14px;font-weight:700;color:var(--wh)}
+.risk-body{font-size:13px;color:var(--gy)}
+
+footer{border-top:1px solid var(--bd);padding:32px 0;text-align:center;font-size:12px;color:var(--gy2)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="/"><img src="/logo-white.svg" alt="HOBBYTAN AI" style="height:24px" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span style="display:none;font-size:15px;font-weight:800;color:#fff">HOBBYTAN AI</span></a>
+    <a href="/" class="back">← hobbytan.com</a>
+  </div>
+</nav>
+
+<!-- ══════ HERO ══════ -->
+<section class="hero tc">
+  <div class="hero-orb" style="top:-20%;left:30%;width:600px;height:400px;background:rgba(59,130,246,.08)"></div>
+  <div class="hero-orb" style="top:40%;right:10%;width:400px;height:300px;background:rgba(16,185,129,.06)"></div>
+  <div class="w" style="position:relative;z-index:1">
+    <div class="hero-badge">📊 MARKET STRATEGY REPORT</div>
+    <h1>슬로우딕트<br><span class="bl">아줄렌 카밍 마스크</span><br><span class="em">한국 시장 판매 전략</span></h1>
+    <p class="hero-sub">Calm your skin, Heal your mind — 프리미엄 인디 진정팩의 K-뷰티 시장 공략 전략</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="val">₩27조</div><div class="lbl">글로벌 마스크팩 시장</div></div>
+      <div class="hero-stat"><div class="val">₩3,900</div><div class="lbl">팩당 프리미엄 포지셔닝</div></div>
+      <div class="hero-stat"><div class="val">12M</div><div class="lbl">목표 달성 기간</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 제품 개요 ══════ -->
+<section class="s">
+  <div class="w">
+    <div class="tc" style="margin-bottom:40px">
+      <div class="tag tag-bl">PRODUCT OVERVIEW</div>
+      <h2 class="sh">제품 분석</h2>
+    </div>
+    <div class="g g2">
+      <div class="card">
+        <div style="font-size:11px;color:var(--bl);font-weight:700;letter-spacing:1px;margin-bottom:12px">BRAND</div>
+        <div style="font-size:20px;font-weight:800;color:var(--wh);margin-bottom:8px">슬로우딕트 (Slowdict)</div>
+        <div style="font-size:13px;color:var(--gy);margin-bottom:12px">㈜이도인터내셔널 | CEO 김가연</div>
+        <div style="font-size:13px;color:var(--gy)">서울 서초구 서초대로4길 14, 401호</div>
+        <div style="font-size:13px;color:var(--gy);margin-top:4px">Instagram: @slowdict | 070-8028-8729</div>
+      </div>
+      <div class="card">
+        <div style="font-size:11px;color:var(--bl);font-weight:700;letter-spacing:1px;margin-bottom:12px">KEY INGREDIENT</div>
+        <div style="font-size:20px;font-weight:800;color:var(--wh);margin-bottom:8px">아줄렌 (Azulene)</div>
+        <div style="font-size:13px;color:var(--gy);margin-bottom:8px">캐모마일 유래 천연 성분. 진정·항염·항산화 3중 효과.</div>
+        <div style="font-size:13px;color:var(--bl);font-weight:600">💡 "시카 다음 진정 트렌드" — 마몽드 카밍샷 라인이 대형 레퍼런스</div>
+      </div>
+    </div>
+    <div class="g g4" style="margin-top:16px">
+      <div class="card tc">
+        <div style="font-size:24px;margin-bottom:6px">📦</div>
+        <div style="font-size:12px;color:var(--gy2)">1박스 (10팩)</div>
+        <div style="font-size:20px;font-weight:800;color:var(--wh)">₩39,000</div>
+        <div style="font-size:12px;color:var(--em)">13% 할인</div>
+      </div>
+      <div class="card tc">
+        <div style="font-size:24px;margin-bottom:6px">📦📦</div>
+        <div style="font-size:12px;color:var(--gy2)">2박스 (20팩)</div>
+        <div style="font-size:20px;font-weight:800;color:var(--wh)">17% 할인</div>
+        <div style="font-size:12px;color:var(--em)">+ 쇼핑백</div>
+      </div>
+      <div class="card tc">
+        <div style="font-size:24px;margin-bottom:6px">📦📦📦</div>
+        <div style="font-size:12px;color:var(--gy2)">3박스 (30팩)</div>
+        <div style="font-size:20px;font-weight:800;color:var(--wh)">22% 할인</div>
+        <div style="font-size:12px;color:var(--em)">+ 쇼핑백</div>
+      </div>
+      <div class="card tc" style="border-color:var(--bl)">
+        <div style="font-size:24px;margin-bottom:6px">🏆</div>
+        <div style="font-size:12px;color:var(--bl);font-weight:700">BEST</div>
+        <div style="font-size:20px;font-weight:800;color:var(--wh)">4+1박스</div>
+        <div style="font-size:12px;color:var(--em)">28% 할인 + 쇼핑백 2장</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 경쟁 분석 ══════ -->
+<section class="s" style="background:#080808">
+  <div class="w">
+    <div class="tc" style="margin-bottom:40px">
+      <div class="tag tag-em">COMPETITIVE ANALYSIS</div>
+      <h2 class="sh">경쟁 포지셔닝</h2>
+      <p class="sp" style="margin:0 auto">다이소 ₩2,000과 직접 경쟁하면 패배. "패스트 뷰티 vs 슬로우 뷰티" 프레임 생성.</p>
+    </div>
+    <div class="comp-grid">
+      <div class="ch">구분</div><div class="ch">다이소 셀더마</div><div class="ch">마몽드 카밍샷</div><div class="ch hl">슬로우딕트</div>
+      <div class="rl">팩당 가격</div><div>₩2,000</div><div>₩2,500~3,000</div><div class="hl">₩3,900</div>
+      <div class="rl">포지셔닝</div><div>초가성비</div><div>대기업 신뢰</div><div class="hl">프리미엄 인디</div>
+      <div class="rl">유통 채널</div><div>다이소</div><div>올리브영 + 백화점</div><div class="hl">D2C 자사몰</div>
+      <div class="rl">타겟</div><div>10~20대 가성비</div><div>20~30대 범용</div><div class="hl">25~35세 성분주의</div>
+      <div class="rl">차별점</div><div>접근성</div><div>브랜드 신뢰</div><div class="hl">슬로우 뷰티 철학</div>
+      <div class="rl">약점</div><div>품질 인식 한계</div><div>인디 감성 부족</div><div class="hl">인지도 부족</div>
+    </div>
+    <div class="card" style="margin-top:24px;border-left:3px solid var(--bl)">
+      <div style="font-size:14px;font-weight:700;color:var(--wh);margin-bottom:6px">💡 핵심 인사이트: "같은 아줄렌이 아닙니다"</div>
+      <div style="font-size:13px;color:var(--gy)">성분만으로는 차별화 한계. 시트 소재, 원액 함량, 피부 밀착도 등 <strong style="color:var(--wh)">물리적 차별점</strong>을 전면에 내세워야 함. "아줄렌 팩"이 아니라 "이 팩이 왜 ₩3,900 가치인지" 설명.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 타겟 고객 ══════ -->
+<section class="s">
+  <div class="w">
+    <div class="tc" style="margin-bottom:40px">
+      <div class="tag tag-bl">TARGET CUSTOMER</div>
+      <h2 class="sh">타겟 고객 세분화</h2>
+    </div>
+    <div class="g g3">
+      <div class="card" style="border-top:3px solid var(--bl)">
+        <div style="font-size:11px;color:var(--bl);font-weight:700;margin-bottom:8px">PRIMARY — CORE</div>
+        <div style="font-size:16px;font-weight:700;color:var(--wh);margin-bottom:8px">25~35세 여성</div>
+        <ul style="font-size:13px;color:var(--gy);padding-left:16px">
+          <li>민감성·건조성 피부</li>
+          <li>성분 중시 소비자</li>
+          <li>인스타·유튜브 뷰티 콘텐츠 소비</li>
+          <li>"가심비" (심리적 만족) 추구</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid var(--em)">
+        <div style="font-size:11px;color:var(--em);font-weight:700;margin-bottom:8px">SECONDARY — EXPANSION</div>
+        <div style="font-size:16px;font-weight:700;color:var(--wh);margin-bottom:8px">20대 초반 + 35~45세</div>
+        <ul style="font-size:13px;color:var(--gy);padding-left:16px">
+          <li>시카→아줄렌 트렌드 얼리어답터</li>
+          <li>"클린뷰티" 관심층</li>
+          <li>"하나를 써도 좋은 것을"</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid var(--am)">
+        <div style="font-size:11px;color:var(--am);font-weight:700;margin-bottom:8px">TERTIARY — GIFTING</div>
+        <div style="font-size:16px;font-weight:700;color:var(--wh);margin-bottom:8px">선물 수요</div>
+        <ul style="font-size:13px;color:var(--gy);padding-left:16px">
+          <li>쇼핑백 증정 옵션 활용</li>
+          <li>프리미엄 패키지 감성</li>
+          <li>시즌 기프트 마케팅</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 포지셔닝 전략 ══════ -->
+<section class="s" style="background:#080808">
+  <div class="w">
+    <div class="tc" style="margin-bottom:40px">
+      <div class="tag tag-em">POSITIONING</div>
+      <h2 class="sh">"슬로우 뷰티" 카테고리 창출</h2>
+      <p class="sp" style="margin:0 auto">브랜드명 자체가 전략. "패스트 뷰티"에 지친 소비자를 위한 새로운 카테고리.</p>
+    </div>
+    <div class="g g2">
+      <div class="card" style="border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.03)">
+        <div style="font-size:14px;font-weight:700;color:var(--rd);margin-bottom:12px">❌ 패스트 뷰티</div>
+        <ul style="font-size:13px;color:var(--gy);padding-left:16px;list-style:none">
+          <li style="padding:4px 0">• 대량 생산, 저가 경쟁</li>
+          <li style="padding:4px 0">• "일단 많이, 빠르게"</li>
+          <li style="padding:4px 0">• 성분보다 가격 우선</li>
+          <li style="padding:4px 0">• 일회성 소비</li>
+        </ul>
+      </div>
+      <div class="card" style="border:1px solid rgba(59,130,246,.3);background:rgba(59,130,246,.03)">
+        <div style="font-size:14px;font-weight:700;color:var(--bl);margin-bottom:12px">✅ 슬로우 뷰티 (Slowdict)</div>
+        <ul style="font-size:13px;color:var(--gy);padding-left:16px;list-style:none">
+          <li style="padding:4px 0">• 천천히, 제대로, 진정한 진정</li>
+          <li style="padding:4px 0">• "하루 ₩3,900 = 라떼 한 잔 피부 투자"</li>
+          <li style="padding:4px 0">• 고함량 아줄렌 + 프리미엄 시트</li>
+          <li style="padding:4px 0">• 2주 집중 케어 프로그램</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card tc" style="margin-top:24px;border-color:var(--bl)">
+      <div style="font-size:16px;font-weight:700;color:var(--bl);margin-bottom:4px">아줄렌의 "푸른 색감" = 비주얼 차별화 자산</div>
+      <div style="font-size:13px;color:var(--gy)">틱톡/릴스에서 블루 컬러 마스크팩의 시각적 임팩트 극대화</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 가격 전략 ══════ -->
+<section class="s">
+  <div class="w">
+    <div class="tc" style="margin-bottom:40px">
+      <div class="tag tag-bl">PRICING STRATEGY</div>
+      <h2 class="sh">가격 전략 — 트라이얼 → 박스 전환 퍼널</h2>
+      <p class="sp" style="margin:0 auto">1박스 ₩39,000 첫 구매 허들을 낮추기 위한 단계별 전환 전략.</p>
+    </div>
+    <div style="max-width:480px;margin:0 auto">
+      <div class="funnel">
+        <div class="funnel-step" style="background:rgba(59,130,246,.05);border-color:var(--bl)">
+          <div class="f-title">🎯 STEP 1 — 트라이얼</div>
+          <div class="f-desc">2~3매 체험 세트로 첫 경험 유도</div>
+          <div class="f-price">₩9,900 ~ ₩12,000</div>
+        </div>
+        <div class="funnel-step" style="background:rgba(16,185,129,.05)">
+          <div class="f-title">📦 STEP 2 — 박스 전환</div>
+          <div class="f-desc">만족 고객의 1박스(10팩) 전환</div>
+          <div class="f-price">₩39,000 (팩당 ₩3,900)</div>
+        </div>
+        <div class="funnel-step" style="background:rgba(245,158,11,.05)">
+          <div class="f-title">🏆 STEP 3 — 볼륨 + 구독</div>
+          <div class="f-desc">4+1 세트 + 정기배송 할인</div>
+          <div class="f-price">28% 할인 (팩당 ₩2,808)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 채널 전략 로드맵 ══════ -->
+<section class="s" style="background:#080808">
+  <div class="w">
+    <div class="tc" style="margin-bottom:40px">
+      <div class="tag tag-em">CHANNEL ROADMAP</div>
+      <h2 class="sh">채널 전략 로드맵</h2>
+    </div>
+    <div style="max-width:640px;margin:0 auto">
+      <div class="phase">
+        <div class="phase-dot p1"></div>
+        <div class="phase-label" style="color:var(--bl)">PHASE 1 — M1~3: D2C 강화</div>
+        <div class="phase-title">자사몰 기반 구축 + 인지도 확보</div>
+        <ul class="phase-items">
+          <li>인스타그램 @slowdict 콘텐츠 강화 (Before/After, 성분 교육)</li>
+          <li>틱톡/릴스 숏폼: "아줄렌 블루" 비주얼 ASMR</li>
+          <li>마이크로 인플루언서 시딩 15명 (팔로워 1K~10K)</li>
+          <li>트라이얼 팩 2~3매 ₩9,900 런칭</li>
+          <li>자사몰 전환율 2.5% 이상 목표</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase-dot p2"></div>
+        <div class="phase-label" style="color:var(--em)">PHASE 2 — M4~6: 플랫폼 확장</div>
+        <div class="phase-title">올리브영 입점 + 검색 유입 확보</div>
+        <ul class="phase-items">
+          <li>올리브영 입점 추진 (인디 브랜드 MD 컨택)</li>
+          <li>네이버 스마트스토어 오픈</li>
+          <li>쿠팡 로켓배송 등록</li>
+          <li>피부과 전문의 추천 확보</li>
+          <li>총 월 매출 ₩2,000만 목표</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase-dot p3"></div>
+        <div class="phase-label" style="color:var(--am)">PHASE 3 — M7~12: 브랜드 확장</div>
+        <div class="phase-title">오프라인 매대 + 라인업 확장 + 글로벌</div>
+        <ul class="phase-items">
+          <li>올리브영 오프라인 매대 50개점 이상</li>
+          <li>아줄렌 라인업 확장 (토너, 크림, 세럼)</li>
+          <li>글로벌 채널 진출 (Qoo10 JP 우선, 아마존 US)</li>
+          <li>월 매출 ₩5,000만 목표</li>
+          <li>"아줄렌 마스크팩" 네이버 검색 1페이지 노출</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ KPI ══════ -->
+<section class="s">
+  <div class="w">
+    <div class="tc" style="margin-bottom:40px">
+      <div class="tag tag-bl">KPI DASHBOARD</div>
+      <h2 class="sh">목표 핵심 지표</h2>
+    </div>
+    <div class="g g2">
+      <div class="card">
+        <div style="font-size:12px;color:var(--bl);font-weight:700;margin-bottom:16px">PHASE 1 (M1~3)</div>
+        <div class="kpi-bar"><div class="kpi-top"><span class="kpi-label">자사몰 월 방문자</span><span class="kpi-val">15,000</span></div><div class="kpi-track"><div class="kpi-fill" style="width:60%;background:var(--bl)"></div></div></div>
+        <div class="kpi-bar"><div class="kpi-top"><span class="kpi-label">인스타 팔로워 증가</span><span class="kpi-val">+2,000</span></div><div class="kpi-track"><div class="kpi-fill" style="width:40%;background:var(--bl)"></div></div></div>
+        <div class="kpi-bar"><div class="kpi-top"><span class="kpi-label">전환율</span><span class="kpi-val">2.5%</span></div><div class="kpi-track"><div class="kpi-fill" style="width:25%;background:var(--bl)"></div></div></div>
+        <div class="kpi-bar"><div class="kpi-top"><span class="kpi-label">월 매출</span><span class="kpi-val">₩780만</span></div><div class="kpi-track"><div class="kpi-fill" style="width:30%;background:var(--bl)"></div></div></div>
+        <div class="kpi-bar"><div class="kpi-top"><span class="kpi-label">리뷰 누적</span><span class="kpi-val">100건+</span></div><div class="kpi-track"><div class="kpi-fill" style="width:35%;background:var(--bl)"></div></div></div>
+      </div>
+      <div class="card">
+        <div style="font-size:12px;color:var(--em);font-weight:700;margin-bottom:16px">PHASE 2~3 (M4~12)</div>
+        <div class="kpi-bar"><div class="kpi-top"><span class="kpi-label">올리브영 입점</span><span class="kpi-val">확정</span></div><div class="kpi-track"><div class="kpi-fill" style="width:50%;background:var(--em)"></div></div></div>
+        <div class="kpi-bar"><div class="kpi-top"><span class="kpi-label">총 월 매출 (M6)</span><span class="kpi-val">₩2,000만</span></div><div class="kpi-track"><div class="kpi-fill" style="width:60%;background:var(--em)"></div></div></div>
+        <div class="kpi-bar"><div class="kpi-top"><span class="kpi-label">재구매율</span><span class="kpi-val">25%+</span></div><div class="kpi-track"><div class="kpi-fill" style="width:45%;background:var(--em)"></div></div></div>
+        <div class="kpi-bar"><div class="kpi-top"><span class="kpi-label">오프라인 매대</span><span class="kpi-val">50개점+</span></div><div class="kpi-track"><div class="kpi-fill" style="width:55%;background:var(--am)"></div></div></div>
+        <div class="kpi-bar"><div class="kpi-top"><span class="kpi-label">월 매출 (M12)</span><span class="kpi-val">₩5,000만</span></div><div class="kpi-track"><div class="kpi-fill" style="width:80%;background:var(--am)"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 콘텐츠 전략 ══════ -->
+<section class="s" style="background:#080808">
+  <div class="w">
+    <div class="tc" style="margin-bottom:40px">
+      <div class="tag tag-bl">CONTENT STRATEGY</div>
+      <h2 class="sh">"Blue Calm" 캠페인</h2>
+      <p class="sp" style="margin:0 auto">아줄렌의 푸른 색감을 활용한 비주얼 중심 콘텐츠 전략.</p>
+    </div>
+    <div class="g g2">
+      <div>
+        <div class="cc">
+          <div class="cc-tag">SNS CAMPAIGN</div>
+          <div class="cc-title">#블루카밍챌린지</div>
+          <div class="cc-desc">아줄렌 마스크의 푸른 색감 활용 릴스/틱톡. 참여형 해시태그로 UGC 확보.</div>
+        </div>
+        <div class="cc">
+          <div class="cc-tag">EDUCATION</div>
+          <div class="cc-title">"시카 vs 아줄렌, 뭐가 다를까?"</div>
+          <div class="cc-desc">성분 교육 시리즈. 아줄렌의 과학적 진정 메커니즘을 알기 쉽게 설명.</div>
+        </div>
+        <div class="cc">
+          <div class="cc-tag">VLOG</div>
+          <div class="cc-title">"10일간의 아줄렌 진정 다이어리"</div>
+          <div class="cc-desc">슬로우 루틴 VLOG. 실제 사용 과정을 기록하며 Before/After 변화 공유.</div>
+        </div>
+      </div>
+      <div>
+        <div class="cc" style="border-left-color:var(--em)">
+          <div class="cc-tag" style="color:var(--em)">SEASONAL</div>
+          <div class="cc-title">계절 마케팅</div>
+          <div class="cc-desc">봄 환절기 진정 / 여름 자외선 후 케어 / 가을 건조 보습 / 겨울 선물 시즌별 타겟 광고.</div>
+        </div>
+        <div class="cc" style="border-left-color:var(--em)">
+          <div class="cc-tag" style="color:var(--em)">INFLUENCER</div>
+          <div class="cc-title">마이크로 인플루언서 시딩</div>
+          <div class="cc-desc">팔로워 1~5만 뷰티 크리에이터 15명. 팩당 ₩3,900 = 리뷰 콘텐츠에 적합한 프리미엄 느낌.</div>
+        </div>
+        <div class="cc" style="border-left-color:var(--am)">
+          <div class="cc-tag" style="color:var(--am)">AUTHORITY</div>
+          <div class="cc-title">피부과 전문의 추천</div>
+          <div class="cc-desc">임상 데이터 확보 + 전문의 리뷰. 소규모 브랜드 신뢰도 해소의 결정적 무기.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 리스크 ══════ -->
+<section class="s">
+  <div class="w">
+    <div class="tc" style="margin-bottom:40px">
+      <div class="tag tag-em">RISK MANAGEMENT</div>
+      <h2 class="sh">실행 리스크 & 대응</h2>
+    </div>
+    <div style="max-width:700px;margin:0 auto">
+      <div class="risk">
+        <div class="risk-head"><span class="risk-level risk-high">HIGH</span><span class="risk-title">다이소 ₩2,000 마스크팩과 가격 비교</span></div>
+        <div class="risk-body">→ 대응: 성분 농도·원료 원산지·시트 소재 비교 콘텐츠 제작. "같은 아줄렌이 아닙니다" 캠페인.</div>
+      </div>
+      <div class="risk">
+        <div class="risk-head"><span class="risk-level risk-mid">MID</span><span class="risk-title">D2C 단독 시 트래픽 한계</span></div>
+        <div class="risk-body">→ 대응: M3 올리브영 입점을 KPI로 설정. 동시에 네이버/쿠팡 검색 유입 확보.</div>
+      </div>
+      <div class="risk">
+        <div class="risk-head"><span class="risk-level risk-mid">MID</span><span class="risk-title">소규모 브랜드 신뢰도 부족</span></div>
+        <div class="risk-body">→ 대응: 피부과 전문의 추천, 임상 데이터 확보, 올리브영 입점 = 신뢰 뱃지 효과.</div>
+      </div>
+      <div class="risk">
+        <div class="risk-head"><span class="risk-level risk-low">LOW</span><span class="risk-title">₩39,000 첫 구매 허들</span></div>
+        <div class="risk-body">→ 대응: 트라이얼 팩 ₩9,900 신설. 첫 경험 → 재구매 → 박스 전환 퍼널 구축.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 레퍼런스 ══════ -->
+<section class="s" style="background:#080808">
+  <div class="w">
+    <div class="tc" style="margin-bottom:40px">
+      <div class="tag tag-bl">REFERENCES</div>
+      <h2 class="sh">시장 권위 레퍼런스</h2>
+    </div>
+    <div class="g g2">
+      <div class="card">
+        <div style="font-size:13px;color:var(--bl);font-weight:600;margin-bottom:4px">메디힐 사례</div>
+        <div style="font-size:13px;color:var(--gy)">올리브영 입점 후 연매출 2,000억 돌파. 인디 브랜드→글로벌 K-뷰티 대표 성공 케이스. (중앙일보 2026.1)</div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--bl);font-weight:600;margin-bottom:4px">올리브영 인디 브랜드 비중</div>
+        <div style="font-size:13px;color:var(--gy)">올리브영 입점 브랜드 중 80%가 인디/중소 브랜드. 슬로우딕트에 적합한 유통 채널.</div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--bl);font-weight:600;margin-bottom:4px">하퍼스 바자</div>
+        <div style="font-size:13px;color:var(--gy)">"아줄렌은 시카보다 빠른 진정력" — 차세대 진정 성분으로 주목.</div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--bl);font-weight:600;margin-bottom:4px">글로벌 마스크팩 시장</div>
+        <div style="font-size:13px;color:var(--gy)">2025년 기준 약 27조원 규모. K-뷰티 프리미엄으로 해외 역직구 성장세.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ FOOTER ══════ -->
+<footer>
+  <div class="w">
+    <p style="margin-bottom:6px;color:var(--gy)">본 전략 보고서는 <strong>HOBBYTAN AI</strong>가 제작했습니다.</p>
+    <p>하비탄에이아이 주식회사 | 대표 김탄휴 | <a href="mailto:pablo@hobbytan.com" style="color:var(--bl)">pablo@hobbytan.com</a></p>
+    <p style="margin-top:12px">&copy; 2026 HOBBYTAN AI Corp. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
