@@ -23,8 +23,7 @@ input,textarea{font-family:inherit;outline:none;border:none}
 /* ═══════════════════════════════════════════
    ANIMATIONS
    ═══════════════════════════════════════════ */
-.anim{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
-.anim.show{opacity:1;transform:translateY(0)}
+/* No hidden-by-default animations. Content always visible. */
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 @keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(100,100,255,.15)}50%{box-shadow:0 0 40px rgba(100,100,255,.3)}}
 @keyframes gradient-shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
@@ -455,14 +454,7 @@ input,textarea{font-family:inherit;outline:none;border:none}
 /* ═══════════════════════════════════════════
    INTERSECTION OBSERVER — FADE UP
    ═══════════════════════════════════════════ */
-// Animate .anim elements on scroll
-document.querySelectorAll('.hero .anim').forEach(el => el.classList.add('show'));
-const animObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); animObs.unobserve(e.target); } });
-}, { threshold: 0.05 });
-document.querySelectorAll('.anim:not(.show)').forEach(el => animObs.observe(el));
-// Failsafe: show everything after 2s
-setTimeout(() => document.querySelectorAll('.anim:not(.show)').forEach(el => el.classList.add('show')), 2000);
+// All content visible by default. No animation observer needed.
 
 /* ═══════════════════════════════════════════
    STATE
