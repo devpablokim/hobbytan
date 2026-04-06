@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 의회 — HOBBYTAN COUNCIL</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;font-size:16px}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,Roboto,sans-serif;background:#000;color:#f5f5f7;overflow-x:hidden;line-height:1.6}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input,textarea{font-family:inherit;outline:none;border:none}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════ */
+.fade-up{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.25,.46,.45,.94),transform .8s cubic-bezier(.25,.46,.45,.94)}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(100,100,255,.15)}50%{box-shadow:0 0 40px rgba(100,100,255,.3)}}
+@keyframes gradient-shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes typing-dot{0%,60%,100%{opacity:.3}30%{opacity:1}}
+@keyframes slide-in-right{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes progress-fill{from{width:0}to{width:100%}}
+@keyframes hero-gradient{0%{opacity:.4}50%{opacity:.7}100%{opacity:.4}}
+
+/* ═══════════════════════════════════════════
+   PART 1 — LANDING
+   ═══════════════════════════════════════════ */
+
+/* Hero */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(88,86,214,.2),transparent 70%),radial-gradient(ellipse 60% 50% at 30% 60%,rgba(0,122,255,.1),transparent 60%);animation:hero-gradient 6s ease-in-out infinite;pointer-events:none;z-index:0}
+.hero>*{position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:100px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:.85rem;color:rgba(255,255,255,.6);margin-bottom:2rem;backdrop-filter:blur(10px)}
+.hero-badge .dot{width:8px;height:8px;border-radius:50%;background:#34c759;animation:typing-dot 1.4s infinite}
+.hero h1{font-size:clamp(3rem,8vw,7rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:1.5rem;background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.7) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{font-size:clamp(1.1rem,2.5vw,1.6rem);color:rgba(255,255,255,.55);max-width:640px;margin:0 auto 3rem;font-weight:400;line-height:1.5}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;padding:18px 40px;border-radius:100px;background:linear-gradient(135deg,#5856d6,#007aff);color:#fff;font-size:1.1rem;font-weight:600;transition:all .3s;box-shadow:0 4px 24px rgba(88,86,214,.3)}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(88,86,214,.45)}
+.cta-btn .arrow{transition:transform .3s}
+.cta-btn:hover .arrow{transform:translateX(4px)}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.25);font-size:.85rem;display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll-hint::after{content:'';width:1px;height:40px;background:linear-gradient(rgba(255,255,255,.3),transparent);animation:float 2s infinite}
+
+/* Section Common */
+.section{padding:clamp(80px,12vh,160px) clamp(1.5rem,5vw,4rem);max-width:1200px;margin:0 auto}
+.section-label{font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.15em;color:#5856d6;margin-bottom:1rem}
+.section h2{font-size:clamp(2rem,5vw,3.5rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:1.5rem}
+.section .desc{font-size:clamp(1rem,1.8vw,1.25rem);color:rgba(255,255,255,.5);max-width:700px;line-height:1.7}
+
+/* Problem Section */
+.problem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:3rem}
+.problem-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:2rem;transition:transform .3s,border-color .3s}
+.problem-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.12)}
+.problem-card .icon{font-size:2rem;margin-bottom:1rem}
+.problem-card h3{font-size:1.15rem;font-weight:600;margin-bottom:.5rem}
+.problem-card p{font-size:.95rem;color:rgba(255,255,255,.45);line-height:1.6}
+
+/* Agent Cards */
+.agent-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:3rem}
+.agent-card{position:relative;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:24px;padding:2.5rem 2rem;text-align:center;overflow:hidden;transition:transform .3s,border-color .3s}
+.agent-card:hover{transform:translateY(-6px)}
+.agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:24px 24px 0 0}
+.agent-card.deo::before{background:linear-gradient(90deg,#bf5af2,#a855f7)}
+.agent-card.deo:hover{border-color:rgba(191,90,242,.3)}
+.agent-card.pm::before{background:linear-gradient(90deg,#007aff,#5ac8fa)}
+.agent-card.pm:hover{border-color:rgba(0,122,255,.3)}
+.agent-card.dev::before{background:linear-gradient(90deg,#30d158,#34c759)}
+.agent-card.dev:hover{border-color:rgba(48,209,88,.3)}
+.agent-card.po::before{background:linear-gradient(90deg,#ff9f0a,#ff6b35)}
+.agent-card.po:hover{border-color:rgba(255,159,10,.3)}
+.agent-avatar{width:72px;height:72px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 1.2rem;color:#fff}
+.agent-card.deo .agent-avatar{background:linear-gradient(135deg,#bf5af2,#8b5cf6)}
+.agent-card.pm .agent-avatar{background:linear-gradient(135deg,#007aff,#5ac8fa)}
+.agent-card.dev .agent-avatar{background:linear-gradient(135deg,#30d158,#22c55e)}
+.agent-card.po .agent-avatar{background:linear-gradient(135deg,#ff9f0a,#f59e0b)}
+.agent-card h3{font-size:1.3rem;font-weight:700;margin-bottom:.3rem}
+.agent-card .role{font-size:.85rem;color:rgba(255,255,255,.4);margin-bottom:1rem}
+.agent-card .spec{font-size:.9rem;color:rgba(255,255,255,.55);line-height:1.5}
+
+/* Workflow */
+.workflow{display:flex;align-items:center;justify-content:center;gap:0;margin-top:3rem;flex-wrap:wrap}
+.wf-step{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding:1.2rem 1rem;min-width:100px;text-align:center}
+.wf-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);transition:all .4s}
+.wf-step:hover .wf-icon{transform:scale(1.1);border-color:rgba(255,255,255,.2)}
+.wf-label{font-size:.8rem;font-weight:600;color:rgba(255,255,255,.5)}
+.wf-arrow{font-size:1.2rem;color:rgba(255,255,255,.15);padding:0 .3rem;flex-shrink:0}
+@media(max-width:640px){.workflow{gap:.5rem}.wf-step{min-width:70px;padding:.8rem .4rem}.wf-icon{width:44px;height:44px;font-size:1.1rem}.wf-arrow{font-size:.9rem}}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-top:3rem}
+.stat-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:2rem;text-align:center;transition:transform .3s}
+.stat-card:hover{transform:translateY(-3px)}
+.stat-num{font-size:clamp(2rem,4vw,3rem);font-weight:800;background:linear-gradient(135deg,#5856d6,#007aff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.3rem}
+.stat-label{font-size:.9rem;color:rgba(255,255,255,.4)}
+
+/* Tech */
+.tech-tags{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem}
+.tech-tag{padding:10px 20px;border-radius:100px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-size:.9rem;color:rgba(255,255,255,.6);transition:all .3s}
+.tech-tag:hover{border-color:rgba(88,86,214,.4);color:#fff;background:rgba(88,86,214,.1)}
+
+/* Divider */
+.section-divider{width:100%;max-width:1200px;margin:0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)}
+
+/* ═══════════════════════════════════════════
+   PART 2 — INTERACTIVE DEMO
+   ═══════════════════════════════════════════ */
+#demo-section{min-height:100vh;background:#000;border-top:1px solid rgba(255,255,255,.06)}
+.demo-header{text-align:center;padding:clamp(40px,6vh,80px) 1.5rem clamp(20px,3vh,40px);max-width:1200px;margin:0 auto}
+.demo-header h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.02em;margin-bottom:.5rem}
+.demo-header p{color:rgba(255,255,255,.4);font-size:1rem}
+
+.demo-app{display:grid;grid-template-columns:300px 1fr 360px;gap:0;max-width:1400px;margin:0 auto;height:calc(100vh - 180px);min-height:600px;border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,.06);background:#0a0a0a}
+
+/* Left Panel */
+.panel-left{background:#0d0d0d;border-right:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;padding:1.5rem}
+.panel-title{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.3);margin-bottom:1rem}
+.api-key-group{margin-bottom:1.5rem}
+.api-key-group label{display:block;font-size:.85rem;font-weight:500;color:rgba(255,255,255,.6);margin-bottom:.5rem}
+.api-key-input{width:100%;padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;font-size:.9rem;transition:border-color .3s}
+.api-key-input:focus{border-color:rgba(88,86,214,.5)}
+.api-key-hint{font-size:.75rem;color:rgba(255,255,255,.25);margin-top:.4rem;display:flex;align-items:center;gap:4px}
+.ceo-input-area{flex:1;display:flex;flex-direction:column}
+.ceo-textarea{flex:1;min-height:120px;width:100%;padding:16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;font-size:.95rem;resize:none;line-height:1.6;transition:border-color .3s}
+.ceo-textarea:focus{border-color:rgba(88,86,214,.5)}
+.ceo-textarea::placeholder{color:rgba(255,255,255,.2)}
+.btn-group{display:flex;gap:.75rem;margin-top:1rem}
+.btn-primary{flex:1;padding:14px;border-radius:14px;background:linear-gradient(135deg,#5856d6,#007aff);color:#fff;font-size:.95rem;font-weight:600;transition:all .3s}
+.btn-primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 20px rgba(88,86,214,.3)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-secondary{padding:14px 20px;border-radius:14px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);font-size:.95rem;font-weight:500;transition:all .3s;border:1px solid rgba(255,255,255,.08)}
+.btn-secondary:hover:not(:disabled){background:rgba(255,255,255,.1);color:#fff}
+.btn-secondary:disabled{opacity:.4;cursor:not-allowed}
+
+/* Center Panel — Chat */
+.panel-center{display:flex;flex-direction:column;overflow:hidden}
+.chat-header{padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+.chat-header h3{font-size:1rem;font-weight:600}
+.chat-header .status-dot{width:8px;height:8px;border-radius:50%;background:#555;transition:background .3s}
+.chat-header .status-dot.active{background:#34c759;animation:typing-dot 1.4s infinite}
+.chat-log{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:1rem}
+.chat-log::-webkit-scrollbar{width:4px}
+.chat-log::-webkit-scrollbar-thumb{background:#222;border-radius:2px}
+.chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,.2);text-align:center;gap:.5rem}
+.chat-empty .icon{font-size:3rem;opacity:.3}
+
+/* Message Bubbles */
+.msg{display:flex;gap:.75rem;animation:slide-in-right .4s ease-out;max-width:100%}
+.msg-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;color:#fff;font-weight:700}
+.msg-avatar.ceo{background:linear-gradient(135deg,#ff375f,#ff6b6b)}
+.msg-avatar.deo{background:linear-gradient(135deg,#bf5af2,#8b5cf6)}
+.msg-avatar.pm{background:linear-gradient(135deg,#007aff,#5ac8fa)}
+.msg-avatar.dev{background:linear-gradient(135deg,#30d158,#22c55e)}
+.msg-avatar.po{background:linear-gradient(135deg,#ff9f0a,#f59e0b)}
+.msg-body{flex:1;min-width:0}
+.msg-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem}
+.msg-name{font-size:.85rem;font-weight:600}
+.msg-badge{font-size:.65rem;padding:2px 8px;border-radius:100px;font-weight:600}
+.msg-badge.ceo{background:rgba(255,55,95,.15);color:#ff375f}
+.msg-badge.deo{background:rgba(191,90,242,.15);color:#bf5af2}
+.msg-badge.pm{background:rgba(0,122,255,.15);color:#5ac8fa}
+.msg-badge.dev{background:rgba(48,209,88,.15);color:#30d158}
+.msg-badge.po{background:rgba(255,159,10,.15);color:#ff9f0a}
+.msg-text{font-size:.9rem;color:rgba(255,255,255,.75);line-height:1.65;white-space:pre-wrap;word-break:break-word}
+.msg-text code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.85em}
+.typing-indicator{display:inline-flex;gap:4px;padding:8px 0}
+.typing-indicator span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);animation:typing-dot 1.4s infinite}
+.typing-indicator span:nth-child(2){animation-delay:.2s}
+.typing-indicator span:nth-child(3){animation-delay:.4s}
+
+/* Right Panel — Preview */
+.panel-right{background:#0d0d0d;border-left:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column}
+.status-bar{padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06)}
+.status-steps{display:flex;align-items:center;gap:0;justify-content:space-between}
+.status-step{display:flex;flex-direction:column;align-items:center;gap:.3rem;flex:1}
+.step-dot{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:rgba(255,255,255,.3);transition:all .4s;position:relative}
+.step-dot.active{background:rgba(88,86,214,.2);border-color:#5856d6;color:#5856d6}
+.step-dot.done{background:#5856d6;border-color:#5856d6;color:#fff}
+.step-label{font-size:.65rem;color:rgba(255,255,255,.3);font-weight:500;transition:color .3s}
+.step-label.active{color:#5856d6}
+.step-label.done{color:rgba(255,255,255,.5)}
+.step-line{flex:1;height:2px;background:rgba(255,255,255,.06);margin:0 .2rem;margin-bottom:1.2rem;transition:background .4s}
+.step-line.done{background:#5856d6}
+
+.preview-area{flex:1;display:flex;align-items:center;justify-content:center;padding:1rem;position:relative;overflow:hidden}
+.preview-placeholder{color:rgba(255,255,255,.15);text-align:center;font-size:.9rem}
+.preview-iframe{width:100%;height:100%;border:none;border-radius:12px;background:#fff}
+.preview-actions{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:.75rem}
+.preview-actions button{flex:1;padding:10px;border-radius:10px;font-size:.85rem;font-weight:500}
+.btn-download{background:rgba(48,209,88,.1);color:#30d158;border:1px solid rgba(48,209,88,.15);transition:all .3s}
+.btn-download:hover{background:rgba(48,209,88,.2)}
+.btn-copy{background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.06);transition:all .3s}
+.btn-copy:hover{background:rgba(255,255,255,.08);color:#fff}
+
+/* Mobile Tabs */
+.mobile-tabs{display:none;border-bottom:1px solid rgba(255,255,255,.06);background:#0d0d0d}
+.mobile-tabs button{flex:1;padding:12px;font-size:.9rem;font-weight:500;color:rgba(255,255,255,.4);background:transparent;transition:all .3s;border-bottom:2px solid transparent}
+.mobile-tabs button.active{color:#fff;border-bottom-color:#5856d6}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media(max-width:1024px){
+  .demo-app{grid-template-columns:1fr;height:auto;min-height:auto;border-radius:16px;margin:0 1rem}
+  .panel-left{border-right:none;border-bottom:1px solid rgba(255,255,255,.06);padding:1.5rem}
+  .panel-center{height:50vh;min-height:400px}
+  .panel-right{border-left:none;border-top:1px solid rgba(255,255,255,.06)}
+  .preview-area{min-height:300px}
+  .mobile-tabs{display:flex}
+  .panel-center.hidden,.panel-right.hidden{display:none}
+}
+@media(max-width:640px){
+  .demo-app{margin:0 .5rem;border-radius:12px}
+  .panel-left{padding:1rem}
+  .chat-log{padding:1rem}
+  .agent-grid{grid-template-columns:1fr 1fr}
+}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(255,255,255,.1);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);color:#fff;padding:12px 24px;border-radius:100px;font-size:.9rem;transition:transform .4s cubic-bezier(.25,.46,.45,.94);z-index:9999}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     PART 1 — LANDING
+     ═══════════════════════════════════════════ -->
+
+<section class="hero">
+  <div class="hero-badge fade-up"><span class="dot"></span> HOBBYTAN COUNCIL — Now Live</div>
+  <h1 class="fade-up">AI 의회</h1>
+  <p class="subtitle fade-up">CEO 한 명이 AI 에이전트 팀으로<br>기업을 운영합니다</p>
+  <a href="#demo-section" class="cta-btn fade-up">지금 체험하기 <span class="arrow">→</span></a>
+  <div class="scroll-hint">스크롤</div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Problem -->
+<section class="section" id="problem">
+  <div class="fade-up">
+    <span class="section-label">Problem</span>
+    <h2>1인 창업자의 딜레마</h2>
+    <p class="desc">기획, 개발, QA, 마케팅을 혼자 감당해야 하는 현실.<br>인력을 채용하자니 비용, 관리하자니 시간.</p>
+  </div>
+  <div class="problem-grid">
+    <div class="problem-card fade-up">
+      <div class="icon">🎯</div>
+      <h3>동시다발 업무</h3>
+      <p>기획하면서 개발하고, 테스트하면서 마케팅. 한 사람이 모든 역할을 수행해야 합니다.</p>
+    </div>
+    <div class="problem-card fade-up">
+      <div class="icon">💰</div>
+      <h3>인건비 부담</h3>
+      <p>시니어 개발자, PM, QA 엔지니어, 마케터. 4명만 채용해도 연 3억 이상의 비용이 발생합니다.</p>
+    </div>
+    <div class="problem-card fade-up">
+      <div class="icon">⏳</div>
+      <h3>속도의 한계</h3>
+      <p>혼자서는 하루 8시간이 한계. AI 팀은 24시간 동시 병렬 처리가 가능합니다.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Solution — Agents -->
+<section class="section" id="agents">
+  <div class="fade-up">
+    <span class="section-label">Solution</span>
+    <h2>4인 AI 에이전트 팀</h2>
+    <p class="desc">각자의 전문 역할을 가진 AI 에이전트가 하나의 팀으로 협업합니다.</p>
+  </div>
+  <div class="agent-grid">
+    <div class="agent-card deo fade-up">
+      <div class="agent-avatar">🔮</div>
+      <h3>DEO</h3>
+      <div class="role">Digital Executive Officer</div>
+      <div class="spec">CEO 지시를 분석하고 실행 가능한 요구사항으로 분해합니다</div>
+    </div>
+    <div class="agent-card pm fade-up">
+      <div class="agent-avatar">📋</div>
+      <h3>PM</h3>
+      <div class="role">Project Manager</div>
+      <div class="spec">요구사항을 상세 기획서로 변환하고 태스크를 설계합니다</div>
+    </div>
+    <div class="agent-card dev fade-up">
+      <div class="agent-avatar">⚡</div>
+      <h3>DEV</h3>
+      <div class="role">Full-Stack Developer</div>
+      <div class="spec">기획서를 실제 동작하는 코드로 구현합니다</div>
+    </div>
+    <div class="agent-card po fade-up">
+      <div class="agent-avatar">🛡️</div>
+      <h3>PO</h3>
+      <div class="role">Product Owner / QA</div>
+      <div class="spec">결과물을 검수하고 품질을 보증합니다</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Workflow -->
+<section class="section" id="workflow">
+  <div class="fade-up">
+    <span class="section-label">Workflow</span>
+    <h2>AI 파이프라인</h2>
+    <p class="desc">CEO의 한 마디가 완성된 결과물이 되기까지.</p>
+  </div>
+  <div class="workflow fade-up">
+    <div class="wf-step"><div class="wf-icon">👤</div><div class="wf-label">CEO 지시</div></div>
+    <div class="wf-arrow">→</div>
+    <div class="wf-step"><div class="wf-icon" style="border-color:rgba(191,90,242,.3)">🔮</div><div class="wf-label">DEO 분석</div></div>
+    <div class="wf-arrow">→</div>
+    <div class="wf-step"><div class="wf-icon" style="border-color:rgba(0,122,255,.3)">📋</div><div class="wf-label">PM 기획</div></div>
+    <div class="wf-arrow">→</div>
+    <div class="wf-step"><div class="wf-icon" style="border-color:rgba(48,209,88,.3)">⚡</div><div class="wf-label">DEV 개발</div></div>
+    <div class="wf-arrow">→</div>
+    <div class="wf-step"><div class="wf-icon" style="border-color:rgba(255,159,10,.3)">🛡️</div><div class="wf-label">PO 검수</div></div>
+    <div class="wf-arrow">→</div>
+    <div class="wf-step"><div class="wf-icon" style="border-color:rgba(52,199,89,.3)">🚀</div><div class="wf-label">배포</div></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Stats -->
+<section class="section" id="stats">
+  <div class="fade-up">
+    <span class="section-label">Track Record</span>
+    <h2>HOBBYTAN COUNCIL 실적</h2>
+    <p class="desc">실제 운영 중인 AI 의회가 만들어낸 결과물.</p>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card fade-up"><div class="stat-num">12+</div><div class="stat-label">프로젝트 완료</div></div>
+    <div class="stat-card fade-up"><div class="stat-num">5</div><div class="stat-label">랜딩페이지 배포</div></div>
+    <div class="stat-card fade-up"><div class="stat-num">2</div><div class="stat-label">게임 개발</div></div>
+    <div class="stat-card fade-up"><div class="stat-num">502억</div><div class="stat-label">매출 기업 소개페이지</div></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Tech Stack -->
+<section class="section" id="tech">
+  <div class="fade-up">
+    <span class="section-label">Tech Stack</span>
+    <h2>기술 스택</h2>
+    <p class="desc">최신 AI 기술과 엔지니어링 프랙티스의 결합.</p>
+  </div>
+  <div class="tech-tags fade-up">
+    <span class="tech-tag">OpenAI GPT-4o</span>
+    <span class="tech-tag">역할 기반 프롬프팅</span>
+    <span class="tech-tag">SSE 스트리밍</span>
+    <span class="tech-tag">거버넌스 룰 엔진</span>
+    <span class="tech-tag">멀티 에이전트 파이프라인</span>
+    <span class="tech-tag">실시간 코드 생성</span>
+    <span class="tech-tag">자동 품질 검수</span>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     PART 2 — INTERACTIVE DEMO
+     ═══════════════════════════════════════════ -->
+<section id="demo-section">
+  <div class="demo-header fade-up">
+    <h2>직접 체험해보세요</h2>
+    <p>CEO가 되어 AI 의회에 지시를 내려보세요</p>
+  </div>
+
+  <div class="demo-app fade-up">
+    <!-- Left: Input -->
+    <div class="panel-left">
+      <div class="panel-title">CEO 콘솔</div>
+      <div class="api-key-group">
+        <label>OpenAI API Key</label>
+        <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-..." autocomplete="off">
+        <div class="api-key-hint">🔒 API Key는 브라우저에만 저장되며 서버에 전송되지 않습니다</div>
+      </div>
+      <div class="ceo-input-area">
+        <textarea class="ceo-textarea" id="ceoInput" placeholder="예: 에코아이티 소개페이지를 만들어줘&#10;&#10;AI 에이전트 팀이 지시를 분석하고, 기획하고, 개발하고, 검수합니다."></textarea>
+        <div class="btn-group">
+          <button class="btn-primary" id="btnSubmit" onclick="startPipeline()">🚀 지시하기</button>
+          <button class="btn-secondary" id="btnDemo" onclick="startDemo()">▶ 데모</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Tabs -->
+    <div class="mobile-tabs">
+      <button class="active" onclick="switchTab('chat',this)">💬 채팅</button>
+      <button onclick="switchTab('preview',this)">👁️ 미리보기</button>
+    </div>
+
+    <!-- Center: Chat -->
+    <div class="panel-center" id="panelChat">
+      <div class="chat-header">
+        <h3>에이전트 채팅</h3>
+        <div class="status-dot" id="statusDot"></div>
+      </div>
+      <div class="chat-log" id="chatLog">
+        <div class="chat-empty">
+          <div class="icon">💬</div>
+          <div>CEO의 지시를 기다리고 있습니다<br><span style="font-size:.8rem;opacity:.5">좌측에서 지시를 입력하거나 데모를 실행하세요</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Preview -->
+    <div class="panel-right" id="panelPreview">
+      <div class="status-bar">
+        <div class="status-steps" id="statusSteps">
+          <div class="status-step"><div class="step-dot" id="step0">1</div><div class="step-label" id="stepLabel0">접수</div></div>
+          <div class="step-line" id="line0"></div>
+          <div class="status-step"><div class="step-dot" id="step1">2</div><div class="step-label" id="stepLabel1">기획</div></div>
+          <div class="step-line" id="line1"></div>
+          <div class="status-step"><div class="step-dot" id="step2">3</div><div class="step-label" id="stepLabel2">개발</div></div>
+          <div class="step-line" id="line2"></div>
+          <div class="status-step"><div class="step-dot" id="step3">4</div><div class="step-label" id="stepLabel3">검수</div></div>
+          <div class="step-line" id="line3"></div>
+          <div class="status-step"><div class="step-dot" id="step4">5</div><div class="step-label" id="stepLabel4">완료</div></div>
+        </div>
+      </div>
+      <div class="preview-area" id="previewArea">
+        <div class="preview-placeholder" id="previewPlaceholder">DEV가 생성한 HTML이<br>여기에 미리보기 됩니다</div>
+      </div>
+      <div class="preview-actions">
+        <button class="btn-download" id="btnDownload" onclick="downloadHTML()" disabled>📥 HTML 다운로드</button>
+        <button class="btn-copy" id="btnCopy" onclick="copyHTML()" disabled>📋 코드 복사</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:4rem"></div>
+</section>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   INTERSECTION OBSERVER — FADE UP
+   ═══════════════════════════════════════════ */
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+/* ═══════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════ */
+let isRunning = false;
+let generatedHTML = '';
+
+const AGENTS = {
+  ceo:  { name: 'CEO',  color: 'ceo',  emoji: '👤' },
+  deo:  { name: 'DEO',  color: 'deo',  emoji: '🔮' },
+  pm:   { name: 'PM',   color: 'pm',   emoji: '📋' },
+  dev:  { name: 'DEV',  color: 'dev',   emoji: '⚡' },
+  po:   { name: 'PO',   color: 'po',   emoji: '🛡️' }
+};
+
+/* ═══════════════════════════════════════════
+   API KEY — localStorage
+   ═══════════════════════════════════════════ */
+const apiKeyInput = document.getElementById('apiKeyInput');
+apiKeyInput.value = localStorage.getItem('oai_api_key') || '';
+apiKeyInput.addEventListener('change', () => {
+  localStorage.setItem('oai_api_key', apiKeyInput.value.trim());
+});
+
+/* ═══════════════════════════════════════════
+   MOBILE TABS
+   ═══════════════════════════════════════════ */
+function switchTab(tab, btn) {
+  document.querySelectorAll('.mobile-tabs button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const chat = document.getElementById('panelChat');
+  const preview = document.getElementById('panelPreview');
+  if (tab === 'chat') { chat.classList.remove('hidden'); preview.classList.add('hidden'); }
+  else { chat.classList.add('hidden'); preview.classList.remove('hidden'); }
+}
+
+/* ═══════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ═══════════════════════════════════════════
+   STATUS BAR
+   ═══════════════════════════════════════════ */
+function setStep(idx) {
+  for (let i = 0; i <= 4; i++) {
+    const dot = document.getElementById('step' + i);
+    const label = document.getElementById('stepLabel' + i);
+    dot.className = 'step-dot';
+    label.className = 'step-label';
+    if (i < idx) { dot.classList.add('done'); label.classList.add('done'); }
+    else if (i === idx) { dot.classList.add('active'); label.classList.add('active'); }
+  }
+  for (let i = 0; i < 4; i++) {
+    const line = document.getElementById('line' + i);
+    line.className = 'step-line';
+    if (i < idx) line.classList.add('done');
+  }
+}
+
+function resetStatus() {
+  for (let i = 0; i <= 4; i++) {
+    document.getElementById('step' + i).className = 'step-dot';
+    document.getElementById('stepLabel' + i).className = 'step-label';
+  }
+  for (let i = 0; i < 4; i++) document.getElementById('line' + i).className = 'step-line';
+}
+
+/* ═══════════════════════════════════════════
+   CHAT LOG
+   ═══════════════════════════════════════════ */
+const chatLog = document.getElementById('chatLog');
+
+function clearChat() {
+  chatLog.innerHTML = '';
+}
+
+function addMessage(agentKey, text) {
+  const a = AGENTS[agentKey];
+  const msg = document.createElement('div');
+  msg.className = 'msg';
+  msg.innerHTML = `
+    <div class="msg-avatar ${a.color}">${a.emoji}</div>
+    <div class="msg-body">
+      <div class="msg-header">
+        <span class="msg-name">${a.name}</span>
+        <span class="msg-badge ${a.color}">${a.name}</span>
+      </div>
+      <div class="msg-text"></div>
+    </div>`;
+  chatLog.appendChild(msg);
+  chatLog.scrollTop = chatLog.scrollHeight;
+  const textEl = msg.querySelector('.msg-text');
+  textEl.textContent = text;
+  return textEl;
+}
+
+function createStreamMessage(agentKey) {
+  const a = AGENTS[agentKey];
+  const msg = document.createElement('div');
+  msg.className = 'msg';
+  msg.innerHTML = `
+    <div class="msg-avatar ${a.color}">${a.emoji}</div>
+    <div class="msg-body">
+      <div class="msg-header">
+        <span class="msg-name">${a.name}</span>
+        <span class="msg-badge ${a.color}">${a.name}</span>
+      </div>
+      <div class="msg-text"><div class="typing-indicator"><span></span><span></span><span></span></div></div>
+    </div>`;
+  chatLog.appendChild(msg);
+  chatLog.scrollTop = chatLog.scrollHeight;
+  return msg.querySelector('.msg-text');
+}
+
+/* ═══════════════════════════════════════════
+   PREVIEW
+   ═══════════════════════════════════════════ */
+function renderPreview(html) {
+  generatedHTML = html;
+  const area = document.getElementById('previewArea');
+  const placeholder = document.getElementById('previewPlaceholder');
+  if (placeholder) placeholder.remove();
+  let iframe = area.querySelector('iframe');
+  if (!iframe) {
+    iframe = document.createElement('iframe');
+    iframe.className = 'preview-iframe';
+    iframe.sandbox = 'allow-scripts allow-same-origin';
+    area.appendChild(iframe);
+  }
+  iframe.srcdoc = html;
+  document.getElementById('btnDownload').disabled = false;
+  document.getElementById('btnCopy').disabled = false;
+}
+
+function downloadHTML() {
+  if (!generatedHTML) return;
+  const blob = new Blob([generatedHTML], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'ai-council-output.html'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('HTML 파일 다운로드 완료');
+}
+
+function copyHTML() {
+  if (!generatedHTML) return;
+  navigator.clipboard.writeText(generatedHTML).then(() => showToast('코드가 클립보드에 복사되었습니다'));
+}
+
+/* ═══════════════════════════════════════════
+   EXTRACT HTML FROM RESPONSE
+   ═══════════════════════════════════════════ */
+function extractHTML(text) {
+  const match = text.match(/```html\s*([\s\S]*?)```/);
+  if (match) return match[1].trim();
+  const match2 = text.match(/<!DOCTYPE html[\s\S]*<\/html>/i);
+  if (match2) return match2[0].trim();
+  return null;
+}
+
+/* ═══════════════════════════════════════════
+   OPENAI STREAMING CALL
+   ═══════════════════════════════════════════ */
+async function callOpenAI(apiKey, messages, model, textEl) {
+  textEl.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+  
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+    body: JSON.stringify({ model, stream: true, messages })
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`API 오류 (${res.status}): ${err}`);
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let full = '';
+  textEl.textContent = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value, { stream: true });
+    const lines = chunk.split('\n').filter(l => l.startsWith('data: '));
+    for (const line of lines) {
+      const data = line.slice(6);
+      if (data === '[DONE]') continue;
+      try {
+        const json = JSON.parse(data);
+        const token = json.choices?.[0]?.delta?.content;
+        if (token) {
+          full += token;
+          textEl.textContent = full;
+          chatLog.scrollTop = chatLog.scrollHeight;
+        }
+      } catch {}
+    }
+  }
+  return full;
+}
+
+/* ═══════════════════════════════════════════
+   PIPELINE — REAL API
+   ═══════════════════════════════════════════ */
+async function startPipeline() {
+  if (isRunning) return;
+  const apiKey = apiKeyInput.value.trim();
+  const input = document.getElementById('ceoInput').value.trim();
+  
+  if (!apiKey) { showToast('OpenAI API Key를 입력해주세요'); return; }
+  if (!input) { showToast('지시 내용을 입력해주세요'); return; }
+
+  isRunning = true;
+  lockUI(true);
+  clearChat();
+  resetStatus();
+  document.getElementById('statusDot').classList.add('active');
+
+  try {
+    // CEO message
+    setStep(0);
+    addMessage('ceo', input);
+    await sleep(500);
+
+    // DEO
+    setStep(1);
+    const deoEl = createStreamMessage('deo');
+    const deoResult = await callOpenAI(apiKey, [
+      { role: 'system', content: '너는 HOBBYTAN COUNCIL의 DEO(Digital Executive Officer)이다. CEO의 지시를 분석하고, PM에게 전달할 명확한 요구사항 목록을 정리해라. 구체적이고 실행 가능한 항목으로 분해해라. 한국어로 답변해라. 간결하게 핵심만 작성해라.' },
+      { role: 'user', content: `CEO 지시: ${input}` }
+    ], 'gpt-4o-mini', deoEl);
+    await sleep(300);
+
+    // PM
+    setStep(1);
+    const pmEl = createStreamMessage('pm');
+    const pmResult = await callOpenAI(apiKey, [
+      { role: 'system', content: '너는 HOBBYTAN COUNCIL의 PM(Project Manager)이다. DEO가 정리한 요구사항을 받아 상세한 기획서를 작성해라. 페이지 구조, 섹션, 콘텐츠, 디자인 가이드를 포함해라. 한국어로 답변해라. 간결하게 핵심만 작성해라.' },
+      { role: 'user', content: `DEO 요구사항:\n${deoResult}` }
+    ], 'gpt-4o-mini', pmEl);
+    await sleep(300);
+
+    // DEV
+    setStep(2);
+    const devEl = createStreamMessage('dev');
+    const devResult = await callOpenAI(apiKey, [
+      { role: 'system', content: '너는 HOBBYTAN COUNCIL의 DEV(Full-Stack Developer)이다. PM의 기획서를 받아 완전한 단일 HTML 페이지를 생성해라. 모든 CSS와 JS를 인라인으로 포함해라. 모던하고 세련된 다크 테마 디자인을 적용해라. 반응형으로 만들어라. 반드시 ```html 코드블록으로 감싸서 출력해라. 한국어 콘텐츠로 작성해라.' },
+      { role: 'user', content: `PM 기획서:\n${pmResult}` }
+    ], 'gpt-4o', devEl);
+
+    // Extract & render HTML
+    const html = extractHTML(devResult);
+    if (html) {
+      renderPreview(html);
+      showToast('HTML 생성 완료!');
+    }
+    await sleep(300);
+
+    // PO
+    setStep(3);
+    const poEl = createStreamMessage('po');
+    await callOpenAI(apiKey, [
+      { role: 'system', content: '너는 HOBBYTAN COUNCIL의 PO(Product Owner)이다. DEV가 만든 결과물을 검수해라. 코드 품질, 디자인, 반응형, 접근성을 평가하고 PASS 또는 FAIL을 판정해라. 간단한 피드백과 함께 결과를 알려줘. 한국어로 답변해라. 간결하게.' },
+      { role: 'user', content: `DEV 생성 코드:\n${devResult.substring(0, 3000)}` }
+    ], 'gpt-4o-mini', poEl);
+
+    // Done
+    setStep(4);
+    showToast('✅ 파이프라인 완료');
+
+  } catch (err) {
+    addMessage('ceo', `❌ 오류 발생: ${err.message}`);
+    showToast('오류가 발생했습니다');
+  } finally {
+    isRunning = false;
+    lockUI(false);
+    document.getElementById('statusDot').classList.remove('active');
+  }
+}
+
+/* ═══════════════════════════════════════════
+   DEMO MODE — SIMULATED
+   ═══════════════════════════════════════════ */
+const DEMO_DATA = {
+  input: '에코아이티 회사 소개페이지를 만들어줘',
+  deo: `## DEO 분석 결과
+
+**CEO 지시 요약:** 에코아이티(EcoIT) 회사 소개페이지 제작
+
+**요구사항 목록:**
+1. 히어로 섹션 — 회사명, 슬로건, CTA
+2. 회사 소개 — 비전, 미션, 핵심 가치
+3. 서비스 영역 — 주요 사업 분야 3~4개
+4. 실적/수치 — 주요 KPI 카드
+5. 팀 소개 — 핵심 멤버 프로필
+6. 연락처/CTA — 문의 폼 또는 연락 정보
+7. 반응형 디자인, 다크 테마, 모던 UI`,
+  pm: `## PM 기획서
+
+### 페이지 구조
+1. **히어로**: 풀스크린, "에코아이티 — 기술로 더 나은 세상을" + CTA 버튼
+2. **About**: 2컬럼 레이아웃, 회사 비전/미션
+3. **Services**: 카드 4개 (AI 솔루션, 클라우드, 컨설팅, 데이터)
+4. **Numbers**: 수치 카드 (설립년도, 프로젝트 수, 매출, 고객사)
+5. **Team**: 3명 프로필 카드
+6. **Contact**: CTA 배너 + 연락 정보
+
+### 디자인 가이드
+- 다크 테마 (#0a0a0a 배경)
+- 악센트: #00d4aa (그린 계열)
+- 폰트 크기: 히어로 56px, 섹션 타이틀 36px
+- border-radius: 16px
+- 여백: 섹션 간 120px`,
+  dev: `완전한 HTML 페이지를 생성하겠습니다.
+
+\`\`\`html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>에코아이티 — EcoIT</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#0a0a0a;color:#e5e5e5;line-height:1.6}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;background:radial-gradient(ellipse at 50% 50%,rgba(0,212,170,.08),transparent 70%)}
+.hero h1{font-size:clamp(2.5rem,6vw,4rem);font-weight:800;margin-bottom:1rem;background:linear-gradient(135deg,#fff,#00d4aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.2rem;color:#888;max-width:500px;margin-bottom:2rem}
+.btn{padding:16px 36px;border-radius:50px;background:linear-gradient(135deg,#00d4aa,#00b894);color:#000;font-weight:700;font-size:1rem;border:none;cursor:pointer}
+section{max-width:1100px;margin:0 auto;padding:100px 2rem}
+h2{font-size:2.2rem;font-weight:700;margin-bottom:2rem;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:2rem}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:2rem;text-align:center;transition:transform .3s}
+.card:hover{transform:translateY(-4px)}
+.card .icon{font-size:2.5rem;margin-bottom:1rem}
+.card h3{font-size:1.1rem;margin-bottom:.5rem}
+.card p{font-size:.9rem;color:#777}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;text-align:center}
+.stat-num{font-size:2.5rem;font-weight:800;color:#00d4aa}
+.stat-txt{font-size:.9rem;color:#666}
+.team .card img{width:80px;height:80px;border-radius:50%;margin-bottom:1rem;background:#222}
+.cta-section{text-align:center;padding:80px 2rem;background:rgba(0,212,170,.05);border-radius:24px;margin:80px auto;max-width:900px}
+footer{text-align:center;padding:2rem;color:#444;font-size:.85rem;border-top:1px solid rgba(255,255,255,.06)}
+@media(max-width:768px){.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="hero">
+<h1>에코아이티</h1>
+<p>기술로 더 나은 세상을 만듭니다. AI와 클라우드 기반의 혁신적인 솔루션을 제공합니다.</p>
+<button class="btn">문의하기 →</button>
+</div>
+<section>
+<h2>서비스</h2>
+<div class="grid">
+<div class="card"><div class="icon">🤖</div><h3>AI 솔루션</h3><p>맞춤형 AI 모델 개발 및 자동화 시스템 구축</p></div>
+<div class="card"><div class="icon">☁️</div><h3>클라우드</h3><p>AWS/GCP 기반 확장 가능한 인프라 설계</p></div>
+<div class="card"><div class="icon">📊</div><h3>데이터 분석</h3><p>빅데이터 파이프라인 구축 및 인사이트 도출</p></div>
+<div class="card"><div class="icon">🛡️</div><h3>보안 컨설팅</h3><p>기업 보안 진단 및 컴플라이언스 자문</p></div>
+</div>
+</section>
+<section>
+<h2>실적</h2>
+<div class="stats">
+<div><div class="stat-num">2019</div><div class="stat-txt">설립</div></div>
+<div><div class="stat-num">150+</div><div class="stat-txt">프로젝트</div></div>
+<div><div class="stat-num">502억</div><div class="stat-txt">매출</div></div>
+<div><div class="stat-num">80+</div><div class="stat-txt">고객사</div></div>
+</div>
+</section>
+<section class="team">
+<h2>팀</h2>
+<div class="grid">
+<div class="card"><div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#00d4aa,#00b894);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">👨‍💼</div><h3>김대표</h3><p>CEO / 비전 설계</p></div>
+<div class="card"><div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#5856d6,#007aff);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">👩‍💻</div><h3>이수진</h3><p>CTO / 기술 총괄</p></div>
+<div class="card"><div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ff9f0a,#ff6b35);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">👨‍🎨</div><h3>박디자인</h3><p>CDO / UX 설계</p></div>
+</div>
+</section>
+<div class="cta-section">
+<h2>함께 성장할 준비가 되셨나요?</h2>
+<p style="color:#777;margin:1rem 0 2rem">에코아이티와 함께 디지털 전환을 시작하세요</p>
+<button class="btn">상담 신청하기 →</button>
+</div>
+<footer>© 2024 에코아이티(EcoIT). All rights reserved.</footer>
+</body>
+</html>
+\`\`\``,
+  po: `## PO 검수 결과
+
+**판정: ✅ PASS**
+
+### 평가
+- **코드 품질:** 클린한 구조, 인라인 CSS 적절 사용 ✅
+- **디자인:** 다크 테마, 그라디언트 악센트, 모던한 카드 UI ✅
+- **반응형:** media query 적용, 모바일 대응 ✅
+- **콘텐츠:** 히어로, 서비스, 실적, 팀, CTA 모든 섹션 포함 ✅
+
+### 피드백
+- 전체적으로 완성도 높은 결과물
+- hover 애니메이션이 부드러움
+- 실무 배포 가능 수준으로 판단됨`
+};
+
+async function typeText(el, text, speed = 15) {
+  el.textContent = '';
+  for (let i = 0; i < text.length; i++) {
+    el.textContent += text[i];
+    chatLog.scrollTop = chatLog.scrollHeight;
+    if (i % 3 === 0) await sleep(speed);
+  }
+}
+
+async function startDemo() {
+  if (isRunning) return;
+  isRunning = true;
+  lockUI(true);
+  clearChat();
+  resetStatus();
+  document.getElementById('statusDot').classList.add('active');
+
+  try {
+    // CEO
+    setStep(0);
+    addMessage('ceo', DEMO_DATA.input);
+    await sleep(800);
+
+    // DEO
+    setStep(1);
+    const deoEl = createStreamMessage('deo');
+    await typeText(deoEl, DEMO_DATA.deo, 8);
+    await sleep(500);
+
+    // PM
+    const pmEl = createStreamMessage('pm');
+    await typeText(pmEl, DEMO_DATA.pm, 8);
+    await sleep(500);
+
+    // DEV
+    setStep(2);
+    const devEl = createStreamMessage('dev');
+    await typeText(devEl, DEMO_DATA.dev, 5);
+    
+    const html = extractHTML(DEMO_DATA.dev);
+    if (html) renderPreview(html);
+    await sleep(500);
+
+    // PO
+    setStep(3);
+    const poEl = createStreamMessage('po');
+    await typeText(poEl, DEMO_DATA.po, 8);
+    await sleep(300);
+
+    setStep(4);
+    showToast('✅ 데모 파이프라인 완료');
+
+  } finally {
+    isRunning = false;
+    lockUI(false);
+    document.getElementById('statusDot').classList.remove('active');
+  }
+}
+
+/* ═══════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════ */
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function lockUI(locked) {
+  document.getElementById('btnSubmit').disabled = locked;
+  document.getElementById('btnDemo').disabled = locked;
+  document.getElementById('ceoInput').disabled = locked;
+}
+</script>
+</body>
+</html>
