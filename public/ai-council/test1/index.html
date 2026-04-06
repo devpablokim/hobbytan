@@ -23,9 +23,9 @@ input,textarea{font-family:inherit;outline:none;border:none}
 /* ═══════════════════════════════════════════
    ANIMATIONS
    ═══════════════════════════════════════════ */
-.fade-up{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.25,.46,.45,.94),transform .8s cubic-bezier(.25,.46,.45,.94)}
-.fade-up.visible{opacity:1;transform:translateY(0)}
-.no-js .fade-up{opacity:1;transform:none}
+.fade-up{opacity:1;transform:translateY(0);transition:opacity .8s cubic-bezier(.25,.46,.45,.94),transform .8s cubic-bezier(.25,.46,.45,.94)}
+.fade-up.will-animate{opacity:0;transform:translateY(40px)}
+.fade-up.visible{opacity:1!important;transform:translateY(0)!important}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 @keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(100,100,255,.15)}50%{box-shadow:0 0 40px rgba(100,100,255,.3)}}
 @keyframes gradient-shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
@@ -456,16 +456,26 @@ input,textarea{font-family:inherit;outline:none;border:none}
 /* ═══════════════════════════════════════════
    INTERSECTION OBSERVER — FADE UP
    ═══════════════════════════════════════════ */
+// Mark non-hero elements for animation, then observe
+document.querySelectorAll('.fade-up').forEach(el => {
+  if (!el.closest('.hero')) {
+    el.classList.add('will-animate');
+  }
+});
 if ('IntersectionObserver' in window) {
   const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        e.target.classList.remove('will-animate');
+        obs.unobserve(e.target);
+      }
+    });
   }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
-  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+  document.querySelectorAll('.fade-up.will-animate').forEach(el => obs.observe(el));
 } else {
-  document.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
+  document.querySelectorAll('.fade-up').forEach(el => { el.classList.add('visible'); el.classList.remove('will-animate'); });
 }
-// Ensure hero elements are immediately visible
-document.querySelectorAll('.hero .fade-up').forEach(el => el.classList.add('visible'));
 
 /* ═══════════════════════════════════════════
    STATE
