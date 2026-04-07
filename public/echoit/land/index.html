@@ -2,733 +2,500 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>㈜에코아이티 — ERP에서 AX까지, 19년 엔터프라이즈 혁신</title>
-<meta name="description" content="에코아이티는 SAP ERP, RPA, AI 기반 AX 플랫폼으로 19년간 엔터프라이즈 디지털 혁신을 선도합니다.">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>에코아이티 — ERP에서 AX까지, 19년 엔터프라이즈 혁신의 궤적</title>
+<meta name="description" content="SAP ERP 19년 위에 RPA·AI·클라우드를 결합한 대한민국 엔터프라이즈 AX 통합 파트너. ㈜에코아이티.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
-/* ===== RESET & BASE ===== */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;font-size:16px}
-body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1e293b;background:#fff;line-height:1.6;-webkit-font-smoothing:antialiased}
-img{max-width:100%;display:block}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#0f172a;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%}
 a{color:inherit;text-decoration:none}
+:root{--navy:#1e40af;--royal:#2563eb;--bg:#f8fafc;--bd:#e2e8f0;--mut:#64748b}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+section{padding:96px 0;border-bottom:1px solid var(--bd)}
+section:nth-child(even){background:var(--bg)}
+h1,h2,h3,h4{color:#0f172a;font-weight:800;letter-spacing:-0.02em}
+h2{font-size:36px;margin-bottom:16px}
+h3{font-size:22px;margin-bottom:12px}
+.eyebrow{display:inline-block;font-size:13px;font-weight:700;color:var(--royal);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.lead{font-size:18px;color:var(--mut);margin-bottom:48px;max-width:760px}
+.btn{display:inline-block;padding:14px 28px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn-p{background:var(--navy);color:#fff}
+.btn-s{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.grid{display:grid;gap:24px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+.g6{grid-template-columns:repeat(3,1fr)}
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:28px;transition:box-shadow .2s,transform .2s}
+.card:hover{box-shadow:0 10px 30px rgba(30,64,175,.08);transform:translateY(-3px)}
 
-/* ===== TOKENS ===== */
-:root{
-  --deep:#1e40af;--royal:#2563eb;--sky:#3b82f6;
-  --bg:#fff;--bg-alt:#f8fafc;--bg-card:#fff;
-  --text:#1e293b;--text-light:#64748b;--text-white:#fff;
-  --radius:12px;--shadow:0 4px 24px rgba(30,64,175,.08);
-  --grad:linear-gradient(135deg,var(--deep),var(--royal));
-  --max:1200px;--section-py:96px;
+/* §1 hero */
+.hero{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%);color:#fff;padding:120px 0 96px;border:none}
+.hero h1{color:#fff;font-size:52px;line-height:1.2;margin-bottom:20px}
+.hero .sub{font-size:20px;color:#dbeafe;margin-bottom:36px;max-width:780px}
+.badges{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin:48px 0 36px}
+.metric{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:24px;text-align:center}
+.metric .v{font-size:32px;font-weight:800;color:#fff;display:block}
+.metric .l{font-size:13px;color:#bfdbfe;margin-top:6px;display:block}
+.hero .ctas{display:flex;gap:14px;flex-wrap:wrap}
+.hero .btn-p{background:#fff;color:var(--navy)}
+.hero .btn-s{background:transparent;color:#fff;border-color:#fff}
+
+/* §2 ecosystem diagram */
+.eco{position:relative;height:520px;max-width:760px;margin:48px auto 0}
+.eco .node{position:absolute;background:#fff;border:2px solid var(--bd);border-radius:12px;padding:16px 20px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.05);min-width:160px}
+.eco .node strong{display:block;color:var(--navy);font-size:15px;margin-bottom:4px}
+.eco .node span{font-size:12px;color:var(--mut)}
+.eco .center{left:50%;top:50%;transform:translate(-50%,-50%);background:var(--navy);color:#fff;border-color:var(--navy);min-width:200px;padding:24px}
+.eco .center strong{color:#fff;font-size:20px}
+.eco .center span{color:#bfdbfe}
+.eco .n1{top:0;left:50%;transform:translateX(-50%)}
+.eco .n2{top:25%;right:0}
+.eco .n3{bottom:25%;right:0}
+.eco .n4{bottom:0;left:50%;transform:translateX(-50%)}
+.eco .n5{top:25%;left:0}
+.eco svg{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+
+/* §3 countdown */
+.countdown{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;border-radius:12px;padding:48px;text-align:center;margin-bottom:48px}
+.countdown .big{font-size:72px;font-weight:800;color:#fff;line-height:1}
+.countdown .lbl{font-size:18px;color:#dbeafe;margin-top:12px}
+
+/* §4 trend metrics */
+.tmetric{text-align:center;padding:32px 20px}
+.tmetric .v{font-size:36px;font-weight:800;color:var(--navy);display:block}
+.tmetric .l{font-size:14px;color:var(--mut);margin-top:8px;display:block}
+
+/* §6 matrix */
+.matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.matrix>div{padding:32px 24px;border-right:1px solid var(--bd)}
+.matrix>div:last-child{border-right:none;background:#eff6ff}
+.matrix h4{font-size:17px;color:var(--navy);margin-bottom:12px}
+.matrix ul{list-style:none;font-size:14px;color:var(--mut)}
+.matrix li{padding:6px 0;border-bottom:1px dashed var(--bd)}
+.matrix li:last-child{border:none}
+
+/* §10 biz cards */
+.biz{position:relative;overflow:hidden}
+.biz::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--royal)}
+.biz.c1::before{background:#1e40af}
+.biz.c2::before{background:#2563eb}
+.biz.c3::before{background:#3b82f6}
+.biz.c4::before{background:#0ea5e9}
+.biz.c5::before{background:#06b6d4}
+.biz.c6::before{background:#0891b2}
+
+/* §13 timeline */
+.tl{position:relative;padding-left:32px;border-left:3px solid var(--royal)}
+.tl-item{position:relative;padding:0 0 32px 24px}
+.tl-item::before{content:"";position:absolute;left:-34px;top:6px;width:14px;height:14px;background:var(--navy);border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--navy)}
+.tl-item h4{color:var(--navy);font-size:18px}
+.tl-item p{color:var(--mut);font-size:14px}
+
+/* §15 forms */
+.form-card{background:#fff;border:2px solid var(--bd);border-radius:12px;padding:28px}
+.form-card.featured{border-color:var(--navy)}
+.form-card h3{color:var(--navy)}
+.form-card input,.form-card textarea{width:100%;padding:12px 14px;border:1px solid var(--bd);border-radius:8px;font-family:inherit;font-size:14px;margin-bottom:10px}
+.form-card textarea{min-height:80px;resize:vertical}
+.form-card .btn{width:100%;margin-top:8px}
+.form-msg{font-size:13px;margin-top:8px;color:var(--royal);min-height:18px}
+
+/* floating CTA */
+.float-cta{position:fixed;right:24px;bottom:24px;background:var(--navy);color:#fff;padding:16px 24px;border-radius:999px;font-weight:700;box-shadow:0 10px 30px rgba(30,64,175,.4);z-index:100;cursor:pointer;border:none;font-size:15px;font-family:inherit}
+.float-cta:hover{background:var(--royal)}
+
+/* footer */
+footer{background:#0f172a;color:#94a3b8;padding:48px 0;text-align:center;font-size:14px}
+footer a{color:#dbeafe}
+
+/* responsive */
+@media(max-width:860px){
+  .g2,.g3,.g4,.g5,.g6,.metrics,.matrix{grid-template-columns:1fr}
+  .matrix>div{border-right:none;border-bottom:1px solid var(--bd)}
+  .hero h1{font-size:34px}
+  .hero .sub{font-size:16px}
+  h2{font-size:28px}
+  section{padding:64px 0}
+  .countdown .big{font-size:48px}
+  .eco{height:auto;display:grid;gap:12px}
+  .eco .node{position:static;transform:none}
+  .eco svg{display:none}
 }
-
-/* ===== UTILITY ===== */
-.container{max-width:var(--max);margin:0 auto;padding:0 24px}
-.section{padding:var(--section-py) 0}
-.section--alt{background:var(--bg-alt)}
-.section-badge{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--royal);background:rgba(37,99,235,.08);padding:6px 16px;border-radius:999px;margin-bottom:16px}
-.section-title{font-size:clamp(1.75rem,4vw,2.5rem);font-weight:800;color:var(--deep);margin-bottom:12px;line-height:1.25}
-.section-desc{font-size:1.05rem;color:var(--text-light);max-width:640px;margin-bottom:48px}
-.card{background:var(--bg-card);border:1px solid #e2e8f0;border-radius:var(--radius);padding:32px;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
-.card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(30,64,175,.12)}
-.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
-.text-center{text-align:center}
-
-/* ===== NAV ===== */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(226,232,240,.6);transition:box-shadow .3s}
-.nav.scrolled{box-shadow:0 2px 16px rgba(0,0,0,.06)}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:var(--max);margin:0 auto;padding:0 24px}
-.nav-logo{font-size:1.15rem;font-weight:800;color:var(--deep)}
-.nav-logo span{color:var(--royal)}
-.nav-links{display:flex;gap:28px;font-size:.875rem;font-weight:500;color:var(--text-light)}
-.nav-links a:hover{color:var(--deep)}
-.nav-cta{font-size:.8rem;font-weight:700;color:#fff;background:var(--grad);padding:8px 20px;border-radius:999px;transition:opacity .2s}
-.nav-cta:hover{opacity:.9}
-.nav-mobile{display:none;background:none;border:none;cursor:pointer;padding:8px}
-.nav-mobile svg{width:24px;height:24px;stroke:var(--deep);stroke-width:2;fill:none}
-
-/* ===== §1 HERO ===== */
-.hero{padding:140px 0 80px;background:linear-gradient(180deg,#f0f5ff 0%,#fff 100%);position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(37,99,235,.07) 0%,transparent 70%);border-radius:50%}
-.hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;color:var(--deep);background:rgba(37,99,235,.08);padding:6px 14px;border-radius:999px}
-.hero-badge svg{width:14px;height:14px;fill:var(--royal)}
-.hero h1{font-size:clamp(2rem,5vw,3.25rem);font-weight:900;color:var(--deep);line-height:1.2;margin-bottom:16px;max-width:720px}
-.hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:1.1rem;color:var(--text-light);max-width:560px;margin-bottom:48px}
-.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:720px}
-.hero-stat{text-align:center}
-.hero-stat-num{font-size:clamp(1.5rem,3.5vw,2.25rem);font-weight:900;color:var(--deep)}
-.hero-stat-label{font-size:.8rem;color:var(--text-light);margin-top:4px}
-
-/* ===== §2 ECOSYSTEM ===== */
-.eco-map{position:relative;max-width:800px;margin:0 auto;padding:60px 0}
-.eco-center{width:180px;height:180px;border-radius:50%;background:var(--grad);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1rem;margin:0 auto;position:relative;z-index:2;box-shadow:0 8px 40px rgba(30,64,175,.25);text-align:center;line-height:1.3}
-.eco-center small{font-size:.7rem;font-weight:500;opacity:.85;margin-top:4px}
-.eco-partners{display:flex;flex-wrap:wrap;justify-content:center;gap:24px;margin-top:40px}
-.eco-partner{background:#fff;border:2px solid #e2e8f0;border-radius:var(--radius);padding:20px 24px;min-width:160px;text-align:center;position:relative;transition:border-color .2s,transform .2s}
-.eco-partner:hover{border-color:var(--royal);transform:translateY(-2px)}
-.eco-partner-name{font-weight:700;font-size:.95rem;color:var(--deep);margin-bottom:4px}
-.eco-partner-desc{font-size:.78rem;color:var(--text-light)}
-.eco-partner::before{content:'';position:absolute;top:-22px;left:50%;width:2px;height:22px;background:var(--royal);opacity:.3}
-.eco-label{text-align:center;margin-top:40px;font-size:1.15rem;font-weight:700;color:var(--deep)}
-.eco-label span{color:var(--royal)}
-
-/* connector lines from center */
-.eco-lines{display:flex;justify-content:center;margin-top:-10px;margin-bottom:-10px;position:relative;height:40px}
-.eco-lines::before{content:'';position:absolute;top:0;left:50%;width:2px;height:100%;background:linear-gradient(to bottom,var(--royal),rgba(37,99,235,.2))}
-.eco-lines::after{content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;background:rgba(37,99,235,.15)}
-
-/* ===== §3 MARKET ===== */
-.market-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:48px}
-.market-card{background:var(--bg-card);border:1px solid #e2e8f0;border-radius:var(--radius);padding:28px 20px;text-align:center;box-shadow:var(--shadow)}
-.market-card-value{font-size:1.75rem;font-weight:900;color:var(--deep)}
-.market-card-label{font-size:.8rem;color:var(--text-light);margin-top:6px}
-.market-card-sub{font-size:.7rem;color:var(--royal);font-weight:600;margin-top:2px}
-.trend-list{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-.trend-item{display:flex;gap:16px;padding:24px;background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);box-shadow:var(--shadow)}
-.trend-num{flex-shrink:0;width:40px;height:40px;border-radius:10px;background:var(--grad);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.95rem}
-.trend-content h4{font-size:.95rem;font-weight:700;color:var(--deep);margin-bottom:4px}
-.trend-content p{font-size:.82rem;color:var(--text-light);line-height:1.5}
-
-/* ===== §4 COMPETENCY ===== */
-.comp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px}
-.comp-card{position:relative;background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);padding:28px 20px;text-align:center;box-shadow:var(--shadow);transition:transform .2s}
-.comp-card:hover{transform:translateY(-4px)}
-.comp-icon{width:52px;height:52px;border-radius:14px;background:rgba(37,99,235,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.5rem}
-.comp-card h4{font-size:.9rem;font-weight:700;color:var(--deep);margin-bottom:8px;line-height:1.3}
-.comp-card p{font-size:.78rem;color:var(--text-light);line-height:1.5}
-
-/* ===== §5 LEADERSHIP ===== */
-.leader-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px;max-width:800px;margin:0 auto}
-.leader-card{display:flex;gap:24px;padding:32px;background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);box-shadow:var(--shadow)}
-.leader-avatar{flex-shrink:0;width:80px;height:80px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;font-weight:800}
-.leader-info h4{font-size:1.05rem;font-weight:700;color:var(--deep);margin-bottom:4px}
-.leader-info .leader-role{font-size:.82rem;font-weight:600;color:var(--royal);margin-bottom:8px}
-.leader-info p{font-size:.82rem;color:var(--text-light);line-height:1.5}
-
-/* ===== §6 USE CASES ===== */
-.usecase-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
-.usecase-card{padding:32px;background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);box-shadow:var(--shadow);position:relative;overflow:hidden}
-.usecase-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--grad)}
-.usecase-tag{display:inline-block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--royal);background:rgba(37,99,235,.08);padding:4px 10px;border-radius:999px;margin-bottom:12px}
-.usecase-card h4{font-size:1rem;font-weight:700;color:var(--deep);margin-bottom:8px}
-.usecase-card p{font-size:.85rem;color:var(--text-light);line-height:1.6}
-
-/* ===== §7 BUSINESS ===== */
-.biz-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.biz-card{background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:transform .2s}
-.biz-card:hover{transform:translateY(-4px)}
-.biz-bar{height:5px}
-.biz-bar--sap{background:linear-gradient(90deg,#1e40af,#2563eb)}
-.biz-bar--rpa{background:linear-gradient(90deg,#059669,#10b981)}
-.biz-bar--ai{background:linear-gradient(90deg,#d97706,#f59e0b)}
-.biz-bar--mendix{background:linear-gradient(90deg,#0891b2,#06b6d4)}
-.biz-bar--sf{background:linear-gradient(90deg,#0284c7,#38bdf8)}
-.biz-bar--cloud{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
-.biz-body{padding:28px 24px}
-.biz-body h4{font-size:1rem;font-weight:700;color:var(--deep);margin-bottom:6px}
-.biz-body .biz-tag{font-size:.72rem;font-weight:600;color:var(--royal);margin-bottom:10px}
-.biz-body p{font-size:.82rem;color:var(--text-light);line-height:1.5}
-
-/* ===== §8 NEWS ===== */
-.news-list{display:flex;flex-direction:column;gap:16px}
-.news-item{display:flex;align-items:flex-start;gap:20px;padding:24px;background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);box-shadow:var(--shadow);transition:transform .2s}
-.news-item:hover{transform:translateX(4px)}
-.news-date{flex-shrink:0;text-align:center;min-width:72px}
-.news-date .day{font-size:1.25rem;font-weight:800;color:var(--deep)}
-.news-date .ym{font-size:.7rem;color:var(--text-light)}
-.news-content h4{font-size:.95rem;font-weight:700;color:var(--deep);margin-bottom:4px}
-.news-content .news-meta{font-size:.75rem;color:var(--royal);font-weight:600;margin-bottom:6px}
-.news-content p{font-size:.82rem;color:var(--text-light);line-height:1.5;margin-bottom:8px}
-.news-content a{font-size:.78rem;color:var(--royal);font-weight:600;text-decoration:underline;text-underline-offset:2px}
-.news-content a:hover{color:var(--deep)}
-
-/* ===== §9 VALUES ===== */
-.values-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
-.value-card{text-align:center;padding:36px 24px;background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);box-shadow:var(--shadow)}
-.value-letter{font-size:2.5rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
-.value-card h4{font-size:.95rem;font-weight:700;color:var(--deep);margin-bottom:8px}
-.value-card p{font-size:.82rem;color:var(--text-light);line-height:1.5}
-
-/* ===== §10 TIMELINE ===== */
-.timeline{position:relative;max-width:720px;margin:0 auto;padding-left:40px}
-.timeline::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--royal),rgba(37,99,235,.15))}
-.tl-item{position:relative;padding:0 0 40px 32px}
-.tl-item:last-child{padding-bottom:0}
-.tl-dot{position:absolute;left:-33px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--royal);border:3px solid #fff;box-shadow:0 0 0 2px var(--royal)}
-.tl-year{font-size:.85rem;font-weight:700;color:var(--royal);margin-bottom:4px}
-.tl-text{font-size:.9rem;color:var(--text);line-height:1.6}
-
-/* ===== §11 OVERVIEW ===== */
-.overview-table{max-width:600px;margin:0 auto}
-.ov-row{display:flex;padding:16px 0;border-bottom:1px solid #e2e8f0}
-.ov-row:last-child{border-bottom:none}
-.ov-label{flex:0 0 120px;font-size:.85rem;font-weight:600;color:var(--text-light)}
-.ov-value{font-size:.9rem;font-weight:500;color:var(--text)}
-
-/* ===== §12 CTA ===== */
-.cta-section{padding:80px 0}
-.cta-card{background:var(--grad);border-radius:var(--radius);padding:64px 40px;text-align:center;color:#fff;box-shadow:0 8px 40px rgba(30,64,175,.2)}
-.cta-card h2{font-size:clamp(1.5rem,3.5vw,2.25rem);font-weight:800;margin-bottom:12px}
-.cta-card p{font-size:1rem;opacity:.85;margin-bottom:32px}
-.cta-btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--deep);font-size:.95rem;font-weight:700;padding:14px 36px;border-radius:999px;transition:transform .2s,box-shadow .2s}
-.cta-btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.15)}
-
-/* ===== FOOTER ===== */
-.footer{background:var(--bg-alt);border-top:1px solid #e2e8f0;padding:32px 0;text-align:center}
-.footer p{font-size:.78rem;color:var(--text-light)}
-.footer a{color:var(--royal);font-weight:600}
-
-/* ===== RESPONSIVE ===== */
-@media(max-width:1024px){
-  .comp-grid{grid-template-columns:repeat(3,1fr)}
-  .hero-stats{grid-template-columns:repeat(2,1fr)}
-  .market-cards{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:768px){
-  :root{--section-py:64px}
-  .nav-links{display:none}
-  .nav-mobile{display:block}
-  .hero{padding:110px 0 60px}
-  .hero-stats{grid-template-columns:repeat(2,1fr);gap:16px}
-  .comp-grid{grid-template-columns:repeat(2,1fr)}
-  .biz-grid{grid-template-columns:repeat(2,1fr)}
-  .trend-list{grid-template-columns:1fr}
-  .leader-grid{grid-template-columns:1fr}
-  .usecase-grid{grid-template-columns:1fr}
-  .values-grid{grid-template-columns:repeat(2,1fr)}
-  .eco-partners{gap:16px}
-  .eco-partner{min-width:140px;padding:16px}
-  .eco-center{width:140px;height:140px;font-size:.85rem}
-}
-@media(max-width:480px){
-  .market-cards{grid-template-columns:1fr}
-  .comp-grid{grid-template-columns:1fr}
-  .biz-grid{grid-template-columns:1fr}
-  .values-grid{grid-template-columns:1fr}
-  .hero-stats{grid-template-columns:repeat(2,1fr)}
-  .cta-card{padding:48px 24px}
-}
-
-/* ===== ANIMATION ===== */
-.fade-up{opacity:1;transform:none;transition:opacity .6s ease,transform .6s ease}
-.fade-up.visible{opacity:1;transform:none}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav" id="nav">
-  <div class="nav-inner">
-    <div class="nav-logo">ECHO<span>IT</span></div>
-    <div class="nav-links">
-      <a href="#ecosystem">AX 에코시스템</a>
-      <a href="#competency">핵심 경쟁력</a>
-      <a href="#business">사업 영역</a>
-      <a href="#news">보도</a>
-      <a href="#about">기업 개요</a>
-    </div>
-    <a href="https://echoit.co.kr" target="_blank" rel="noopener" class="nav-cta">웹사이트 방문</a>
-    <button class="nav-mobile" onclick="document.querySelector('.nav-links').classList.toggle('show')" aria-label="메뉴">
-      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
-  </div>
-</nav>
-
 <!-- §1 HERO -->
-<section class="hero" id="hero">
-  <div class="container">
-    <div class="hero-badges">
-      <span class="hero-badge"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7"/></svg>SINCE 2008</span>
-      <span class="hero-badge">고용노동부 강소기업</span>
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">SINCE 2008</span>
+      <span class="badge">고용노동부 강소기업</span>
     </div>
-    <h1 class="fade-up">ERP에서 <em>AX</em>까지 —<br>19년 엔터프라이즈 혁신의 궤적</h1>
-    <p class="hero-sub fade-up">SAP ERP 전문성 위에 RPA·AI·클라우드를 결합, 대한민국 엔터프라이즈 AX를 설계합니다.</p>
-    <div class="hero-stats fade-up">
-      <div class="hero-stat">
-        <div class="hero-stat-num">502억</div>
-        <div class="hero-stat-label">매출</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">120+명</div>
-        <div class="hero-stat-label">RPA 전문 인력</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">19년</div>
-        <div class="hero-stat-label">업력</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">5사</div>
-        <div class="hero-stat-label">AX 파트너</div>
-      </div>
+    <h1>ERP에서 AX까지<br>19년 엔터프라이즈 혁신의 궤적</h1>
+    <p class="sub">SAP ERP 19년 위에 RPA·AI·클라우드를 결합. 대한민국 엔터프라이즈 AX의 통합 파트너.</p>
+    <div class="metrics">
+      <div class="metric"><span class="v">502억</span><span class="l">2024 매출</span></div>
+      <div class="metric"><span class="v">120+</span><span class="l">RPA 전문 인력</span></div>
+      <div class="metric"><span class="v">19년</span><span class="l">엔터프라이즈 업력</span></div>
+      <div class="metric"><span class="v">5사</span><span class="l">AX 파트너십</span></div>
+      <div class="metric"><span class="v">200+</span><span class="l">프로젝트 누적</span></div>
+    </div>
+    <div class="ctas">
+      <a href="#cta" class="btn btn-p">AX 진단 신청</a>
+      <a href="#cta" class="btn btn-s">사업 문의</a>
     </div>
   </div>
 </section>
 
 <!-- §2 ECOSYSTEM -->
-<section class="section section--alt" id="ecosystem">
-  <div class="container text-center">
-    <span class="section-badge">2026 AX Ecosystem</span>
-    <h2 class="section-title fade-up">AX 에코시스템</h2>
-    <p class="section-desc fade-up" style="margin-left:auto;margin-right:auto">에코아이티를 중심으로 5개 전략 파트너가 엔터프라이즈 AX 전 영역을 커버합니다.</p>
-    <div class="eco-map fade-up">
-      <div class="eco-center">
-        에코아이티<br><small>AX 플랫폼<br>오케스트레이터</small>
-      </div>
-      <div class="eco-lines"></div>
-      <div class="eco-partners">
-        <div class="eco-partner">
-          <div class="eco-partner-name">업스테이지</div>
-          <div class="eco-partner-desc">생성형 AI</div>
-        </div>
-        <div class="eco-partner">
-          <div class="eco-partner-name">퓨리오사AI</div>
-          <div class="eco-partner-desc">NPU '레니게이드'</div>
-        </div>
-        <div class="eco-partner">
-          <div class="eco-partner-name">미스릴</div>
-          <div class="eco-partner-desc">산업안전 VLM<br>'가디언-알파'</div>
-        </div>
-        <div class="eco-partner">
-          <div class="eco-partner-name">한컴AI</div>
-          <div class="eco-partner-desc">OCR/문서 · 공식 총판</div>
-        </div>
-        <div class="eco-partner">
-          <div class="eco-partner-name">이데아텍</div>
-          <div class="eco-partner-desc">클라우드</div>
-        </div>
-      </div>
-    </div>
-    <p class="eco-label fade-up">"<span>AX 플랫폼 오케스트레이터</span>" — 파트너 기술을 통합·오케스트레이션하여<br>엔터프라이즈 AX를 실현합니다.</p>
-  </div>
-</section>
-
-<!-- §3 MARKET TRENDS -->
-<section class="section" id="market">
-  <div class="container">
-    <span class="section-badge">Market Trends</span>
-    <h2 class="section-title fade-up">시장 트렌드</h2>
-    <p class="section-desc fade-up">글로벌 엔터프라이즈 IT 시장은 전례 없는 전환기를 맞고 있습니다.</p>
-    <div class="market-cards fade-up">
-      <div class="market-card">
-        <div class="market-card-value">$232B</div>
-        <div class="market-card-label">글로벌 ERP 시장</div>
-      </div>
-      <div class="market-card">
-        <div class="market-card-value">$13.7B</div>
-        <div class="market-card-label">글로벌 RPA 시장</div>
-        <div class="market-card-sub">CAGR 29.7%</div>
-      </div>
-      <div class="market-card">
-        <div class="market-card-value">$184B</div>
-        <div class="market-card-label">글로벌 AI 시장</div>
-      </div>
-      <div class="market-card">
-        <div class="market-card-value">45%↑</div>
-        <div class="market-card-label">Low-Code 성장률</div>
-      </div>
-    </div>
-    <div class="trend-list fade-up">
-      <div class="trend-item">
-        <div class="trend-num">1</div>
-        <div class="trend-content">
-          <h4>SAP S/4HANA 2027 전환 가속</h4>
-          <p>에코아이티는 한화에어로스페이스·LG에너지솔루션 차세대 ERP를 수행하며 대규모 마이그레이션을 리드합니다.</p>
-        </div>
-      </div>
-      <div class="trend-item">
-        <div class="trend-num">2</div>
-        <div class="trend-content">
-          <h4>하이퍼오토메이션</h4>
-          <p>RPA + AI + 프로세스마이닝을 결합한 자동화 — 에코아이티 120인 RPA 조직이 업계 최대 규모로 대응합니다.</p>
-        </div>
-      </div>
-      <div class="trend-item">
-        <div class="trend-num">3</div>
-        <div class="trend-content">
-          <h4>엔터프라이즈 AX 원스톱</h4>
-          <p>한컴AI 공식 총판 + 업스테이지 생성형 AI 파트너십으로 문서·OCR·생성형 AI를 한 번에 제공합니다.</p>
-        </div>
-      </div>
-      <div class="trend-item">
-        <div class="trend-num">4</div>
-        <div class="trend-content">
-          <h4>국산 NPU 저비용 AI 추론</h4>
-          <p>퓨리오사AI '레니게이드' NPU로 GPU 의존 없이 저비용·고효율 AI 추론 인프라를 구축합니다.</p>
-        </div>
-      </div>
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§2 · AX Ecosystem</span>
+    <h2>AX 플랫폼 오케스트레이터</h2>
+    <p class="lead">단일 벤더로 SAP·RPA·AI·NPU·클라우드 전 영역 통합 제공 — 에코아이티는 대한민국 AX 생태계의 중심에 있습니다.</p>
+    <div class="eco">
+      <svg viewBox="0 0 760 520" preserveAspectRatio="none">
+        <line x1="380" y1="260" x2="380" y2="50" stroke="#cbd5e1" stroke-width="2"/>
+        <line x1="380" y1="260" x2="700" y2="180" stroke="#cbd5e1" stroke-width="2"/>
+        <line x1="380" y1="260" x2="700" y2="370" stroke="#cbd5e1" stroke-width="2"/>
+        <line x1="380" y1="260" x2="380" y2="480" stroke="#cbd5e1" stroke-width="2"/>
+        <line x1="380" y1="260" x2="60" y2="180" stroke="#cbd5e1" stroke-width="2"/>
+      </svg>
+      <div class="node center"><strong>ECHOIT</strong><span>AX Orchestrator</span></div>
+      <div class="node n1"><strong>업스테이지</strong><span>생성형 AI / LLM</span></div>
+      <div class="node n2"><strong>퓨리오사AI</strong><span>NPU 레니게이드</span></div>
+      <div class="node n3"><strong>미스릴</strong><span>산업안전 VLM 가디언-알파</span></div>
+      <div class="node n4"><strong>한컴AI</strong><span>OCR·문서 (공식 총판)</span></div>
+      <div class="node n5"><strong>이데아텍</strong><span>클라우드</span></div>
     </div>
   </div>
 </section>
 
-<!-- §4 COMPETENCY -->
-<section class="section section--alt" id="competency">
-  <div class="container text-center">
-    <span class="section-badge">Core Competency</span>
-    <h2 class="section-title fade-up">핵심 경쟁력</h2>
-    <p class="section-desc fade-up" style="margin-left:auto;margin-right:auto">19년 엔터프라이즈 현장에서 축적된 5가지 차별화 역량</p>
-    <div class="comp-grid fade-up">
-      <div class="comp-card">
-        <div class="comp-icon">🏢</div>
-        <h4>SAP ERP<br>19년 전문성</h4>
-        <p>한화에어로 ONE-ERP, LG에너지솔루션 차세대 ERP 수행</p>
+<!-- §3 URGENCY -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§3 · Why Now</span>
+    <h2>왜 지금 AX인가</h2>
+    <p class="lead">엔터프라이즈 IT의 가장 큰 변곡점이 다가오고 있습니다. 이 결정의 골든타임을 놓치면 비용은 두 배가 됩니다.</p>
+    <div class="countdown">
+      <div class="big">D-32개월</div>
+      <div class="lbl">2027년 SAP ECC 지원 종료까지</div>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <h3>2027 데드라인</h3>
+        <p>SAP ECC 표준 지원이 종료됩니다. S/4HANA 전환 프로젝트는 평균 18~24개월. 지금 시작해야 늦지 않습니다.</p>
       </div>
-      <div class="comp-card">
-        <div class="comp-icon">⚙️</div>
-        <h4>RPA 120명<br>업계 최대</h4>
-        <p>국내 최대 규모 RPA 전문 조직으로 하이퍼오토메이션 주도</p>
+      <div class="card">
+        <h3>한국 AX 골든타임</h3>
+        <p>대기업·중견기업의 차세대 ERP 발주가 2026~2027년에 집중됩니다. 한국 SAP S/4HANA 전환 수요가 폭증 중입니다.</p>
       </div>
-      <div class="comp-card">
-        <div class="comp-icon">📄</div>
-        <h4>한컴AI<br>공식 총판</h4>
-        <p>2026 파트너 데이 주관, OCR·문서 AI 엔터프라이즈 공급</p>
+      <div class="card">
+        <h3>생성형 AI 도입률 폭증</h3>
+        <p>엔터프라이즈 LLM·RPA 융합 도입률이 해마다 두 배. 지금 도입하지 않으면 경쟁 격차가 빠르게 벌어집니다.</p>
       </div>
-      <div class="comp-card">
-        <div class="comp-icon">🤖</div>
-        <h4>AX 플랫폼</h4>
-        <p>업스테이지 + 퓨리오사AI MOU로 생성형 AI·NPU 통합</p>
+    </div>
+    <p style="margin-top:32px;color:var(--mut);font-size:14px">📊 글로벌 ERP 시장 $232B · 한국 SAP S/4HANA 전환 수요 급증</p>
+  </div>
+</section>
+
+<!-- §4 TREND -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§4 · Market Trend</span>
+    <h2>시장 트렌드</h2>
+    <div class="grid g4" style="margin-bottom:48px">
+      <div class="card tmetric"><span class="v">$232B</span><span class="l">글로벌 ERP 시장</span></div>
+      <div class="card tmetric"><span class="v">$13.7B</span><span class="l">RPA 시장 (CAGR 29.7%)</span></div>
+      <div class="card tmetric"><span class="v">$184B</span><span class="l">엔터프라이즈 AI</span></div>
+      <div class="card tmetric"><span class="v">+45%</span><span class="l">Low-Code 성장</span></div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><h3>SAP S/4HANA 전환 가속</h3><p>ECC 종료 압박과 차세대 ERP 수요로 한국 대기업·중견기업의 마이그레이션이 본격화되고 있습니다.</p></div>
+      <div class="card"><h3>하이퍼오토메이션</h3><p>RPA + AI + 프로세스마이닝이 결합된 통합 자동화가 엔터프라이즈 표준으로 자리잡고 있습니다.</p></div>
+      <div class="card"><h3>한컴AI + 업스테이지</h3><p>한컴AI 총판과 업스테이지 LLM 결합으로 엔터프라이즈 AX 원스톱이 가능해졌습니다.</p></div>
+      <div class="card"><h3>국산 NPU 추론 인프라</h3><p>퓨리오사AI 레니게이드 기반 저비용 고효율 추론 인프라가 산업·공공 영역에 본격 확산됩니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- §5 STRENGTH -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§5 · Core Strength</span>
+    <h2>핵심 경쟁력 5</h2>
+    <div class="grid g3">
+      <div class="card"><h3>① SAP ERP 19년</h3><p>한화에어로스페이스 ONE-ERP, LG에너지솔루션 등 대형 SAP 프로젝트 누적. 국내 최상위 SAP 전문성.</p></div>
+      <div class="card"><h3>② RPA 120명 조직</h3><p>업계 최대 RPA 전문 인력. 수만 시간+ 자동화 누적 운영 경험.</p></div>
+      <div class="card"><h3>③ 한컴AI 공식 총판</h3><p>OCR·문서 AI 공식 총판. 2026 한컴AI 파트너 데이 주관.</p></div>
+      <div class="card"><h3>④ AX 플랫폼</h3><p>업스테이지(LLM)·퓨리오사AI(NPU) MOU. 단일 벤더 통합 AX 제공.</p></div>
+      <div class="card"><h3>⑤ 산업안전 AI</h3><p>미스릴 가디언-알파 + SAP 연동. 산업안전 영역 AX 선도.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- §6 MATRIX -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§6 · Positioning</span>
+    <h2>시장 포지셔닝 매트릭스</h2>
+    <p class="lead">대기업 SI는 비싸고, 토종 ERP는 글로벌 SAP가 부족한 중견기업의 SAP+AX 통합 파트너.</p>
+    <div class="matrix">
+      <div>
+        <h4>대형 SI 카테고리</h4>
+        <ul><li>글로벌 풀스택</li><li>매출 1조원+</li><li>의사결정 느림</li><li>고단가</li></ul>
       </div>
-      <div class="comp-card">
-        <div class="comp-icon">🛡️</div>
-        <h4>산업안전 AI</h4>
-        <p>미스릴 '가디언-알파' VLM + SAP 연동 산업안전 솔루션</p>
+      <div>
+        <h4>토종 ERP 카테고리</h4>
+        <ul><li>중소기업 ERP 중심</li><li>글로벌 SAP 부족</li><li>저단가</li><li>AX 통합 한계</li></ul>
+      </div>
+      <div>
+        <h4>에코아이티 (전문 SI)</h4>
+        <ul><li>SAP 19년 + AX 통합</li><li>빠른 의사결정</li><li>합리적 단가</li><li>5사 AI 파트너십</li></ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- §5 LEADERSHIP -->
-<section class="section" id="leadership">
-  <div class="container text-center">
-    <span class="section-badge">Leadership</span>
-    <h2 class="section-title fade-up">리더십</h2>
-    <p class="section-desc fade-up" style="margin-left:auto;margin-right:auto">기술과 비전을 겸비한 경영진이 AX 전환을 이끕니다.</p>
-    <div class="leader-grid fade-up">
-      <div class="leader-card">
-        <div class="leader-avatar">홍</div>
-        <div class="leader-info">
-          <h4>홍성호</h4>
-          <div class="leader-role">대표이사 (단독 대표)</div>
-          <p>19년간 에코아이티를 이끌며 SAP ERP·RPA·AI 사업을 502억 규모로 성장시킨 엔터프라이즈 전문 경영인</p>
-        </div>
+<!-- §7 INDUSTRY PACKAGES -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§7 · Industry Packages</span>
+    <h2>산업별 솔루션 패키지</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>제조</h3>
+        <p><strong>대상</strong> 대기업 제조사<br><strong>솔루션</strong> SAP S/4HANA + RPA + AX<br><strong>효과</strong> 통합 ERP·자동화·AI 분석<br><strong>사례</strong> 한화에어로스페이스 ONE-ERP</p>
+        <button class="btn btn-p" data-pkg="제조" onclick="openPkg(this)">패키지 문의</button>
       </div>
-      <div class="leader-card">
-        <div class="leader-avatar">한</div>
-        <div class="leader-info">
-          <h4>한상기 박사</h4>
-          <div class="leader-role">CAIO (Chief AI Officer)</div>
-          <p>'AI 전쟁 2.0' 공저자. 국가 AI 정책 특강 다수. 2026 한컴AI 파트너 데이 기조 강연</p>
-        </div>
+      <div class="card">
+        <h3>에너지·배터리</h3>
+        <p><strong>대상</strong> 배터리·에너지 제조<br><strong>솔루션</strong> 차세대 ERP + AI 분석<br><strong>효과</strong> 글로벌 ERP 표준화·예측 분석<br><strong>사례</strong> LG에너지솔루션</p>
+        <button class="btn btn-p" data-pkg="에너지·배터리" onclick="openPkg(this)">패키지 문의</button>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- §6 USE CASES -->
-<section class="section section--alt" id="usecases">
-  <div class="container">
-    <span class="section-badge">AX Use Cases</span>
-    <h2 class="section-title fade-up">산업별 AX 유스케이스</h2>
-    <p class="section-desc fade-up">에코아이티 AX 플랫폼이 실제 현장에서 만드는 변화</p>
-    <div class="usecase-grid fade-up">
-      <div class="usecase-card">
-        <span class="usecase-tag">제조</span>
-        <h4>한화에어로스페이스 차세대 ONE-ERP</h4>
-        <p>항공·방산 그룹사 통합 ERP를 SAP S/4HANA로 전면 전환, 글로벌 표준 프로세스 구축</p>
+      <div class="card">
+        <h3>공공·국방</h3>
+        <p><strong>대상</strong> 공공기관·국방<br><strong>솔루션</strong> 퓨리오사 NPU + 미스릴 가디언-알파<br><strong>효과</strong> 산업안전 + 공공 AX<br><strong>사례</strong> 산업안전 AI 실증</p>
+        <button class="btn btn-p" data-pkg="공공·국방" onclick="openPkg(this)">패키지 문의</button>
       </div>
-      <div class="usecase-card">
-        <span class="usecase-tag">에너지</span>
-        <h4>LG에너지솔루션 차세대 ERP</h4>
-        <p>배터리 제조 전 밸류체인을 아우르는 차세대 ERP 시스템 구축으로 스마트 팩토리 실현</p>
-      </div>
-      <div class="usecase-card">
-        <span class="usecase-tag">국방 · 공공</span>
-        <h4>퓨리오사AI NPU 기반 AX</h4>
-        <p>국산 NPU '레니게이드'를 활용한 1단계 AX — 산업안전·공공·국방 영역 AI 추론 인프라 구축</p>
-      </div>
-      <div class="usecase-card">
-        <span class="usecase-tag">산업안전</span>
-        <h4>미스릴 '가디언-알파' + SAP 연동</h4>
-        <p>VLM 기반 실시간 위험 감지 AI를 SAP 시스템과 연동, 예방적 안전 관리 체계 실현</p>
+      <div class="card">
+        <h3>금융·유통</h3>
+        <p><strong>대상</strong> 금융·리테일<br><strong>솔루션</strong> 한컴AI OCR + 업스테이지 LLM<br><strong>효과</strong> 문서·계약 자동화<br><strong>사례</strong> 엔터프라이즈 문서 AI</p>
+        <button class="btn btn-p" data-pkg="금융·유통" onclick="openPkg(this)">패키지 문의</button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- §7 BUSINESS AREAS -->
-<section class="section" id="business">
-  <div class="container">
-    <span class="section-badge">Business Areas</span>
-    <h2 class="section-title fade-up">사업 영역</h2>
-    <p class="section-desc fade-up">6대 핵심 사업으로 엔터프라이즈 디지털 전환의 전 영역을 커버합니다.</p>
-    <div class="biz-grid fade-up">
-      <div class="biz-card">
-        <div class="biz-bar biz-bar--sap"></div>
-        <div class="biz-body">
-          <div class="biz-tag">핵심 사업</div>
-          <h4>SAP ERP</h4>
-          <p>19년간 축적된 SAP 구축·운영 역량. S/4HANA 마이그레이션, 신규 구축, AMS 전 영역 수행</p>
-        </div>
+<!-- §8 LEADERSHIP -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§8 · Leadership</span>
+    <h2>리더십</h2>
+    <div class="grid g2">
+      <div class="card"><h3>홍성호 대표이사</h3><p>㈜에코아이티 단독 대표. SAP ERP·RPA·AX 19년 엔터프라이즈 혁신을 이끌어 온 리더.</p></div>
+      <div class="card"><h3>한상기 박사 · CAIO</h3><p>'AI 전쟁 2.0' 공저자. 2026 한컴AI 파트너 데이 특강 연사. 에코아이티 AX 비전을 총괄.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- §9 TRUST STACK -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§9 · Trust Stack</span>
+    <h2>Trust Stack 4 레이어</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>L1 · 대형 고객사</h3>
+        <p>한화에어로스페이스 · LG에너지솔루션 · 서울반도체 · 공공기관 다수</p>
       </div>
-      <div class="biz-card">
-        <div class="biz-bar biz-bar--rpa"></div>
-        <div class="biz-body">
-          <div class="biz-tag">국내 선도</div>
-          <h4>RPA</h4>
-          <p>120명 이상 전문 인력, 업계 최대 규모. UiPath·Automation Anywhere 등 멀티 벤더 대응</p>
-        </div>
+      <div class="card">
+        <h3>L2 · 인증·수상</h3>
+        <p>고용노동부 강소기업 · 한컴AI 공식 총판 · SAP 파트너</p>
       </div>
-      <div class="biz-card">
-        <div class="biz-bar biz-bar--ai"></div>
-        <div class="biz-body">
-          <div class="biz-tag">공식 총판</div>
-          <h4>한컴AI</h4>
-          <p>OCR·문서 AI 엔터프라이즈 공급. 2026 파트너 데이 주관. 업스테이지 생성형 AI 연계</p>
-        </div>
+      <div class="card">
+        <h3>L3 · 미디어</h3>
+        <p>디지털인사이트 표지 · 전자신문 · 이데일리 · 머니투데이 외 보도자료 4건</p>
       </div>
-      <div class="biz-card">
-        <div class="biz-bar biz-bar--mendix"></div>
-        <div class="biz-body">
-          <div class="biz-tag">Low-Code</div>
-          <h4>Mendix</h4>
-          <p>시멘스 Mendix 기반 로우코드 애플리케이션 개발. 빠른 프로토타이핑과 엔터프라이즈 확장</p>
-        </div>
-      </div>
-      <div class="biz-card">
-        <div class="biz-bar biz-bar--sf"></div>
-        <div class="biz-body">
-          <div class="biz-tag">CRM</div>
-          <h4>Salesforce</h4>
-          <p>세일즈포스 CRM 구축·커스터마이징. 영업 자동화부터 서비스 클라우드까지</p>
-        </div>
-      </div>
-      <div class="biz-card">
-        <div class="biz-bar biz-bar--cloud"></div>
-        <div class="biz-body">
-          <div class="biz-tag">이데아텍 MOU</div>
-          <h4>ITO · 클라우드</h4>
-          <p>이데아텍 파트너십 기반 클라우드 마이그레이션·MSP. IT 아웃소싱 통합 운영</p>
-        </div>
+      <div class="card">
+        <h3>L4 · AI 파트너십 5사</h3>
+        <p>한컴AI · 업스테이지 · 퓨리오사AI · 미스릴 · 이데아텍</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- §8 NEWS -->
-<section class="section section--alt" id="news">
-  <div class="container">
-    <span class="section-badge">Latest News</span>
-    <h2 class="section-title fade-up">최신 보도</h2>
-    <p class="section-desc fade-up">에코아이티의 최신 소식을 확인하세요.</p>
-    <div class="news-list fade-up">
-      <div class="news-item">
-        <div class="news-date">
-          <div class="day">31</div>
-          <div class="ym">2026.03</div>
-        </div>
-        <div class="news-content">
-          <div class="news-meta">전자신문</div>
-          <h4>에코아이티 × 업스테이지 MOU</h4>
-          <p>생성형 AI 기반 AX(AI Transformation) 공동 추진을 위한 전략적 업무협약 체결</p>
-          <a href="https://www.etnews.com/20260331000410" target="_blank" rel="noopener">기사 원문 →</a>
-        </div>
-      </div>
-      <div class="news-item">
-        <div class="news-date">
-          <div class="day">31</div>
-          <div class="ym">2026.03</div>
-        </div>
-        <div class="news-content">
-          <div class="news-meta">이데일리</div>
-          <h4>2026 한컴AI 파트너 데이</h4>
-          <p>에코아이티 주최, 한상기 박사 국가 AI 정책 특강 — 엔터프라이즈 AI 생태계 비전 발표</p>
-          <a href="https://www.edaily.co.kr/News/Read?newsId=03594886645388896&mediaCodeNo=257" target="_blank" rel="noopener">기사 원문 →</a>
-        </div>
-      </div>
-      <div class="news-item">
-        <div class="news-date">
-          <div class="day">17</div>
-          <div class="ym">2026.03</div>
-        </div>
-        <div class="news-content">
-          <div class="news-meta">머니투데이</div>
-          <h4>에코아이티 × 퓨리오사AI MOU</h4>
-          <p>국산 NPU '레니게이드' 기반 AI 추론 인프라 구축, AX 사업 공동 추진</p>
-          <a href="https://www.mt.co.kr/future/2026/03/17/2026031713562192616" target="_blank" rel="noopener">기사 원문 →</a>
-        </div>
-      </div>
-      <div class="news-item">
-        <div class="news-date">
-          <div class="day">26</div>
-          <div class="ym">2026.01</div>
-        </div>
-        <div class="news-content">
-          <div class="news-meta">머니투데이</div>
-          <h4>에코아이티 × 미스릴 MOU</h4>
-          <p>산업안전 AI '가디언-알파' VLM 기술 기반 SAP 연동 안전관리 솔루션 공동 개발</p>
-          <a href="https://www.mt.co.kr/industry/2026/01/26/2026012614035128007" target="_blank" rel="noopener">기사 원문 →</a>
-        </div>
-      </div>
-      <div class="news-item">
-        <div class="news-date">
-          <div class="day"></div>
-          <div class="ym">특집</div>
-        </div>
-        <div class="news-content">
-          <div class="news-meta">디지털인사이트</div>
-          <h4>"에코아이티, 탁월한 선구안으로 SAP ERP·RPA 시장을 이끌다"</h4>
-          <p>19년간 SAP ERP와 RPA 시장을 선도해 온 에코아이티의 전략과 비전 심층 분석</p>
-        </div>
-      </div>
+<!-- §10 BUSINESS -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§10 · Business</span>
+    <h2>사업 영역 6대</h2>
+    <div class="grid g3">
+      <div class="card biz c1"><h3>SAP ERP</h3><p>S/4HANA 구축·전환·운영. 19년 엔터프라이즈 SAP 전문성.</p></div>
+      <div class="card biz c2"><h3>RPA</h3><p>120명 전문 인력 기반 하이퍼오토메이션. 업계 최대 조직.</p></div>
+      <div class="card biz c3"><h3>한컴AI</h3><p>OCR·문서 AI 공식 총판. 엔터프라이즈 문서 자동화.</p></div>
+      <div class="card biz c4"><h3>Mendix Low-Code</h3><p>엔터프라이즈 로우코드 앱 개발 플랫폼.</p></div>
+      <div class="card biz c5"><h3>Salesforce</h3><p>CRM·세일즈 클라우드 구축 및 운영.</p></div>
+      <div class="card biz c6"><h3>ITO·클라우드</h3><p>이데아텍 협력 클라우드 인프라 통합 운영.</p></div>
     </div>
   </div>
 </section>
 
-<!-- §9 VALUES -->
-<section class="section" id="values">
-  <div class="container text-center">
-    <span class="section-badge">Core Values</span>
-    <h2 class="section-title fade-up">핵심 가치 — C.H.A.E</h2>
-    <p class="section-desc fade-up" style="margin-left:auto;margin-right:auto">에코아이티의 이름 속에 담긴 네 가지 약속</p>
-    <div class="values-grid fade-up">
-      <div class="value-card">
-        <div class="value-letter">C</div>
-        <h4>Customer</h4>
-        <p>고객 성공이 곧 우리의 성공. 현장 중심의 솔루션으로 고객 비즈니스 가치를 극대화합니다.</p>
-      </div>
-      <div class="value-card">
-        <div class="value-letter">H</div>
-        <h4>Human</h4>
-        <p>기술의 중심엔 사람. 구성원의 성장과 행복이 기업 혁신의 원동력입니다.</p>
-      </div>
-      <div class="value-card">
-        <div class="value-letter">A</div>
-        <h4>Challenge &amp; Action</h4>
-        <p>도전하고 실행합니다. 19년간 ERP에서 AI까지, 멈추지 않는 혁신의 여정.</p>
-      </div>
-      <div class="value-card">
-        <div class="value-letter">E</div>
-        <h4>Expertise</h4>
-        <p>깊은 전문성이 신뢰를 만듭니다. 502억 매출이 증명하는 엔터프라이즈 역량.</p>
-      </div>
+<!-- §11 PRESS -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§11 · Press</span>
+    <h2>최신 보도</h2>
+    <div class="grid g2">
+      <a class="card" href="https://www.etnews.com/20260331000410" target="_blank" rel="noopener"><h3>에코아이티 × 업스테이지 MOU</h3><p>전자신문 · 2026.03.31</p></a>
+      <a class="card" href="https://www.edaily.co.kr/News/Read?newsId=03594886645388896&mediaCodeNo=257" target="_blank" rel="noopener"><h3>2026 한컴AI 파트너 데이</h3><p>이데일리 · 2026.03.31</p></a>
+      <a class="card" href="https://www.mt.co.kr/future/2026/03/17/2026031713562192616" target="_blank" rel="noopener"><h3>에코아이티 × 퓨리오사AI MOU</h3><p>머니투데이 · 2026.03.17</p></a>
+      <a class="card" href="https://www.mt.co.kr/industry/2026/01/26/2026012614035128007" target="_blank" rel="noopener"><h3>에코아이티 × 미스릴 MOU</h3><p>머니투데이 · 2026.01.26</p></a>
+      <div class="card"><h3>디지털인사이트</h3><p>"탁월한 선구안으로 SAP ERP·RPA 시장을 이끌다"</p></div>
     </div>
   </div>
 </section>
 
-<!-- §10 TIMELINE -->
-<section class="section section--alt" id="history">
-  <div class="container">
-    <div class="text-center">
-      <span class="section-badge">History</span>
-      <h2 class="section-title fade-up">연혁</h2>
-      <p class="section-desc fade-up" style="margin-left:auto;margin-right:auto">2008년 설립부터 2026년 AX 생태계 구축까지</p>
-    </div>
-    <div class="timeline fade-up">
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-year">2008</div>
-        <div class="tl-text">㈜에코아이티 설립</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-year">2010s</div>
-        <div class="tl-text">RPA 사업 본격화, 120명 규모 전문 조직으로 성장. 국내 RPA 시장 선도</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-year">2020s</div>
-        <div class="tl-text">Mendix(Low-Code)·Salesforce(CRM)·한컴AI(공식 총판) 사업 영역 확장</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-year">2024</div>
-        <div class="tl-text">이데아텍 클라우드 MOU 체결 · '에코스페이스' 강남 신사옥 이전</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-year">2026.01</div>
-        <div class="tl-text">미스릴 산업안전 AI MOU — '가디언-알파' VLM + SAP 연동</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-year">2026.03</div>
-        <div class="tl-text">퓨리오사AI NPU MOU · 업스테이지 생성형 AI MOU · 2026 한컴AI 파트너 데이 개최</div>
-      </div>
+<!-- §12 CHAE -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§12 · C.H.A.E</span>
+    <h2>핵심 가치 C.H.A.E</h2>
+    <div class="grid g4">
+      <div class="card"><h3>C · Customer</h3><p>고객의 비즈니스 성공을 최우선으로.</p></div>
+      <div class="card"><h3>H · Human</h3><p>사람 중심의 조직 문화와 전문가 양성.</p></div>
+      <div class="card"><h3>A · Challenge & Action</h3><p>도전과 실행으로 변화를 만듭니다.</p></div>
+      <div class="card"><h3>E · Expertise</h3><p>19년 축적된 엔터프라이즈 전문성.</p></div>
     </div>
   </div>
 </section>
 
-<!-- §11 OVERVIEW -->
-<section class="section" id="about">
-  <div class="container text-center">
-    <span class="section-badge">Company Overview</span>
-    <h2 class="section-title fade-up">기업 개요</h2>
-    <div class="overview-table fade-up" style="margin-top:40px">
-      <div class="ov-row">
-        <div class="ov-label">회사명</div>
-        <div class="ov-value">㈜에코아이티 (EchoIT)</div>
-      </div>
-      <div class="ov-row">
-        <div class="ov-label">설립</div>
-        <div class="ov-value">2008년</div>
-      </div>
-      <div class="ov-row">
-        <div class="ov-label">대표이사</div>
-        <div class="ov-value">홍성호 (단독 대표)</div>
-      </div>
-      <div class="ov-row">
-        <div class="ov-label">매출</div>
-        <div class="ov-value">502억원</div>
-      </div>
-      <div class="ov-row">
-        <div class="ov-label">본사</div>
-        <div class="ov-value">서울 강남구 강남대로146길 25 "에코스페이스"</div>
-      </div>
-      <div class="ov-row">
-        <div class="ov-label">웹사이트</div>
-        <div class="ov-value"><a href="https://echoit.co.kr" target="_blank" rel="noopener" style="color:var(--royal);font-weight:600">echoit.co.kr</a></div>
-      </div>
+<!-- §13 TIMELINE -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§13 · History</span>
+    <h2>연혁</h2>
+    <div class="tl">
+      <div class="tl-item"><h4>2008 · 설립</h4><p>SAP ERP 전문 SI로 출발.</p></div>
+      <div class="tl-item"><h4>2010s · RPA 120명 조직 구축</h4><p>업계 최대 RPA 전문 인력.</p></div>
+      <div class="tl-item"><h4>2020s · Mendix · Salesforce · 한컴AI 총판</h4><p>엔터프라이즈 영역 확장.</p></div>
+      <div class="tl-item"><h4>2024 · 이데아텍 클라우드 + 에코스페이스 신사옥</h4><p>강남 본사 이전 및 클라우드 통합.</p></div>
+      <div class="tl-item"><h4>2026.01 · 미스릴 MOU</h4><p>산업안전 VLM 가디언-알파 협력.</p></div>
+      <div class="tl-item"><h4>2026.03 · 퓨리오사AI · 업스테이지 MOU + 한컴AI 파트너 데이</h4><p>AX 플랫폼 오케스트레이터 포지셔닝 확립.</p></div>
     </div>
   </div>
 </section>
 
-<!-- §12 CTA -->
-<section class="cta-section">
-  <div class="container">
-    <div class="cta-card fade-up">
-      <h2>디지털 혁신, 에코아이티와 함께</h2>
-      <p>ERP에서 AX까지 — 19년 엔터프라이즈 혁신 파트너</p>
-      <a href="https://echoit.co.kr" target="_blank" rel="noopener" class="cta-btn">echoit.co.kr 방문 →</a>
+<!-- §14 COMPANY -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§14 · Company</span>
+    <h2>기업 개요</h2>
+    <div class="card">
+      <p style="font-size:16px;line-height:2">
+        <strong>회사명</strong> ㈜에코아이티 (ECHOIT)<br>
+        <strong>설립</strong> 2008년<br>
+        <strong>대표</strong> 홍성호 (단독 대표)<br>
+        <strong>매출</strong> 502억 원 (2024)<br>
+        <strong>주소</strong> 서울 강남구 강남대로146길 25 에코스페이스<br>
+        <strong>웹사이트</strong> <a href="https://echoit.co.kr" target="_blank" style="color:var(--royal)">echoit.co.kr</a>
+      </p>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="container">
-    <p>© 2026 ㈜에코아이티. All rights reserved. · 이 페이지는 <a href="https://hobbytan.com" target="_blank" rel="noopener">HOBBYTAN AI</a>가 제작했습니다.</p>
+<!-- §15 CTA FUNNEL -->
+<section id="cta">
+  <div class="wrap">
+    <span class="eyebrow">§15 · Get Started</span>
+    <h2>지금 시작하세요</h2>
+    <p class="lead">3단계 퍼널로 당신의 AX 여정을 함께합니다.</p>
+    <div class="grid g3">
+      <form class="form-card" onsubmit="submitForm(event,'diagnosis')">
+        <h3>L1 · AX 진단 무료 신청</h3>
+        <p style="font-size:13px;color:var(--mut);margin-bottom:16px">이메일만 남기시면 무료 진단 자료를 보내드립니다.</p>
+        <input type="email" name="email" required placeholder="이메일">
+        <button class="btn btn-s" type="submit">무료 진단 신청</button>
+        <div class="form-msg"></div>
+      </form>
+      <form class="form-card featured" onsubmit="submitForm(event,'demo')">
+        <h3>L2 · 한컴AI 솔루션 데모</h3>
+        <p style="font-size:13px;color:var(--mut);margin-bottom:16px">OCR·문서 AI 데모를 직접 확인해보세요.</p>
+        <input type="email" name="email" required placeholder="이메일">
+        <input type="text" name="company" required placeholder="회사명">
+        <button class="btn btn-p" type="submit">데모 요청</button>
+        <div class="form-msg"></div>
+      </form>
+      <form class="form-card" onsubmit="submitForm(event,'consulting')">
+        <h3>L3 · S/4HANA 컨설팅 미팅</h3>
+        <p style="font-size:13px;color:var(--mut);margin-bottom:16px">전문가와 1:1 컨설팅 미팅을 진행합니다.</p>
+        <input type="email" name="email" required placeholder="이메일">
+        <input type="text" name="company" required placeholder="회사명">
+        <input type="text" name="role" required placeholder="직책">
+        <textarea name="message" placeholder="문의 내용"></textarea>
+        <button class="btn btn-s" type="submit">미팅 신청</button>
+        <div class="form-msg"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<button class="float-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">AX 진단 신청 →</button>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 ㈜에코아이티 (ECHOIT) · <a href="https://echoit.co.kr" target="_blank">echoit.co.kr</a></p>
+    <p style="margin-top:8px;font-size:12px;color:#64748b">Crafted by HOBBYTAN AI 🔥</p>
   </div>
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
-// Nav scroll shadow
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>10)},{passive:true});
+firebase.initializeApp({apiKey:"AIzaSyDxnIFPnFdSVR6IKuBMRm5ZQynO0ORrlzI",authDomain:"hobbytan-ai.firebaseapp.com",projectId:"hobbytan-ai",storageBucket:"hobbytan-ai.firebasestorage.app",messagingSenderId:"820555571498",appId:"1:820555571498:web:eb5c2de98d3b6c18e43cb9"});
+const db=firebase.firestore();
 
-// Fade-up on scroll
-const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.15});
-document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+function submitForm(e,type){
+  e.preventDefault();
+  const f=e.target;
+  const msg=f.querySelector('.form-msg');
+  const data={type,createdAt:firebase.firestore.FieldValue.serverTimestamp()};
+  ['email','company','role','message'].forEach(k=>{
+    const el=f.querySelector('[name='+k+']');
+    if(el && el.value.trim()) data[k]=el.value.trim();
+  });
+  msg.textContent='전송 중...';
+  msg.style.color='#64748b';
+  db.collection('echoit_inquiries').add(data).then(()=>{
+    msg.textContent='✓ 신청이 완료되었습니다. 곧 연락드리겠습니다.';
+    msg.style.color='#16a34a';
+    f.reset();
+  }).catch(err=>{
+    msg.textContent='전송 실패: '+err.message;
+    msg.style.color='#dc2626';
+  });
+}
 
-// Mobile nav
-const style=document.createElement('style');
-style.textContent='.nav-links.show{display:flex!important;position:absolute;top:64px;left:0;right:0;flex-direction:column;background:#fff;padding:16px 24px;gap:16px;border-bottom:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.06)}';
-document.head.appendChild(style);
+function openPkg(btn){
+  const pkg=btn.getAttribute('data-pkg');
+  document.getElementById('cta').scrollIntoView({behavior:'smooth'});
+  setTimeout(()=>{
+    const f=document.querySelectorAll('#cta form')[1];
+    if(f){
+      const ta=f.querySelector('textarea')||f.querySelector('[name=company]');
+      if(f.querySelector('[name=company]')) f.querySelector('[name=company]').focus();
+    }
+  },600);
+}
 </script>
 </body>
 </html>

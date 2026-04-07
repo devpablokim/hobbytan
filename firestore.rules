@@ -77,5 +77,10 @@ service cloud.firestore {
       allow create: if true;
       allow read: if request.auth != null;
     }
+    // Echoit landing inquiries - public create only
+    match /echoit_inquiries/{docId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
   }
 }
