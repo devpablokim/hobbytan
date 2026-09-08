@@ -1,0 +1,61 @@
+.proof {
+  padding: 62px max(40px, calc((100vw - 1240px) / 2)) 48px;
+  background: #f0f5f2;
+  border-bottom: 1px solid #dce4e0;
+}
+.heading { display: flex; justify-content: space-between; align-items: center; gap: 48px; }
+.label { font-size: 11px; color: #5c7b69; }
+.heading h2 { font-size: clamp(23px, 2.1vw, 31px); line-height: 1.45; margin-top: 14px; }
+.metrics { display: flex; gap: 34px; flex-shrink: 0; }
+.metrics > div { padding-left: 26px; border-left: 1px solid #c9d9ce; }
+.metrics dt { font-size: 11px; color: #607668; }
+.metrics dd { font-size: clamp(23px, 2.25vw, 34px); font-weight: 600; letter-spacing: -.045em; color: #193c28; margin: 8px 0 0; white-space: nowrap; }
+.controls { margin-top: 32px; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d6e1d9; }
+.controls > span { font-size: 11px; color: #647b6c; }
+.pause { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 12px; color: #425f4c; border: 1px solid #c1d2c6; border-radius: 4px; font-size: 11px; }
+.pause:hover { background: #e0ece3; }
+.pause span { font-size: 14px; }
+.marquees { padding-top: 14px; }
+.window { overflow: hidden; mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent); }
+.track { display: flex; width: max-content; animation: companyTravel 65s linear infinite; will-change: transform; }
+.reverse { animation-direction: reverse; animation-duration: 72s; }
+.companyList { display: flex; flex: 0 0 auto; gap: 42px; padding: 0 42px 0 0; margin: 0; list-style: none; }
+.companyList li { display: flex; align-items: center; min-height: 62px; white-space: nowrap; }
+.companyList li span { font-size: 21px; font-weight: 550; letter-spacing: -.025em; color: #44644f; }
+.proof[data-paused="true"] .track { animation-play-state: paused; }
+@media (hover: hover) { .marquees:hover .track { animation-play-state: paused; } }
+@keyframes companyTravel { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (max-width: 1000px) {
+  .heading { gap: 30px; align-items: start; }
+  .metrics { gap: 20px; }
+  .metrics > div { padding-left: 18px; }
+}
+@media (max-width: 800px) {
+  .proof { padding: 45px 24px 34px; }
+  .heading { display: block; }
+  .metrics { margin-top: 28px; gap: 0; }
+  .metrics > div { flex: 1; padding-left: 22px; }
+  .metrics > div:first-child { border-left: 0; padding-left: 0; }
+  .companyList li span { font-size: 18px; }
+}
+@media (max-width: 600px) {
+  .proof { padding: 36px 20px 28px; }
+  .heading h2 { font-size: 23px; }
+  .metrics { margin-top: 25px; }
+  .metrics > div { padding-left: 13px; }
+  .metrics dt { font-size: 10px; }
+  .metrics dd { font-size: 24px; }
+  .controls { margin-top: 22px; }
+  .companyList { gap: 30px; padding-right: 30px; }
+  .companyList li { min-height: 52px; }
+  .companyList li span { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pause { display: none; }
+  .window { overflow: visible; mask-image: none; }
+  .track { width: 100%; animation: none !important; transform: none; will-change: auto; }
+  .companyList { flex: 1 1 auto; flex-wrap: wrap; gap: 6px 24px; padding-right: 0; }
+  .companyList li { min-height: 42px; white-space: normal; }
+  .companyList li span { font-size: 16px; }
+  .clone { display: none; }
+}

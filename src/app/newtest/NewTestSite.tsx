@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import s from "./newtest.module.css";
+import WorkshopProof from "./WorkshopProof";
 
 function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -69,6 +70,7 @@ export default function NewTestSite() {
       <section className={s.hero} id="main-content"><div className={s.heroCopy}><span className={s.label}><i /> AI 구축 · 업무 자동화 · 기업 교육</span><h1>매일 반복하는 업무,<br /><span>AI로 줄여드립니다.</span></h1><p>메일을 옮겨 적고, 자료를 찾고, 보고서를 정리하는 일.<br className={s.desktopBreak} /> 하비탄은 지금 쓰는 도구에 AI를 연결해<br className={s.desktopBreak} /> 팀이 직접 쓰는 업무 시스템을 만듭니다.</p><div className={s.heroActions}><a className={s.primary} href="/contact">우리 업무 상담하기 <span aria-hidden="true">↗</span></a><a className={s.textLink} href="#applications">적용할 수 있는 업무 보기 <span aria-hidden="true">↓</span></a></div><div className={s.heroNote}>업무 범위와 사용 환경을 확인한 뒤 진행 방식과 견적을 안내합니다.</div></div><div className={s.heroVisual}><WorkflowDemo /></div></section>
       <div className={s.introFoot}><span>HOBBYTAN AI</span><p>자동화할 업무를 고르는 단계부터, 팀이 사용하는 단계까지.</p><span>새 사이트 미리보기</span></div>
     </div>
+    <WorkshopProof />
     <section className={s.services} id="services"><Reveal><div className={s.sectionTop}><span className={s.sectionLabel}>01 / 서비스</span><h2>지금 필요한 일부터<br />맡기실 수 있습니다.</h2><p>구축이 필요한 팀도, 교육부터 시작할 팀도 있습니다.<br />현재 업무와 팀의 경험에 맞춰 범위를 정합니다.</p></div></Reveal>
       <Reveal className={s.serviceFeature}><div className={s.serviceFeatureCopy}><span className={s.category}>AI SYSTEMS</span><h3>업무 자동화와<br />사내 AI 도구 구축</h3><p>메일·문서·시트를 연결해 반복 작업을 줄입니다. 사내 자료를 검색하거나 보고서 초안을 작성하는 도구도 만들 수 있습니다.</p><ul><li>주문·발주 데이터 취합과 문서 생성</li><li>사내 자료 검색과 출처가 있는 답변</li><li>검토·승인 단계를 포함한 업무 흐름</li></ul><a href="/contact" className={s.inlineLink}>구축 범위 상담하기 ↗</a></div><div className={s.architecture}><div className={s.archTop}><span>연결 구조 예시</span><span>WORKFLOW / 01</span></div><div className={s.archSources}><span>기존 문서</span><span>업무 도구</span><span>사내 데이터</span></div><div className={s.archLines} aria-hidden="true">↓<span>↓</span>↓</div><div className={s.archCore}><span>AI 처리</span><strong>업무에 맞춘 규칙과 연동</strong><small>접근 권한 · 처리 기록 · 예외 항목</small></div><div className={s.archLines} aria-hidden="true">↓</div><div className={s.archResult}><span>담당자 검토</span><i aria-hidden="true">→</i><strong>업무 시스템에 반영</strong></div><p>데이터 위치와 연동 가능 여부는 진단 과정에서 확인합니다.</p></div></Reveal>
       <Reveal className={s.otherServices}><article><span className={s.category}>TEAM TRAINING</span><h3>실무 중심 AI 교육</h3><p>팀에서 실제로 쓰는 문서와 업무를 과제로 삼습니다. 도구 사용법을 익힌 뒤, 각자 맡은 일에 적용하고 피드백을 받습니다.</p><a className={s.inlineLink} href="/contact">교육 상담하기 ↗</a></article><article><span className={s.category}>AX CONSULTING</span><h3>AI 도입 진단과 계획</h3><p>자동화할 만한 일이 무엇인지 함께 찾습니다. 필요한 데이터, 예상 범위, 구현 난이도를 확인해 먼저 해볼 업무를 정합니다.</p><a className={s.inlineLink} href="/contact">도입 진단 문의하기 ↗</a></article></Reveal>
