@@ -1,0 +1,32 @@
+.carousel { min-width: 0; }
+.categories { display: flex; padding: 9px 12px; gap: 3px; border-bottom: 1px solid #294037; }
+.categories button { flex: 1; min-width: 0; min-height: 44px; font-size: 11px; color: #9fbaac; border-radius: 3px; padding: 7px 4px; white-space: nowrap; }
+.categories button[aria-pressed="true"] { background: #2c4939; color: #bbf2d8; }
+.categories button:hover { background: #253d30; }
+.slide { touch-action: pan-y; }
+.slideContent { animation: enterSlide .32s ease-out; }
+.slideContent > div:first-child { min-height: 58px; }
+.slideContent div[class*="processor"] > div > span { font-size: 9px; }
+.slideContent div[class*="processor"] { min-height: 80px; }
+.slideContent [class*="output"] { min-height: 73px; }
+.slide > div:last-child { min-height: 94px; }
+.navigation { border-top: 1px solid #2a4334; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 14px; }
+.navigation > div { display: flex; align-items: center; gap: 7px; }
+.navigation button { min-height: 44px; min-width: 44px; color: #adcbbb; font-size: 16px; border-radius: 3px; }
+.navigation button:hover:not(:disabled) { background: #253e30; }
+.navigation span { color: #94b3a1; font-size: 11px; min-width: 34px; text-align: center; }
+.navigation .autoToggle { font-size: 10px; padding: 6px 9px; }
+.navigation button:disabled { color: #95aa9e; cursor: default; }
+@keyframes enterSlide { from { opacity: .35; transform: translateX(10px); } to { opacity: 1; transform: none; } }
+@media(max-width:600px) {
+  .categories { padding: 6px; gap: 1px; }
+  .categories button { font-size: 10px; padding: 6px 2px; }
+  .slideContent > div:first-child { min-height: 53px; }
+  .slideContent div[class*="processor"] > div > span { font-size: 8px; }
+  .slideContent div[class*="processor"] { min-height: 75px; }
+  .slideContent [class*="output"] { min-height: 69px; }
+  .navigation { padding-inline: 8px; }
+  .navigation .autoToggle { font-size: 9px; }
+  .slide > div:last-child { min-height: 94px; }
+}
+@media(prefers-reduced-motion:reduce) { .slideContent { animation: none; } }

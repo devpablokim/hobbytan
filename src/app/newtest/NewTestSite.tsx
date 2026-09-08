@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import s from "./newtest.module.css";
 import WorkshopProof from "./WorkshopProof";
+import WorkflowCarousel from "./WorkflowCarousel";
 
 function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -25,30 +26,6 @@ function Reveal({ children, className = "" }: { children: ReactNode; className?:
   return <div ref={ref} className={className}>{children}</div>;
 }
 
-const flowSteps = ['주문 수집', '항목 정리', '담당자 검토', '발주서 생성'];
-function WorkflowDemo() {
-  const [step, setStep] = useState(-1);
-  const running = step === 0 || step === 1 || step === 3;
-  useEffect(() => {
-    if (!running) return;
-    const timer = window.setTimeout(() => setStep(current => current + 1), 900);
-    return () => window.clearTimeout(timer);
-  }, [step, running]);
-  const descriptions = ['메일과 시트에서 주문을 모으고 있습니다.', '품목명과 수량을 발주 양식에 맞추고 있습니다.', '수량이나 품목이 맞는지 사람이 확인합니다.', '확인한 내용으로 발주서를 만들고 있습니다.', '예시 발주서가 준비됐습니다. 실제 파일은 생성하지 않습니다.'];
-  return <div className={s.demo} data-testid="workflow-demo" data-step={step}>
-    <div className={s.demoTop}><span><i /> 발주 업무 자동화</span><span className={s.demoBadge}>인터랙티브 예시</span></div>
-    <div className={s.diagram}>
-      <div className={s.sourceRow}><span><b>↙</b> 주문 메일</span><span><b>▦</b> 주문 시트</span><span><b>⌑</b> 첨부 문서</span></div>
-      <div className={`${s.collector} ${running ? s.transmitting : ''}`} aria-hidden="true"><i /><i /><i /></div>
-      <div className={s.processor}><span className={s.processorSymbol} aria-hidden="true">⌘</span><div><strong>업무 처리 흐름</strong><span>수집 · 정리 · 검토 · 생성</span></div><i className={running ? s.runningDot : s.staticDot} /></div>
-      <div className={s.pipeline}>{flowSteps.map((title, i) => <div key={title} className={`${s.node} ${step === i ? s.activeNode : ''} ${step > i ? s.doneNode : ''}`}><span>{step > i ? '✓' : `0${i + 1}`}</span><strong>{title}</strong><small>{step > i ? '완료' : step === i ? (i === 2 ? '확인 필요' : '처리 중') : '대기'}</small></div>)}</div>
-      <div className={`${s.output} ${step === 4 ? s.readyOutput : ''}`}><span aria-hidden="true">▤</span><div><strong>발주서</strong><small>{step === 4 ? '담당자 확인 완료 · 생성 예시' : '담당자 확인 후 생성'}</small></div><span>{step === 4 ? '✓' : '↗'}</span></div>
-    </div>
-    <div className={s.demoControls}><p role="status" aria-live="polite">{step < 0 ? '실행을 눌러 처리 과정을 확인하세요.' : descriptions[step]}</p><button type="button" disabled={running} onClick={() => setStep(step === 2 ? 3 : 0)}>{running ? '처리 중…' : step === 2 ? '확인하고 계속' : step === 4 ? '다시 실행' : '예시 실행'} <span aria-hidden="true">{running ? '·' : '→'}</span></button></div>
-    <div className={s.demoDisclaimer}>설명용 화면입니다. 회사 데이터나 외부 서비스에 연결되지 않습니다.</div>
-  </div>;
-}
-
 const applications = [
   { name: '발주·정산', title: '메일과 엑셀에 나뉜 주문을 모읍니다.', text: '같은 주문을 여러 파일에 옮겨 적고 있다면, 취합과 양식 정리부터 자동화할 수 있습니다. 금액과 수량이 다른 건은 따로 표시해 담당자가 확인하게 합니다.', input: '주문 메일 · 엑셀 파일', process: '항목 추출 / 중복 확인 / 양식 변환', output: '검토할 주문 목록 · 발주서 초안', review: '금액과 수량, 예외 주문 확인' },
   { name: '사내 문서 검색', title: '답을 찾을 때, 근거 문서도 같이 봅니다.', text: '매뉴얼과 업무 규정을 검색해 답변 초안을 만드는 도구입니다. 문서 접근 권한과 갱신 주기를 먼저 확인하고, 답변에는 참고한 자료를 함께 보여줍니다.', input: '업무 매뉴얼 · 사내 규정', process: '권한 확인 / 자료 검색 / 답변 작성', output: '답변 초안 · 참고 문서', review: '원문 확인, 근거 없는 답변 구분' },
@@ -67,7 +44,7 @@ export default function NewTestSite() {
     <div className={s.darkIntro}>
       <header className={s.header}><a href="#top" className={s.brand} aria-label="하비탄 AI 처음으로"><Image src="/logo-white.svg" width={200} height={30} alt="HOBBYTAN AI" priority /></a><nav className={s.desktopNav} aria-label="주요 메뉴"><a href="#services">서비스</a><a href="#applications">업무 예시</a><a href="#process">진행 방법</a></nav><a className={s.headerCta} href="/contact">도입 상담 <span aria-hidden="true">↗</span></a><button className={s.menuButton} type="button" aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? '닫기' : '메뉴'}</button></header>
       <nav id="mobile-navigation" aria-label="모바일 메뉴" hidden={!menuOpen} className={s.mobileNav}>{[['#services','서비스'],['#applications','업무 예시'],['#process','진행 방법']].map(([href,label]) => <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label} ↗</a>)}</nav>
-      <section className={s.hero} id="main-content"><div className={s.heroCopy}><span className={s.label}><i /> AI 구축 · 업무 자동화 · 기업 교육</span><h1>매일 반복하는 업무,<br /><span>AI로 줄여드립니다.</span></h1><p>메일을 옮겨 적고, 자료를 찾고, 보고서를 정리하는 일.<br className={s.desktopBreak} /> 하비탄은 지금 쓰는 도구에 AI를 연결해<br className={s.desktopBreak} /> 팀이 직접 쓰는 업무 시스템을 만듭니다.</p><div className={s.heroActions}><a className={s.primary} href="/contact">우리 업무 상담하기 <span aria-hidden="true">↗</span></a><a className={s.textLink} href="#applications">적용할 수 있는 업무 보기 <span aria-hidden="true">↓</span></a></div><div className={s.heroNote}>업무 범위와 사용 환경을 확인한 뒤 진행 방식과 견적을 안내합니다.</div></div><div className={s.heroVisual}><WorkflowDemo /></div></section>
+      <section className={s.hero} id="main-content"><div className={s.heroCopy}><span className={s.label}><i /> AI 구축 · 업무 자동화 · 기업 교육</span><h1>매일 반복하는 업무,<br /><span>AI로 줄여드립니다.</span></h1><p>메일을 옮겨 적고, 자료를 찾고, 보고서를 정리하는 일.<br className={s.desktopBreak} /> 하비탄은 지금 쓰는 도구에 AI를 연결해<br className={s.desktopBreak} /> 팀이 직접 쓰는 업무 시스템을 만듭니다.</p><div className={s.heroActions}><a className={s.primary} href="/contact">우리 업무 상담하기 <span aria-hidden="true">↗</span></a><a className={s.textLink} href="#applications">적용할 수 있는 업무 보기 <span aria-hidden="true">↓</span></a></div><div className={s.heroNote}>업무 범위와 사용 환경을 확인한 뒤 진행 방식과 견적을 안내합니다.</div></div><div className={s.heroVisual}><WorkflowCarousel /></div></section>
       <div className={s.introFoot}><span>HOBBYTAN AI</span><p>자동화할 업무를 고르는 단계부터, 팀이 사용하는 단계까지.</p><span>새 사이트 미리보기</span></div>
     </div>
     <WorkshopProof />
