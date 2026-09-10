@@ -23,7 +23,7 @@ const footerLinks = {
   ],
 };
 
-export default function Footer() {
+export default function Footer({ homeHref = "/" }: { homeHref?: string }) {
   return (
     <footer className="bg-[#050505] border-t border-neutral-800">
       <div className="container-wide">
@@ -32,7 +32,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-16">
             {/* Brand */}
             <div className="col-span-1 sm:col-span-2 md:col-span-4 lg:col-span-2">
-              <Link href="https://hobbytan.com" className="inline-block mb-6 group">
+              <Link href={homeHref} className="inline-block mb-6 group">
                 <Image
                   src="/logo-white.svg"
                   alt="HOBBYTAN AI"

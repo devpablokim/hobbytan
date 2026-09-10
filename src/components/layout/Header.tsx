@@ -14,7 +14,7 @@ const navItems = [
   { label: "가격", href: "#pricing" },
 ];
 
-export default function Header() {
+export default function Header({ homeHref = "/" }: { homeHref?: string }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -37,7 +37,7 @@ export default function Header() {
       <div className="container-wide">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link href="https://hobbytan.com" className="flex items-center group">
+          <Link href={homeHref} className="flex items-center group">
             <Image
               src="/logo-white.svg"
               alt="HOBBYTAN AI"

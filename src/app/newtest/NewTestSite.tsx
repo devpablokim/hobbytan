@@ -27,7 +27,7 @@ function Reveal({ children, className = "" }: { children: ReactNode; className?:
   return <div ref={ref} className={className}>{children}</div>;
 }
 
-export default function NewTestSite() {
+export default function NewTestSite({ preview = true }: { preview?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   return <main className={s.page} id="top">
     <a className={s.skip} href="#main-content">본문으로 건너뛰기</a>
@@ -35,7 +35,7 @@ export default function NewTestSite() {
       <header className={s.header}><a href="#top" className={s.brand} aria-label="하비탄 AI 처음으로"><Image src="/logo-white.svg" width={200} height={30} alt="HOBBYTAN AI" priority /></a><nav className={s.desktopNav} aria-label="주요 메뉴"><a href="#services">서비스</a><a href="#applications">업무 예시</a><a href="#process">진행 방법</a></nav><a className={s.headerCta} href="/contact">도입 상담 <span aria-hidden="true">↗</span></a><button className={s.menuButton} type="button" aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? '닫기' : '메뉴'}</button></header>
       <nav id="mobile-navigation" aria-label="모바일 메뉴" hidden={!menuOpen} className={s.mobileNav}>{[['#services','서비스'],['#applications','업무 예시'],['#process','진행 방법']].map(([href,label]) => <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label} ↗</a>)}</nav>
       <section className={s.hero} id="main-content"><div className={s.heroCopy}><span className={s.label}><i /> AI 구축 · 업무 자동화 · 기업 교육</span><h1>매일 반복하는 업무,<br /><span>AI로 줄여드립니다.</span></h1><p>메일을 옮겨 적고, 자료를 찾고, 보고서를 정리하는 일.<br className={s.desktopBreak} /> 하비탄은 지금 쓰는 도구에 AI를 연결해<br className={s.desktopBreak} /> 팀이 직접 쓰는 업무 시스템을 만듭니다.</p><div className={s.heroActions}><a className={s.primary} href="/contact">우리 업무 상담하기 <span aria-hidden="true">↗</span></a><a className={s.textLink} href="#applications">적용할 수 있는 업무 보기 <span aria-hidden="true">↓</span></a></div><div className={s.heroNote}>업무 범위와 사용 환경을 확인한 뒤 진행 방식과 견적을 안내합니다.</div></div><div className={s.heroVisual}><WorkflowCarousel /></div></section>
-      <div className={s.introFoot}><span>HOBBYTAN AI</span><p>자동화할 업무를 고르는 단계부터, 팀이 사용하는 단계까지.</p><span>새 사이트 미리보기</span></div>
+      <div className={s.introFoot}><span>HOBBYTAN AI</span><p>자동화할 업무를 고르는 단계부터, 팀이 사용하는 단계까지.</p><span>{preview ? "새 사이트 미리보기" : "AI 구축 · 업무 자동화"}</span></div>
     </div>
     <WorkshopProof />
     <section className={s.services} id="services"><Reveal><div className={s.sectionTop}><span className={s.sectionLabel}>01 / 서비스</span><h2>지금 필요한 일부터<br />맡기실 수 있습니다.</h2><p>구축이 필요한 팀도, 교육부터 시작할 팀도 있습니다.<br />현재 업무와 팀의 경험에 맞춰 범위를 정합니다.</p></div></Reveal>
@@ -46,6 +46,6 @@ export default function NewTestSite() {
     <section className={s.process} id="process"><Reveal><div className={s.sectionTop}><span className={s.sectionLabel}>03 / 진행 방법</span><h2>만들기 전에,<br />업무부터 확인합니다.</h2><p>기존 도구를 계속 쓸 수 있는지, 어디까지 자동화할지.<br />시작 전에 확인하고 합의할 내용입니다.</p></div><ol className={s.processList}>{[['업무를 살펴봅니다','담당자에게 작업 순서를 듣고, 사용하는 자료와 도구를 확인합니다.','업무 목록 · 데이터 환경'],['범위와 견적을 정합니다','먼저 만들 기능과 제외할 기능, 완료 기준을 정해 제안합니다.','구축 범위 · 일정 · 견적'],['실제 자료로 테스트합니다','시범 적용 과정에서 잘못 처리되는 항목과 예외 상황을 확인합니다.','테스트 결과 · 수정 항목'],['사용법을 정리해 전달합니다','담당자가 사용할 수 있도록 교육합니다. 운영 지원 범위도 함께 정합니다.','사용 안내 · 운영 기준']].map(([title,text,deliverable],i) => <li key={title}><span>0{i+1}</span><h3>{title}</h3><p>{text}</p><small>{deliverable}</small></li>)}</ol></Reveal></section>
     <section className={s.faq}><Reveal><div><span className={s.sectionLabel}>상담 전에 많이 묻는 내용</span><h2>아직 정해진 게 없어도<br />상담할 수 있습니다.</h2></div><div className={s.questions}>{[['무엇을 준비하면 되나요?','시간이 많이 드는 업무와 현재 사용하는 도구를 알려주세요. 처음부터 기획서를 준비할 필요는 없습니다. 민감한 원본 자료는 상담 전에 보내지 않으셔도 됩니다.'],['회사 데이터를 외부 AI에 보내야 하나요?','데이터 종류와 사내 보안 기준부터 확인합니다. 외부 서비스 이용 여부, 저장 위치와 접근 권한은 구축 범위를 정할 때 함께 검토합니다.'],['비용과 기간은 어떻게 정하나요?','처리할 업무, 연동할 시스템, 데이터 정리 수준에 따라 달라집니다. 상담 후 작업 범위와 일정을 정리해 견적을 안내합니다.']].map(([q,a]) => <details key={q}><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></Reveal></section>
     <section className={s.contact}><Reveal><span className={s.sectionLabel}>CONTACT</span><h2>어떤 업무에<br />시간을 가장 많이 쓰시나요?</h2><div><p>매주 만드는 보고서, 매일 확인하는 주문 목록.<br />줄이고 싶은 일부터 알려주세요.</p><a className={s.primary} href="/contact">도입 상담하기 <span aria-hidden="true">↗</span></a></div></Reveal></section>
-    <footer className={s.footer}><a href="#top" aria-label="하비탄 AI 처음으로"><Image src="/logo-white.svg" width={200} height={30} alt="HOBBYTAN AI" /></a><p>AI 구축 · 업무 자동화 · 기업 교육</p><a href="/">현재 홈페이지 ↗</a><small>HOBBYTAN AI · 새 사이트 디자인 미리보기</small></footer>
+    <footer className={s.footer}><a href="#top" aria-label="하비탄 AI 처음으로"><Image src="/logo-white.svg" width={200} height={30} alt="HOBBYTAN AI" /></a><p>AI 구축 · 업무 자동화 · 기업 교육</p><a href="/old-ver1">이전 홈페이지 ↗</a><small>{preview ? "HOBBYTAN AI · 새 사이트 디자인 미리보기" : "HOBBYTAN AI"}</small></footer>
   </main>;
 }
