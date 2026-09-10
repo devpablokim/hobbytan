@@ -55,14 +55,12 @@ export default function WorkflowCarousel() {
       onTouchCancel={() => {touch.current=null;}}
       onTouchEnd={event => {const start=touch.current;touch.current=null;if(!start || !event.changedTouches.length)return; const dx=event.changedTouches[0].clientX-start.x;const dy=event.changedTouches[0].clientY-start.y;if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.5)select(index+(dx<0?1:-1));}}>
       <div key={index} className={c.slideContent}>
-        <div className={s.demoTop}><span><i /> {item.title}</span><span className={s.demoBadge}>인터랙티브 예시</span></div>
-        <div className={s.diagram}>
-          <div className={s.sourceRow}>{item.inputs.map((input,i)=><span key={input}><b aria-hidden="true">{['↙','▦','⌑'][i]}</b>{input}</span>)}</div>
-          <div className={`${s.collector} ${running?s.transmitting:''}`} aria-hidden="true"><i/><i/><i/></div>
-          <div className={s.processor}><span className={s.processorSymbol} aria-hidden="true">⌘</span><div><strong>{item.field} 업무 처리 흐름</strong><span>{item.steps.join(' · ')}</span></div><i className={running?s.runningDot:s.staticDot}/></div>
-          <div className={s.pipeline}>{item.steps.map((title,i)=><div key={title} className={`${s.node} ${step===i?s.activeNode:''} ${step>i?s.doneNode:''}`}><span>{step>i?'✓':`0${i+1}`}</span><strong>{title}</strong><small>{step>i?'완료':step===i?(i===2?'확인 필요':'처리 중'):'대기'}</small></div>)}</div>
-          <div className={`${s.output} ${step===4?s.readyOutput:''}`}><span aria-hidden="true">▤</span><div><strong>{item.output}</strong><small>{step===4?'검토 완료 · 결과물 예시':'담당자 확인 후 작성'}</small></div><span aria-hidden="true">{step===4?'✓':'↗'}</span></div>
-        </div>
+        <div className={c.title}><strong>{item.title}</strong><span>업무 예시</span></div>
+        <ol className={c.flow} aria-label="입력부터 결과까지">
+          <li className={c.flowRow}><span className={c.flowLabel}>입력</span><div className={c.inputs}>{item.inputs.map(input => <span key={input}>{input}</span>)}</div></li>
+          <li className={`${c.flowRow} ${c.processing}`} data-active={step >= 0 && step < 4}><span className={c.flowLabel}>AI 처리</span><div><strong>{step < 0 ? item.steps[1] : step === 4 ? '처리 완료' : item.steps[step]}</strong><small>{step === 2 ? '담당자 확인을 기다립니다' : '담당자 검토 · 승인 포함'}</small></div><span aria-hidden="true">{step === 4 ? '✓' : '↓'}</span></li>
+          <li className={`${c.flowRow} ${c.result}`} data-ready={step === 4}><span className={c.flowLabel}>결과</span><div><strong>{item.output}</strong><small>{step === 4 ? '검토 완료 · 결과물 예시' : '담당자 확인 후 작성'}</small></div></li>
+        </ol>
       </div>
       <div className={s.demoControls}><p role="status" aria-live="polite">{step<0?'실행을 눌러 처리 과정을 확인하세요.':step===4?'예시가 완료됐습니다. 실제 업무를 실행하거나 파일을 만들지는 않습니다.':item.progress[step]}</p><button type="button" disabled={running} onClick={() => {setPaused(true);setStep(step===2?3:0);}}>{running?'처리 중…':step===2?'확인하고 계속':step===4?'다시 실행':'예시 실행'} <span aria-hidden="true">{running?'·':'→'}</span></button></div>
     </div>

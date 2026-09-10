@@ -1,32 +1,39 @@
-.carousel { min-width: 0; }
-.categories { display: flex; padding: 9px 12px; gap: 3px; border-bottom: 1px solid #294037; }
-.categories button { flex: 1; min-width: 0; min-height: 44px; font-size: 11px; color: #9fbaac; border-radius: 3px; padding: 7px 4px; white-space: nowrap; }
+.carousel { min-width: 0; line-height: 1.6; }
+.categories { display: flex; padding: 6px 12px; gap: 3px; border-bottom: 1px solid #294037; }
+.categories button { flex: 1; min-width: 0; min-height: 44px; font-size: 13px; color: #bdd1c6; border-radius: 3px; padding: 7px 4px; white-space: nowrap; }
 .categories button[aria-pressed="true"] { background: #2c4939; color: #bbf2d8; }
 .categories button:hover { background: #253d30; }
 .slide { touch-action: pan-y; }
 .slideContent { animation: enterSlide .32s ease-out; }
-.slideContent > div:first-child { min-height: 58px; }
-.slideContent div[class*="processor"] > div > span { font-size: 9px; }
-.slideContent div[class*="processor"] { min-height: 80px; }
-.slideContent [class*="output"] { min-height: 73px; }
-.slide > div:last-child { min-height: 94px; }
+.title { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px 4px; }
+.title strong { font-size: 16px; font-weight: 600; }
+.title > span { font-size: 12px; color: #b2c8bb; white-space: nowrap; }
+.flow { list-style: none; margin: 0; padding: 12px 20px 16px; display: grid; gap: 8px; }
+.flowRow { display: flex; align-items: center; gap: 14px; padding: 10px 12px; border: 1px solid #3b5549; border-radius: 4px; background: #172820; min-height: 62px; }
+.flowLabel { flex: 0 0 48px; font-size: 13px; color: #b7d0c2; font-weight: 550; }
+.flowRow > div { min-width: 0; }
+.flowRow strong { display: block; font-size: 15px; line-height: 1.5; font-weight: 550; color: #eff9f3; word-break: keep-all; }
+.flowRow small { display: block; font-size: 12px; line-height: 1.6; color: #b5cdbf; }
+.inputs { display: flex; flex-wrap: wrap; gap: 4px 12px; color: #e0eee6; font-size: 14px; }
+.processing { background: #20392c; border-color: #537e65; }
+.processing > span:last-child { margin-left: auto; color: #a5ebc6; }
+.processing[data-active="true"],.result[data-ready="true"] { border-color: #94ecc3; background: #294733; }
 .navigation { border-top: 1px solid #2a4334; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 14px; }
 .navigation > div { display: flex; align-items: center; gap: 7px; }
-.navigation button { min-height: 44px; min-width: 44px; color: #adcbbb; font-size: 16px; border-radius: 3px; }
+.navigation button { min-height: 44px; min-width: 44px; color: #c4ddce; font-size: 16px; border-radius: 3px; }
 .navigation button:hover:not(:disabled) { background: #253e30; }
-.navigation span { color: #94b3a1; font-size: 11px; min-width: 34px; text-align: center; }
-.navigation .autoToggle { font-size: 10px; padding: 6px 9px; }
-.navigation button:disabled { color: #95aa9e; cursor: default; }
+.navigation span { color: #bdd0c4; font-size: 13px; min-width: 34px; text-align: center; }
+.navigation .autoToggle { font-size: 12px; padding: 6px 9px; }
+.navigation button:disabled { color: #b3c7bb; cursor: default; }
 @keyframes enterSlide { from { opacity: .35; transform: translateX(10px); } to { opacity: 1; transform: none; } }
 @media(max-width:600px) {
-  .categories { padding: 6px; gap: 1px; }
-  .categories button { font-size: 10px; padding: 6px 2px; }
-  .slideContent > div:first-child { min-height: 53px; }
-  .slideContent div[class*="processor"] > div > span { font-size: 8px; }
-  .slideContent div[class*="processor"] { min-height: 75px; }
-  .slideContent [class*="output"] { min-height: 69px; }
+  .categories { padding: 6px; gap: 1px; flex-wrap: wrap; }
+  .categories button { flex: 1 1 22%; font-size: 13px; padding: 6px 2px; }
+  .title { padding: 12px 14px 4px; }
+  .flow { padding: 12px 14px 16px; }
+  .flowRow { gap: 10px; padding: 10px; }
+  .inputs { gap: 4px 10px; }
   .navigation { padding-inline: 8px; }
-  .navigation .autoToggle { font-size: 9px; }
-  .slide > div:last-child { min-height: 94px; }
+  .navigation .autoToggle { padding-inline: 4px; }
 }
 @media(prefers-reduced-motion:reduce) { .slideContent { animation: none; } }

@@ -50,6 +50,8 @@
   .companyList li { min-height: 52px; }
   .companyList li span { font-size: 17px; }
 }
+/* Metrics and source labels remain legible on narrow screens. */
+.proof .label,.proof .metrics dt,.proof .controls > span,.proof .pause { font-size: 13px; color: #425f4c; line-height: 1.7; }
 @media (prefers-reduced-motion: reduce) {
   .pause { display: none; }
   .window { overflow: visible; mask-image: none; }
