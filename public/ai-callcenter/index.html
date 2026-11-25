@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 고객센터 — 실시간 음성 데모</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#e5e5e5;font-family:'Pretendard',-apple-system,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.container{width:100%;max-width:480px;padding:24px}
+.phone{border:1px solid #262626;background:#111;overflow:hidden;position:relative}
+.phone-header{background:#0d0d0d;padding:16px 20px;border-bottom:1px solid #262626;text-align:center}
+.phone-header h1{font-size:14px;color:#fff;font-weight:600}
+.phone-header p{font-size:11px;color:#737373;margin-top:2px}
+.status-bar{padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:8px;border-bottom:1px solid #1a1a1a}
+.status-dot{width:10px;height:10px;border-radius:50%}
+.status-dot.offline{background:#525252}
+.status-dot.connecting{background:#f59e0b;animation:pulse 1s infinite}
+.status-dot.online{background:#10b981;animation:pulse 2s infinite}
+.status-dot.speaking{background:#3b82f6;animation:pulse .5s infinite}
+.status-text{font-size:12px;color:#737373}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.transcript{padding:16px 20px;min-height:320px;max-height:400px;overflow-y:auto}
+.msg{margin-bottom:12px;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.bot{text-align:left}
+.msg.user{text-align:right}
+.msg .bubble{display:inline-block;max-width:85%;padding:10px 14px;font-size:13px;line-height:1.5}
+.msg.bot .bubble{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:#d4d4d4}
+.msg.user .bubble{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#d4d4d4}
+.msg .label{font-size:10px;color:#525252;margin-bottom:4px}
+.typing{color:#737373;font-size:12px;font-style:italic;padding:0 20px 8px}
+.controls{padding:20px;border-top:1px solid #262626;display:flex;align-items:center;justify-content:center;gap:16px}
+.btn-mic{width:64px;height:64px;border-radius:50%;border:2px solid #333;background:transparent;color:#737373;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;font-size:24px}
+.btn-mic:hover{border-color:#10b981;color:#10b981}
+.btn-mic.active{border-color:#ef4444;background:rgba(239,68,68,.1);color:#ef4444;animation:pulse-ring 1.5s infinite}
+@keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(239,68,68,.3)}70%{box-shadow:0 0 0 12px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+.btn-end{padding:10px 20px;border:1px solid #333;background:transparent;color:#737373;cursor:pointer;font-size:12px}
+.btn-end:hover{border-color:#ef4444;color:#ef4444}
+.btn-start{padding:14px 32px;border:1px solid #10b981;background:rgba(16,185,129,.1);color:#10b981;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s}
+.btn-start:hover{background:rgba(16,185,129,.2)}
+.volume-bar{height:3px;background:#1a1a1a;margin:0 20px}
+.volume-level{height:100%;background:#10b981;width:0%;transition:width .1s}
+.info{padding:12px 20px;border-top:1px solid #1a1a1a;font-size:10px;color:#404040;text-align:center}
+.debug{padding:8px 20px;font-size:9px;color:#333;max-height:60px;overflow-y:auto;border-top:1px solid #1a1a1a;font-family:monospace}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="phone">
+    <div class="phone-header">
+      <h1>🤖 하비탄AI 고객센터</h1>
+      <p>ElevenLabs Conversational AI Demo</p>
+    </div>
+    <div class="status-bar">
+      <div class="status-dot offline" id="statusDot"></div>
+      <span class="status-text" id="statusText">대기 중</span>
+    </div>
+    <div class="volume-bar"><div class="volume-level" id="volumeLevel"></div></div>
+    <div class="transcript" id="transcript">
+      <div style="text-align:center;padding:80px 20px;color:#404040;font-size:13px">
+        아래 "상담 시작" 버튼을 눌러<br>AI 상담원과 대화를 시작하세요
+      </div>
+    </div>
+    <div id="typingIndicator" class="typing" style="display:none">AI 상담원이 답변 중...</div>
+    <div class="controls" id="controls">
+      <button class="btn-start" id="btnStart" onclick="startConversation()">📞 상담 시작</button>
+    </div>
+    <div style="padding:12px 20px;border-top:1px solid #1a1a1a;display:flex;justify-content:center;gap:12px">
+      <a href="/ai-callcenter/dashboard/" style="font-size:11px;color:#10b981;text-decoration:none;border:1px solid rgba(16,185,129,.3);padding:6px 14px;transition:all .2s">📊 관리 대시보드</a>
+      <a href="/forpeople-ai-call/" style="font-size:11px;color:#a78bfa;text-decoration:none;border:1px solid rgba(167,139,250,.3);padding:6px 14px;transition:all .2s">📱 ForPeople AI</a>
+    </div>
+    <div class="info">마이크 권한이 필요합니다 · ElevenLabs Conversational AI</div>
+    <div class="debug" id="debugLog"></div>
+  </div>
+</div>
+
+<script>
+let audioContext = null;
+
+function debugLog(msg) {
+  const el = document.getElementById('debugLog');
+  el.textContent = msg;
+  console.log('[CALLBOT]', msg);
+}
+
+function setStatus(state, text) {
+  document.getElementById('statusDot').className = 'status-dot ' + state;
+  document.getElementById('statusText').textContent = text;
+}
+
+function addMessage(role, text) {
+  if (!text || text === 'undefined') return;
+  const transcript = document.getElementById('transcript');
+  if (transcript.querySelector('div[style]')) transcript.innerHTML = '';
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'agent' ? 'bot' : 'user');
+  div.innerHTML = '<div class="label">' + (role === 'agent' ? '🤖 AI 상담원' : '👤 나') + '</div><div class="bubble">' + text + '</div>';
+  transcript.appendChild(div);
+  transcript.scrollTop = transcript.scrollHeight;
+}
+
+function showControls(mode) {
+  const controls = document.getElementById('controls');
+  if (mode === 'active') {
+    controls.innerHTML = '<button class="btn-mic active" id="btnMic" onclick="toggleMute()">🎤</button><button class="btn-end" onclick="endConversation()">통화 종료</button>';
+  } else {
+    controls.innerHTML = '<button class="btn-start" onclick="startConversation()">📞 상담 시작</button>';
+  }
+}
+
+// Extract text from any message structure
+function extractText(msg, ...keys) {
+  for (const key of keys) {
+    // Direct field
+    if (typeof msg[key] === 'string' && msg[key]) return msg[key];
+    // Nested in event object
+    const eventKey = key + '_event';
+    if (msg[eventKey] && typeof msg[eventKey][key] === 'string') return msg[eventKey][key];
+  }
+  // Fallback: check common text fields
+  for (const k of ['text', 'message', 'content', 'transcript']) {
+    if (typeof msg[k] === 'string' && msg[k]) return msg[k];
+  }
+  return null;
+}
+
+async function startConversation() {
+  try {
+    setStatus('connecting', '연결 중...');
+    debugLog('마이크 요청 중...');
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+    });
+    debugLog('마이크 획득. Signed URL 요청 중...');
+
+    const response = await fetch('/api/callcenter/signed-url', { method: 'POST' });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || 'Signed URL 발급 실패 (' + response.status + ')');
+    }
+
+    const data = await response.json();
+    debugLog('Signed URL 획득. WebSocket 연결 중...');
+    connectWebSocket(stream, data.signedUrl);
+
+  } catch (err) {
+    console.error('Start error:', err);
+    setStatus('offline', '오류: ' + err.message);
+    debugLog('오류: ' + err.message);
+  }
+}
+
+function connectWebSocket(stream, wsUrl) {
+  const ws = new WebSocket(wsUrl);
+  let isMuted = false;
+  let conversationId = null;
+
+  audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const source = audioContext.createMediaStreamSource(stream);
+  const processor = audioContext.createScriptProcessor(4096, 1, 1);
+
+  // Audio playback queue
+  let audioQueue = [];
+  let isPlaying = false;
+
+  async function playNextAudio() {
+    if (audioQueue.length === 0) { isPlaying = false; setStatus('online', '연결됨 — 말씀하세요'); return; }
+    isPlaying = true;
+    const audioData = audioQueue.shift();
+    try {
+      const pcm16 = new Int16Array(audioData);
+      const float32 = new Float32Array(pcm16.length);
+      for (let i = 0; i < pcm16.length; i++) float32[i] = pcm16[i] / 32768;
+      const buffer = audioContext.createBuffer(1, float32.length, 16000);
+      buffer.getChannelData(0).set(float32);
+      const bufferSource = audioContext.createBufferSource();
+      bufferSource.buffer = buffer;
+      bufferSource.connect(audioContext.destination);
+      bufferSource.onended = playNextAudio;
+      bufferSource.start();
+    } catch (e) {
+      console.error('Audio play error:', e);
+      playNextAudio();
+    }
+  }
+
+  ws.onopen = () => {
+    debugLog('WebSocket 연결됨. 초기화 데이터 전송...');
+    setStatus('online', '연결됨 — 말씀하세요');
+    showControls('active');
+
+    // Send conversation_initiation_client_data
+    ws.send(JSON.stringify({
+      type: 'conversation_initiation_client_data',
+      conversation_initiation_client_data: {
+        conversation_config_override: {
+          agent: {
+            prompt: { prompt: '' },
+            first_message: '안녕하세요, 하비탄AI 고객센터입니다. 무엇을 도와드릴까요?',
+            language: 'ko'
+          }
+        }
+      }
+    }));
+
+    // Start sending audio
+    source.connect(processor);
+    processor.connect(audioContext.destination);
+
+    processor.onaudioprocess = (e) => {
+      if (isMuted || ws.readyState !== WebSocket.OPEN) return;
+      const input = e.inputBuffer.getChannelData(0);
+
+      // Resample to 16kHz
+      const srcRate = audioContext.sampleRate;
+      const dstRate = 16000;
+      let samples = input;
+      if (srcRate !== dstRate) {
+        const ratio = srcRate / dstRate;
+        const newLen = Math.floor(input.length / ratio);
+        samples = new Float32Array(newLen);
+        for (let i = 0; i < newLen; i++) samples[i] = input[Math.floor(i * ratio)];
+      }
+
+      const pcm16 = new Int16Array(samples.length);
+      for (let i = 0; i < samples.length; i++) {
+        pcm16[i] = Math.max(-32768, Math.min(32767, samples[i] * 32768));
+      }
+
+      const bytes = new Uint8Array(pcm16.buffer);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+
+      ws.send(JSON.stringify({ user_audio_chunk: btoa(binary) }));
+
+      // Volume meter
+      let sum = 0;
+      for (let i = 0; i < input.length; i++) sum += Math.abs(input[i]);
+      document.getElementById('volumeLevel').style.width = Math.min(100, (sum / input.length) * 500) + '%';
+    };
+  };
+
+  ws.onmessage = (event) => {
+    try {
+      const msg = JSON.parse(event.data);
+      debugLog('WS: ' + msg.type + ' ' + JSON.stringify(msg).substring(0, 120));
+
+      switch (msg.type) {
+        case 'conversation_initiation_metadata':
+          conversationId = msg.conversation_initiation_metadata_event?.conversation_id
+            || msg.conversation_id || null;
+          debugLog('대화 시작 (ID: ' + conversationId + ')');
+          break;
+
+        case 'user_transcript': {
+          const text = extractText(msg, 'user_transcript');
+          if (text) addMessage('user', text);
+          break;
+        }
+
+        case 'agent_response': {
+          const text = extractText(msg, 'agent_response');
+          if (text) {
+            addMessage('agent', text);
+            document.getElementById('typingIndicator').style.display = 'none';
+          }
+          break;
+        }
+
+        case 'agent_response_correction': {
+          const text = extractText(msg, 'agent_response_correction', 'agent_response');
+          const bubbles = document.querySelectorAll('.msg.bot .bubble');
+          if (bubbles.length > 0 && text) bubbles[bubbles.length - 1].textContent = text;
+          break;
+        }
+
+        case 'audio': {
+          // Try all known audio chunk field paths
+          const chunk = (msg.audio_event && msg.audio_event.audio_base_64)
+            || (msg.audio && msg.audio.chunk)
+            || msg.audio_base_64
+            || msg.audio_chunk
+            || (typeof msg.audio === 'string' ? msg.audio : null);
+
+          if (chunk) {
+            const binary = atob(chunk);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            audioQueue.push(bytes.buffer);
+            if (!isPlaying) playNextAudio();
+          }
+          setStatus('speaking', 'AI 상담원 응답 중...');
+          break;
+        }
+
+        case 'interruption':
+          audioQueue = [];
+          isPlaying = false;
+          setStatus('online', '연결됨 — 말씀하세요');
+          break;
+
+        case 'ping':
+          ws.send(JSON.stringify({ type: 'pong', event_id: msg.ping_event?.event_id || msg.event_id }));
+          break;
+
+        default:
+          console.log('[ElevenLabs] Unhandled:', msg.type, msg);
+      }
+    } catch (e) {
+      console.log('WS parse error:', e, event.data);
+    }
+  };
+
+  ws.onclose = () => {
+    setStatus('offline', '통화 종료');
+    showControls('start');
+    stream.getTracks().forEach(t => t.stop());
+    try { processor.disconnect(); source.disconnect(); } catch(e) {}
+  };
+
+  ws.onerror = (err) => {
+    console.error('WS error:', err);
+    setStatus('offline', '연결 오류');
+    debugLog('WebSocket 오류');
+  };
+
+  window._ws = ws;
+  window._stream = stream;
+
+  window.toggleMute = () => {
+    isMuted = !isMuted;
+    const btn = document.getElementById('btnMic');
+    if (isMuted) {
+      btn.classList.remove('active');
+      btn.textContent = '🔇';
+      btn.style.borderColor = '#525252';
+      btn.style.color = '#525252';
+    } else {
+      btn.classList.add('active');
+      btn.textContent = '🎤';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }
+  };
+
+  window.endConversation = () => {
+    ws.close();
+    stream.getTracks().forEach(t => t.stop());
+    if (audioContext) audioContext.close();
+    setStatus('offline', '통화 종료');
+    showControls('start');
+  };
+}
+</script>
+</body>
+</html>

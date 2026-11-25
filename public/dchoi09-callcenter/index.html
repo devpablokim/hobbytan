@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dchoi09 AI 고객센터</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#e5e5e5;font-family:'Pretendard',-apple-system,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.container{width:100%;max-width:520px;padding:24px}
+.phone{border:1px solid #262626;background:#111;overflow:hidden}
+.phone-header{background:linear-gradient(135deg,#1a0a2e 0%,#0d0d0d 100%);padding:20px;border-bottom:1px solid #262626;text-align:center}
+.phone-header .brand{font-size:10px;color:#f472b6;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.phone-header h1{font-size:16px;color:#fff;font-weight:700}
+.phone-header p{font-size:11px;color:#737373;margin-top:4px}
+.status-bar{padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:8px;border-bottom:1px solid #1a1a1a}
+.status-dot{width:10px;height:10px;border-radius:50%}
+.status-dot.offline{background:#525252}
+.status-dot.connecting{background:#f59e0b;animation:pulse 1s infinite}
+.status-dot.online{background:#f472b6;animation:pulse 2s infinite}
+.status-dot.speaking{background:#3b82f6;animation:pulse .5s infinite}
+.status-text{font-size:12px;color:#737373}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.transcript{padding:16px 20px;min-height:340px;max-height:420px;overflow-y:auto}
+.msg{margin-bottom:12px;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.bot{text-align:left}
+.msg.user{text-align:right}
+.msg .bubble{display:inline-block;max-width:85%;padding:10px 14px;font-size:13px;line-height:1.5}
+.msg.bot .bubble{background:rgba(244,114,182,.08);border:1px solid rgba(244,114,182,.2);color:#d4d4d4}
+.msg.user .bubble{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);color:#d4d4d4}
+.msg .label{font-size:10px;color:#525252;margin-bottom:4px}
+.msg .time{font-size:9px;color:#404040;margin-top:2px}
+.controls{padding:16px 20px;border-top:1px solid #262626;display:flex;align-items:center;justify-content:center;gap:16px}
+.btn-mic{width:64px;height:64px;border-radius:50%;border:2px solid #333;background:transparent;color:#737373;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;font-size:24px}
+.btn-mic.active{border-color:#ef4444;background:rgba(239,68,68,.1);color:#ef4444;animation:pulse-ring 1.5s infinite}
+@keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(239,68,68,.3)}70%{box-shadow:0 0 0 12px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+.btn-end{padding:10px 20px;border:1px solid #333;background:transparent;color:#737373;cursor:pointer;font-size:12px}
+.btn-end:hover{border-color:#ef4444;color:#ef4444}
+.btn-start{padding:14px 32px;border:1px solid #f472b6;background:rgba(244,114,182,.1);color:#f472b6;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s}
+.btn-start:hover{background:rgba(244,114,182,.2)}
+.volume-bar{height:3px;background:#1a1a1a;margin:0 20px}
+.volume-level{height:100%;background:#f472b6;width:0%;transition:width .1s}
+.nav-links{padding:10px 20px;border-top:1px solid #1a1a1a;display:flex;justify-content:center;gap:12px}
+.nav-links a{font-size:11px;color:#f472b6;text-decoration:none;border:1px solid rgba(244,114,182,.3);padding:5px 12px;transition:all .2s}
+.nav-links a:hover{background:rgba(244,114,182,.1)}
+.info{padding:10px 20px;border-top:1px solid #1a1a1a;font-size:10px;color:#404040;text-align:center}
+.debug{padding:6px 20px;font-size:9px;color:#333;max-height:50px;overflow-y:auto;border-top:1px solid #1a1a1a;font-family:monospace}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="phone">
+    <div class="phone-header">
+      <div class="brand">dchoi09</div>
+      <h1>👩‍💼 디초이공구 고객센터</h1>
+      <p>AI 상담원이 도와드립니다</p>
+    </div>
+    <div class="status-bar">
+      <div class="status-dot offline" id="statusDot"></div>
+      <span class="status-text" id="statusText">대기 중</span>
+    </div>
+    <div class="volume-bar"><div class="volume-level" id="volumeLevel"></div></div>
+    <div class="transcript" id="transcript">
+      <div style="text-align:center;padding:60px 20px;color:#404040;font-size:13px">
+        👩‍💼 디초이공구 AI 고객센터<br><br>
+        <span style="font-size:11px;color:#525252">주문확인 · 배송조회 · 교환/반품 · 사이즈 문의<br>아래 버튼을 눌러 상담을 시작하세요</span>
+      </div>
+    </div>
+    <div id="typingIndicator" style="color:#737373;font-size:12px;font-style:italic;padding:0 20px 8px;display:none">상담원이 답변 중...</div>
+    <div class="controls" id="controls">
+      <button class="btn-start" onclick="startConversation()">📞 상담 시작</button>
+    </div>
+    <div class="nav-links">
+      <a href="/dchoi09-callcenter/chat/">💬 텍스트 상담</a>
+      <a href="/dchoi09-callcenter/dashboard/">📊 상담 기록</a>
+    </div>
+    <div class="info">마이크 권한이 필요합니다 · dchoi09 AI Call</div>
+    <div class="debug" id="debugLog"></div>
+  </div>
+</div>
+
+<script>
+const AGENT_ID = 'agent_5101kkkq3nb6fvkbsxn6cb5vwsm2';
+let audioContext = null;
+let conversationLog = []; // Store transcript for dashboard
+
+function debugLog(msg) {
+  document.getElementById('debugLog').textContent = msg;
+  console.log('[dchoi09]', msg);
+}
+
+function setStatus(state, text) {
+  document.getElementById('statusDot').className = 'status-dot ' + state;
+  document.getElementById('statusText').textContent = text;
+}
+
+function getTime() {
+  const d = new Date();
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0') + ':' + d.getSeconds().toString().padStart(2,'0');
+}
+
+function addMessage(role, text) {
+  if (!text || text === 'undefined') return;
+  const transcript = document.getElementById('transcript');
+  if (transcript.querySelector('div[style]')) transcript.innerHTML = '';
+  const time = getTime();
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'agent' ? 'bot' : 'user');
+  div.innerHTML = '<div class="label">' + (role === 'agent' ? '👩‍💼 dchoi09 상담원' : '👤 고객') + '</div><div class="bubble">' + text + '</div><div class="time">' + time + '</div>';
+  transcript.appendChild(div);
+  transcript.scrollTop = transcript.scrollHeight;
+  
+  // Save to log
+  conversationLog.push({ role, text, time });
+}
+
+function showControls(mode) {
+  const c = document.getElementById('controls');
+  if (mode === 'active') {
+    c.innerHTML = '<button class="btn-mic active" id="btnMic" onclick="toggleMute()">🎤</button><button class="btn-end" onclick="endConversation()">상담 종료</button>';
+  } else {
+    c.innerHTML = '<button class="btn-start" onclick="startConversation()">📞 상담 시작</button>';
+  }
+}
+
+function extractText(msg, ...keys) {
+  for (const key of keys) {
+    if (typeof msg[key] === 'string' && msg[key]) return msg[key];
+    const ek = key + '_event';
+    if (msg[ek] && typeof msg[ek][key] === 'string') return msg[ek][key];
+  }
+  for (const k of ['text','message','content','transcript']) {
+    if (typeof msg[k] === 'string' && msg[k]) return msg[k];
+  }
+  return null;
+}
+
+// Customer info tracking
+window._customerName = '';
+window._customerPhone = '';
+window._escalated = false;
+
+function extractCustomerInfo(text) {
+  // Extract phone numbers (Korean format: 010-XXXX-XXXX or 01012345678)
+  const phoneMatch = text.match(/(\d{2,3}[-.\s]?\d{3,4}[-.\s]?\d{4})/);
+  if (phoneMatch) window._customerPhone = phoneMatch[1];
+  // Extract name patterns like "김탄휴" after confirmation
+  const namePatterns = [/성함[은이가]?\s*(.{2,4})\s*(님|이시|맞으)/,
+    /(.{2,4})\s*님\s*(맞으시|이시|확인)/,
+    /이름[은이가]?\s*(.{2,4})/];
+  for (const p of namePatterns) {
+    const m = text.match(p);
+    if (m) { window._customerName = m[1]; break; }
+  }
+}
+
+// Also extract from user messages
+function extractFromUserMsg(text) {
+  if (!text) return;
+  const phoneMatch = text.match(/(\d{2,3}[-.\s]?\d{3,4}[-.\s]?\d{4})/);
+  if (phoneMatch) window._customerPhone = phoneMatch[1];
+  // Simple Korean name (2-4 chars after common patterns)
+  const nameMatch = text.match(/(?:저는|제\s*이름은?|성함은?)\s*(.{2,4})(?:입니다|이에요|예요|이요)/);
+  if (nameMatch) window._customerName = nameMatch[1];
+}
+
+// Save conversation to localStorage for dashboard
+function saveConversation() {
+  if (conversationLog.length === 0) return;
+  const history = JSON.parse(localStorage.getItem('dchoi09_calls') || '[]');
+  const entry = {
+    id: 'C-' + String(history.length + 1).padStart(4, '0'),
+    date: new Date().toISOString(),
+    messages: conversationLog,
+    duration: conversationLog.length > 0 ? Math.round((Date.now() - callStartTime) / 1000) : 0,
+    status: (window._escalated || conversationLog.some(m => m.text && (m.text.includes('Monica') || m.text.includes('담당자') || m.text.includes('업무시간')))) ? 'escalated' : 'resolved',
+    escalatedTo: (window._escalated || conversationLog.some(m => m.text && m.text.includes('Monica'))) ? 'Monica (업무시간 KST 10:00-19:00)' : null,
+    customerName: window._customerName || null,
+    customerPhone: window._customerPhone || null
+  };
+  history.unshift(entry);
+  // Keep last 100
+  if (history.length > 100) history.length = 100;
+  localStorage.setItem('dchoi09_calls', JSON.stringify(history));
+  debugLog('상담 기록 저장: ' + entry.id);
+}
+
+let callStartTime = 0;
+
+async function startConversation() {
+  try {
+    setStatus('connecting', '연결 중...');
+    conversationLog = [];
+    callStartTime = Date.now();
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+    });
+
+    const response = await fetch('/api/callcenter/signed-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agent_id: AGENT_ID })
+    });
+
+    if (!response.ok) {
+      debugLog('Signed URL 실패, 직접 연결...');
+      connectWS(stream, 'wss://api.elevenlabs.io/v1/convai/conversation?agent_id=' + AGENT_ID);
+      return;
+    }
+
+    const data = await response.json();
+    connectWS(stream, data.signedUrl);
+  } catch (err) {
+    setStatus('offline', '오류: ' + err.message);
+    debugLog('오류: ' + err.message);
+  }
+}
+
+function connectWS(stream, wsUrl) {
+  const ws = new WebSocket(wsUrl);
+  let isMuted = false;
+  audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const source = audioContext.createMediaStreamSource(stream);
+  const processor = audioContext.createScriptProcessor(4096, 1, 1);
+  let audioQueue = [], isPlaying = false;
+  let agentSpeaking = false; // true while agent TTS is playing — mutes user mic
+
+  function playNext() {
+    if (!audioQueue.length) {
+      isPlaying = false;
+      agentSpeaking = false; // Agent finished speaking — re-enable user mic
+      setStatus('online', '연결됨 — 말씀하세요');
+      return;
+    }
+    isPlaying = true;
+    const buf = audioQueue.shift();
+    try {
+      const pcm = new Int16Array(buf);
+      const f32 = new Float32Array(pcm.length);
+      for (let i = 0; i < pcm.length; i++) f32[i] = pcm[i] / 32768;
+      const ab = audioContext.createBuffer(1, f32.length, 16000);
+      ab.getChannelData(0).set(f32);
+      const src = audioContext.createBufferSource();
+      src.buffer = ab;
+      src.connect(audioContext.destination);
+      src.onended = playNext;
+      src.start();
+    } catch(e) { playNext(); }
+  }
+
+  ws.onopen = () => {
+    setStatus('online', '연결됨 — 말씀하세요');
+    showControls('active');
+    ws.send(JSON.stringify({
+      type: 'conversation_initiation_client_data',
+      conversation_initiation_client_data: {
+        conversation_config_override: {
+          agent: {
+            prompt: { prompt: `당신은 dchoi09(디초이공구) AI 고객상담원입니다. 여성스럽고 친절한 말투를 사용하세요.
+
+## dchoi09 소개
+dchoi09은 미국 거주 한인 가정을 위한 한국 유아/키즈 제품 공동구매 플랫폼입니다.
+웹사이트: https://dchoi09.com
+
+## 주요 상품 카테고리
+1. **전집(책)**: 아람북스, 그레이트북스 등 한국 유아 전집. 연령별 컬렉션(0-1세, 1-2세, 2-3세, 3-4세, 5세 이상)
+   - 도레미곰 (2025 개정판 v2), 우리 자연이랑, 수학특공대($299~), 베베코알라, 내 친구 과학공룡, 안녕 마음아, NEW 라라랜드, 베이비올 명화음악($284~)
+2. **이유식**: 산골이유식 — 알밤, 고구마, 과일참, 쌀참, 떡뻥, 양갱, 한첩스틱 배도라지매실 등
+3. **가구**: 유아 침대, 매트리스, 책장 (시즌별 프리오더)
+4. **독서대**: 플레이블, 란가구, 나소, 버드베베 (전집 구매 시 10% 할인)
+5. **유아식기**: 이유식 식기 세트
+
+## 현재 프로모션 (SEASON 5 프리오더: 3/9 ~ 3/31)
+- 산골이유식 위크: 전 제품 10% 할인, $300이상 20% 할인 (Zelle 3% 추가 할인)
+- 전집 구매 시 독서대 10% 할인 특전
+- 그레이트북스/아람북스 가격개편 파일럿
+
+## 주문/배송 안내
+- 프리오더 방식: 시즌별 주문 → 한국에서 미국으로 단체 배송
+- 결제: Zelle 결제 시 3% 추가 할인
+- 픽업 로케이션 있음
+
+## 에스컬레이션 규칙 (중요!)
+다음 질문은 직접 답하지 말고 담당자 연결을 안내하세요:
+- 주문 취소/변경 요청
+- 환불/교환 처리
+- 배송 분실/파손 클레임
+- 개인 주문 상태 조회 (주문번호 필요)
+- 가격 네고/특별 할인 요청
+- 제품 하자/불량 신고
+- 기타 복잡하거나 확신이 없는 질문
+
+에스컬레이션 시 반드시 다음과 같이 안내:
+"이 부분은 Monica 담당자가 더 정확하게 도와드릴 수 있어요. 업무시간(한국시간 오전 10시~오후 7시)에 Monica 담당자가 확인 후 연락드리겠습니다. 연락받으실 전화번호나 이메일을 남겨주시겠어요?"
+
+## 연령별 제품 추천 (핵심!)
+고객이 "우리 애가 만 X세인데 추천해줘"라고 물으면 아래 매핑으로 추천하세요.
+
+**0~1세:**
+- 전집: 베이비올 명화음악($284~), 베베코알라
+- 이유식: 산골 쌀참, 산골 알밤 (10봉 세트)
+- 식기: 이유식 식기 세트
+
+**1~2세:**
+- 전집: 도레미곰 2025 개정판, NEW 라라랜드
+- 이유식: 산골 떡뻥, 산골 과일참 대용량 세트
+- 독서대: 버드베베 원목 좌식 유아 독서대
+
+**2~3세:**
+- 전집: 우리 자연이랑, 안녕 마음아
+- 독서대: 플레이블 2단 Book Up 바른 독서대
+- 이유식: 산골 한첩스틱 배도라지매실
+
+**3~4세:**
+- 전집: 내 친구 과학공룡, 수학특공대($299~)
+- 독서대: 란가구/나소 독서대
+- 가구: 유아 침대 + 매트리스 세트
+
+**5세 이상:**
+- 전집: 수학특공대, 그레이트북스 시리즈
+- 가구: 책장, 독서대 세트
+
+추천 시 "이 연령대에 인기 많은 제품이에요~"처럼 자연스럽게 안내하고, 자세한 가격은 dchoi09.com에서 확인하시라고 안내하세요.
+
+## 첫 인사 가이드
+상담 시작 시 현재 프로모션을 간단히 요약해서 알려주되, "더 자세한 프로모션 정보가 궁금하시면 말씀해주세요~"로 마무리하세요.
+
+## 이름 확인 방식
+한국 이름을 들으면 각 글자를 친숙한 단어와 매칭하여 확인합니다.
+예: "탄" → "탄탄하다 할 때 탄", "휴" → "휴게소의 휴"` },
+            first_message: '안녕하세요! 디초이공구 고객센터입니다~ 지금 시즌5 프리오더가 진행 중이에요! 산골이유식 위크 최대 20% 할인, 전집 구매 시 독서대 10% 할인 혜택이 있어요. 디테일한 프로모션 정보가 궁금하시면 말씀해주시고, 제품 문의나 추천도 편하게 물어봐주세요~',
+            language: 'ko'
+          }
+        }
+      }
+    }));
+    source.connect(processor);
+    processor.connect(audioContext.destination);
+    processor.onaudioprocess = (e) => {
+      if (isMuted || agentSpeaking || ws.readyState !== WebSocket.OPEN) return;
+      const input = e.inputBuffer.getChannelData(0);
+      const srcRate = audioContext.sampleRate, dstRate = 16000;
+      let samples = input;
+      if (srcRate !== dstRate) {
+        const ratio = srcRate / dstRate, len = Math.floor(input.length / ratio);
+        samples = new Float32Array(len);
+        for (let i = 0; i < len; i++) samples[i] = input[Math.floor(i * ratio)];
+      }
+      const pcm = new Int16Array(samples.length);
+      for (let i = 0; i < samples.length; i++) pcm[i] = Math.max(-32768, Math.min(32767, samples[i] * 32768));
+      const bytes = new Uint8Array(pcm.buffer);
+      let bin = '';
+      for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      ws.send(JSON.stringify({ user_audio_chunk: btoa(bin) }));
+      let sum = 0;
+      for (let i = 0; i < input.length; i++) sum += Math.abs(input[i]);
+      document.getElementById('volumeLevel').style.width = Math.min(100, (sum / input.length) * 500) + '%';
+    };
+  };
+
+  ws.onmessage = (event) => {
+    try {
+      const msg = JSON.parse(event.data);
+      debugLog('WS: ' + msg.type);
+      switch (msg.type) {
+        case 'conversation_initiation_metadata': break;
+        case 'user_transcript':
+        case 'user_transcript_event': {
+          const t = (msg.user_transcript_event && msg.user_transcript_event.user_transcript)
+            || (msg.user_transcription_event && msg.user_transcription_event.user_transcript)
+            || msg.user_transcript
+            || extractText(msg, 'user_transcript');
+          if (t && typeof t === 'string') { addMessage('user', t); extractFromUserMsg(t); }
+          break;
+        }
+        case 'agent_response': {
+          agentSpeaking = true; // Mute user mic while agent responds
+          setStatus('online', '상담원 응답 중...');
+          const t = extractText(msg, 'agent_response');
+          if (t) {
+            addMessage('agent', t);
+            // Track escalation
+            if (t.includes('Monica') || t.includes('담당자') || t.includes('업무시간') || t.includes('연락드리')) {
+              window._escalated = true;
+            }
+            // Extract customer info from agent confirmation messages
+            extractCustomerInfo(t);
+          }
+          break;
+        }
+        case 'agent_response_correction': {
+          const t = extractText(msg, 'agent_response_correction', 'agent_response');
+          const bs = document.querySelectorAll('.msg.bot .bubble');
+          if (bs.length && t) bs[bs.length - 1].textContent = t;
+          break;
+        }
+        case 'audio': {
+          const chunk = (msg.audio_event && msg.audio_event.audio_base_64)
+            || (msg.audio && msg.audio.chunk) || msg.audio_base_64 || msg.audio_chunk
+            || (typeof msg.audio === 'string' ? msg.audio : null);
+          if (chunk) {
+            const bin = atob(chunk);
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            audioQueue.push(bytes.buffer);
+            if (!isPlaying) playNext();
+          }
+          setStatus('speaking', '상담원 응답 중...');
+          break;
+        }
+        case 'interruption': audioQueue = []; isPlaying = false; agentSpeaking = false; setStatus('online', '연결됨 — 말씀하세요'); break;
+        case 'ping': ws.send(JSON.stringify({ type: 'pong', event_id: msg.ping_event?.event_id || msg.event_id })); break;
+      }
+    } catch(e) {}
+  };
+
+  ws.onclose = () => {
+    setStatus('offline', '상담 종료');
+    showControls('start');
+    stream.getTracks().forEach(t => t.stop());
+    try { processor.disconnect(); source.disconnect(); } catch(e) {}
+    saveConversation();
+  };
+  ws.onerror = () => { setStatus('offline', '연결 오류'); };
+
+  window._ws = ws;
+  window._stream = stream;
+  window.toggleMute = () => {
+    isMuted = !isMuted;
+    const btn = document.getElementById('btnMic');
+    if (isMuted) { btn.classList.remove('active'); btn.textContent = '🔇'; btn.style.borderColor = '#525252'; btn.style.color = '#525252'; }
+    else { btn.classList.add('active'); btn.textContent = '🎤'; btn.style.borderColor = ''; btn.style.color = ''; }
+  };
+  window.endConversation = () => {
+    ws.close();
+    stream.getTracks().forEach(t => t.stop());
+    if (audioContext) audioContext.close();
+    setStatus('offline', '상담 종료');
+    showControls('start');
+    saveConversation();
+  };
+}
+</script>
+</body>
+</html>

@@ -1,37 +1,28 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { useAuth } from '@/lib/super-wks/useAuth';
-import { LoginPage } from '@/components/super-wks/LoginPage';
+import { AuthGuard } from '@/components/super-wks/AuthGuard';
 import { Layout } from '@/components/super-wks/Layout';
 import { AdminPage } from '@/components/super-wks/AdminPage';
 
 export default function AdminRoute() {
-  const router = useRouter();
-  const { isLoggedIn, currentUser, role, login, logout, switchRole } = useAuth();
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      router.push('/super-wks');
-    }
-    // Redirect non-admin users
-    if (isLoggedIn && role !== 'admin') {
-      router.push('/super-wks/dashboard');
-    }
-  }, [isLoggedIn, role, router]);
-
-  if (!isLoggedIn || !currentUser) {
-    return <LoginPage onLogin={login} />;
-  }
-
-  if (role !== 'admin') {
-    return null; // Will redirect
-  }
+  const { firebaseUser, role, logout } = useAuth();
 
   return (
-    <Layout user={currentUser} role={role} onSwitchRole={switchRole} onLogout={logout}>
-      <AdminPage />
-    </Layout>
+    <AuthGuard>
+      {firebaseUser && (
+        role === 'admin' ? (
+          <Layout user={firebaseUser} role={role} onLogout={logout}>
+            <AdminPage />
+          </Layout>
+        ) : (
+          <Layout user={firebaseUser} role={role} onLogout={logout}>
+            <div className="text-center py-12">
+              <p className="text-neutral-400">관리자만 접근 가능합니다.</p>
+            </div>
+          </Layout>
+        )
+      )}
+    </AuthGuard>
   );
 }

@@ -3,6 +3,31 @@ export type WeekStatus = 'not-started' | 'in-progress' | 'completed';
 export type CohortStatus = 'recruiting' | 'active' | 'completed';
 export type TeamStatus = 'active' | 'completed';
 export type AssignmentType = 'file' | 'text' | 'link';
+export type UserStatus = 'pending' | 'active' | 'suspended';
+export type ParticipationStatus = 'participating' | 'completed' | 'not_participating';
+
+export interface OnboardingData {
+  participationStatus: ParticipationStatus;
+  nickname: string;
+  realName: string;
+  organization: string;
+  jobRole: string;
+}
+
+export const JOB_ROLES = [
+  '개발 (Development)',
+  '기획 (Planning)',
+  '디자인 (Design)',
+  '마케팅 (Marketing)',
+  '영업 (Sales)',
+  'CS/고객지원 (Customer Support)',
+  '인사/HR (Human Resources)',
+  '재무/회계 (Finance)',
+  '경영/전략 (Management)',
+  '운영/물류 (Operations)',
+  '교육/강의 (Education)',
+  '기타 (직접 입력)',
+] as const;
 
 export interface Cohort {
   cohortId: string;
@@ -61,9 +86,46 @@ export interface User {
   email: string;
   photoURL: string | null;
   role: Role;
+  status: UserStatus;
   cohortId: string;
   teamId: string | null;
   progress: UserProgress;
+  // Onboarding fields
+  onboarded?: boolean;
+  nickname?: string;
+  realName?: string;
+  organization?: string;
+  jobRole?: string;
+  participationStatus?: ParticipationStatus;
+}
+
+export interface Goal {
+  goalId: string;
+  teamId: string;
+  cohortId: string;
+  title: string;
+  description: string;
+  targetValue: number;
+  currentValue: number;
+  unit: string;
+  createdAt: string;
+}
+
+export interface Participation {
+  userId: string;
+  submissionCount: number;
+  commentCount: number;
+  postCount: number;
+  totalScore: number;
+}
+
+export interface DeploymentUrl {
+  urlId: string;
+  submissionId: string;
+  userId: string;
+  url: string;
+  label: string;
+  addedAt: string;
 }
 
 export interface TeamProgress {
@@ -93,6 +155,15 @@ export interface Feedback {
   reviewedAt: string;
 }
 
+export interface UploadedFile {
+  fileId: string;
+  fileName: string;
+  fileSize: number;
+  fileUrl: string;
+  mimeType: string;
+  uploadedAt: string;
+}
+
 export interface Submission {
   submissionId: string;
   userId: string;
@@ -102,6 +173,8 @@ export interface Submission {
   assignmentId: string;
   type: AssignmentType;
   content: string;
+  files: UploadedFile[];
+  deploymentUrls: DeploymentUrl[];
   fileUrl: string | null;
   fileName: string | null;
   fileSize: number | null;

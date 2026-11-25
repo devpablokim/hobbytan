@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dchoi09 Q&A 관리</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#e5e5e5;font-family:'Pretendard',-apple-system,sans-serif;min-height:100vh}
+.header{padding:20px 32px;border-bottom:1px solid #262626;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header h1{font-size:16px;color:#fff;font-weight:700}
+.header .brand{font-size:10px;color:#f472b6;text-transform:uppercase;letter-spacing:2px}
+.header-nav{display:flex;gap:8px}
+.header-nav a{font-size:11px;color:#f472b6;text-decoration:none;border:1px solid rgba(244,114,182,.3);padding:6px 14px}
+.header-nav a:hover{background:rgba(244,114,182,.1)}
+.tabs{display:flex;border-bottom:1px solid #262626}
+.tab{padding:12px 24px;font-size:12px;cursor:pointer;color:#737373;border-bottom:2px solid transparent}
+.tab.active{color:#f472b6;border-bottom-color:#f472b6}
+.toolbar{padding:16px 32px;display:flex;gap:12px;border-bottom:1px solid #1a1a1a;flex-wrap:wrap;align-items:center}
+.toolbar select,.toolbar input{padding:8px 12px;background:#1a1a1a;border:1px solid #333;color:#e5e5e5;font-size:12px;outline:none}
+.toolbar select:focus,.toolbar input:focus{border-color:#f472b6}
+.toolbar input{flex:1;min-width:200px}
+.btn{padding:8px 16px;font-size:12px;cursor:pointer;border:none;transition:.2s}
+.btn-pink{background:#f472b6;color:#fff}.btn-pink:hover{opacity:.9}
+.btn-outline{background:none;border:1px solid #333;color:#a3a3a3}.btn-outline:hover{border-color:#f472b6;color:#f472b6}
+.btn-sm{padding:4px 10px;font-size:11px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;padding:16px 32px}
+.stat{border:1px solid #262626;background:#111;padding:12px;text-align:center}
+.stat-val{font-size:20px;font-weight:700;color:#fff}.stat-label{font-size:10px;color:#737373;margin-top:2px}
+.main{padding:0 32px 32px}
+.qa-list{margin-top:16px}
+.qa-item{border:1px solid #262626;background:#111;margin-bottom:8px;padding:16px;transition:.2s;position:relative}
+.qa-item:hover{border-color:#f472b6}
+.qa-item .cat{font-size:10px;color:#f472b6;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:inline-block}
+.qa-item .priority{font-size:10px;color:#525252;margin-left:8px}
+.qa-item .q{font-size:13px;color:#fff;margin-bottom:6px;font-weight:600}
+.qa-item .a{font-size:12px;color:#a3a3a3;line-height:1.5;max-height:60px;overflow:hidden;white-space:pre-wrap}
+.qa-item .kw{font-size:10px;color:#525252;margin-top:6px}
+.qa-item .kw span{background:#1a1a1a;padding:1px 6px;margin-right:4px;border:1px solid #333}
+.qa-item .actions{position:absolute;top:12px;right:12px;display:flex;gap:6px}
+.badge{display:inline-block;padding:2px 8px;font-size:10px}
+.badge-inactive{color:#ef4444;border:1px solid rgba(239,68,68,.2)}
+.pagination{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.empty{text-align:center;padding:48px;color:#525252;font-size:13px}
+.conflict{border-left:3px solid #f59e0b!important}
+.dup{border-left:3px solid #3b82f6!important}
+
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:#111;border:1px solid #262626;width:90%;max-width:600px;max-height:85vh;overflow-y:auto;padding:24px}
+.modal h2{font-size:15px;color:#fff;margin-bottom:16px}
+.modal label{display:block;font-size:11px;color:#a3a3a3;margin-bottom:4px;margin-top:12px}
+.modal input,.modal textarea,.modal select{width:100%;padding:10px;background:#1a1a1a;border:1px solid #333;color:#e5e5e5;font-size:13px;outline:none;font-family:inherit}
+.modal textarea{min-height:100px;resize:vertical}
+.modal input:focus,.modal textarea:focus{border-color:#f472b6}
+.modal-btns{display:flex;gap:8px;margin-top:20px;justify-content:flex-end}
+.import-area{padding:24px 32px;border:2px dashed #333;margin:16px 32px;text-align:center;cursor:pointer}
+.import-area:hover{border-color:#f472b6}
+.toast{position:fixed;bottom:24px;right:24px;background:#22c55e;color:#fff;padding:12px 24px;font-size:13px;display:none;z-index:200}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="brand">dchoi09 · 디초이공구</div>
+    <h1>📋 Q&A 룰 관리</h1>
+  </div>
+  <div class="header-nav">
+    <a href="/dchoi09-callcenter/chat/">💬 텍스트</a>
+    <a href="/dchoi09-callcenter/">🎤 음성</a>
+    <a href="/dchoi09-callcenter/dashboard/">📊 상담 기록</a>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('rules')">📋 Q&A 룰</div>
+  <div class="tab" onclick="switchTab('conflicts')">⚠️ 충돌/중복</div>
+  <div class="tab" onclick="switchTab('import')">📥 데이터 임포트</div>
+</div>
+
+<!-- Rules Tab -->
+<div id="tab-rules">
+  <div class="toolbar">
+    <select id="catFilter" onchange="loadQA()">
+      <option value="all">전체 카테고리</option>
+      <option value="general">general</option>
+      <option value="shipping">shipping (배송)</option>
+      <option value="stock_availability">stock (재고)</option>
+      <option value="payment">payment (결제)</option>
+      <option value="product_spec">product_spec (제품스펙)</option>
+      <option value="promotion">promotion (프로모션)</option>
+      <option value="warranty_service">warranty (보증)</option>
+      <option value="installation">installation (설치)</option>
+      <option value="refund_exchange">refund (환불)</option>
+    </select>
+    <input type="text" id="searchInput" placeholder="질문/답변/키워드 검색..." onkeyup="debounceSearch()">
+    <button class="btn btn-pink" onclick="openModal()">+ 새 Q&A</button>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="main">
+    <div class="qa-list" id="qaList"><div class="empty">로딩 중...</div></div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</div>
+
+<!-- Conflicts Tab -->
+<div id="tab-conflicts" style="display:none">
+  <div class="main" style="padding-top:16px">
+    <button class="btn btn-pink" onclick="detectConflicts()" style="margin-bottom:16px">🔍 중복/충돌 분석 실행</button>
+    <div id="conflictList"><div class="empty">분석 버튼을 클릭하여 중복/충돌 질문을 탐지합니다.</div></div>
+  </div>
+</div>
+
+<!-- Import Tab -->
+<div id="tab-import" style="display:none">
+  <div class="import-area" id="importArea" onclick="document.getElementById('importFile').click()">
+    <p style="font-size:14px;color:#a3a3a3;margin-bottom:8px">📥 JSON 파일을 클릭하여 업로드</p>
+    <p style="font-size:11px;color:#525252">PO 스펙 형식: { qa_rules: [{question, answer, category, keywords, priority, isActive, source}] }</p>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+  </div>
+  <div class="main">
+    <div id="importStatus"></div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modalTitle">새 Q&A 추가</h2>
+    <input type="hidden" id="editId">
+    <label>카테고리</label>
+    <select id="editCat">
+      <option value="general">general</option>
+      <option value="shipping">shipping (배송)</option>
+      <option value="stock_availability">stock_availability (재고)</option>
+      <option value="payment">payment (결제)</option>
+      <option value="product_spec">product_spec (제품스펙)</option>
+      <option value="promotion">promotion (프로모션)</option>
+      <option value="warranty_service">warranty_service (보증)</option>
+      <option value="installation">installation (설치)</option>
+      <option value="refund_exchange">refund_exchange (환불)</option>
+    </select>
+    <label>질문</label>
+    <textarea id="editQ" placeholder="고객이 자주 묻는 질문..."></textarea>
+    <label>답변</label>
+    <textarea id="editA" placeholder="상담봇이 응답할 내용..." style="min-height:150px"></textarea>
+    <label>키워드 (쉼표 구분)</label>
+    <input id="editKw" placeholder="배송, 택배, 트래킹">
+    <label>우선순위 (1=낮음, 5=높음)</label>
+    <input id="editPri" type="number" value="1" min="1" max="5">
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeModal()">취소</button>
+      <button class="btn btn-outline" id="deleteBtn" style="display:none;color:#ef4444;border-color:#ef4444" onclick="deleteQA()">비활성화</button>
+      <button class="btn btn-pink" onclick="saveQA()">저장</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api/dchoi09/qa';
+let allItems = [];
+let currentPage = 0;
+const PAGE_SIZE = 30;
+let searchTimer = null;
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const tabs = ['rules','conflicts','import'];
+    t.classList.toggle('active', tabs[i] === name);
+    document.getElementById('tab-' + tabs[i]).style.display = tabs[i] === name ? '' : 'none';
+  });
+}
+
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color || '#22c55e';
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3000);
+}
+
+async function loadQA() {
+  const cat = document.getElementById('catFilter').value;
+  const search = document.getElementById('searchInput').value.trim();
+  const params = new URLSearchParams({ limit: '500', offset: '0', active: 'false' });
+  if (cat !== 'all') params.set('category', cat);
+  if (search) params.set('search', search);
+
+  try {
+    const res = await fetch(API + '?' + params);
+    const data = await res.json();
+    allItems = data.items || [];
+    currentPage = 0;
+    renderStats(data.total, allItems);
+    renderList();
+  } catch(e) {
+    document.getElementById('qaList').innerHTML = '<div class="empty">API 연결 실패. 배포 후 확인해주세요.</div>';
+  }
+}
+
+function renderStats(total, items) {
+  const cats = {};
+  items.forEach(i => { cats[i.category] = (cats[i.category] || 0) + 1; });
+  let html = '<div class="stat"><div class="stat-val">' + (total || items.length) + '</div><div class="stat-label">전체</div></div>';
+  Object.entries(cats).sort((a,b) => b[1]-a[1]).slice(0,7).forEach(([c,n]) => {
+    html += '<div class="stat"><div class="stat-val">' + n + '</div><div class="stat-label">' + catLabel(c) + '</div></div>';
+  });
+  document.getElementById('stats').innerHTML = html;
+}
+
+function catLabel(c) {
+  const map = {general:'일반',shipping:'배송',stock_availability:'재고',payment:'결제',product_spec:'제품',promotion:'프로모',warranty_service:'보증',installation:'설치',refund_exchange:'환불'};
+  return map[c] || c;
+}
+
+function renderList() {
+  const start = currentPage * PAGE_SIZE;
+  const page = allItems.slice(start, start + PAGE_SIZE);
+  if (!page.length) { document.getElementById('qaList').innerHTML = '<div class="empty">Q&A가 없습니다.</div>'; return; }
+  let html = '';
+  page.forEach(item => {
+    const inactive = item.isActive === false ? ' badge-inactive' : '';
+    html += '<div class="qa-item" onclick="editQA(\'' + item.id + '\')">'
+      + '<span class="cat">' + catLabel(item.category) + '</span>'
+      + '<span class="priority">P' + (item.priority || 1) + '</span>'
+      + (inactive ? ' <span class="badge badge-inactive">비활성</span>' : '')
+      + '<div class="q">' + esc(item.question || '').slice(0,200) + '</div>'
+      + '<div class="a">' + esc(item.answer || '').slice(0,300) + '</div>';
+    if (item.keywords && item.keywords.length) {
+      html += '<div class="kw">' + item.keywords.slice(0,5).map(k => '<span>' + esc(k) + '</span>').join('') + '</div>';
+    }
+    html += '</div>';
+  });
+  document.getElementById('qaList').innerHTML = html;
+
+  const totalPages = Math.ceil(allItems.length / PAGE_SIZE);
+  let p = '';
+  for (let i = 0; i < Math.min(totalPages, 20); i++) {
+    p += '<button class="btn btn-sm ' + (i === currentPage ? 'btn-pink' : 'btn-outline') + '" onclick="goPage(' + i + ')">' + (i+1) + '</button>';
+  }
+  document.getElementById('pagination').innerHTML = p;
+}
+
+function goPage(p) { currentPage = p; renderList(); window.scrollTo(0, 200); }
+function esc(t) { return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function debounceSearch() { clearTimeout(searchTimer); searchTimer = setTimeout(loadQA, 500); }
+
+function openModal(item) {
+  document.getElementById('modal').classList.add('show');
+  document.getElementById('modalTitle').textContent = item ? 'Q&A 수정' : '새 Q&A 추가';
+  document.getElementById('editId').value = item?.id || '';
+  document.getElementById('editCat').value = item?.category || 'general';
+  document.getElementById('editQ').value = item?.question || '';
+  document.getElementById('editA').value = item?.answer || '';
+  document.getElementById('editKw').value = (item?.keywords || []).join(', ');
+  document.getElementById('editPri').value = item?.priority || 1;
+  document.getElementById('deleteBtn').style.display = item?.id ? '' : 'none';
+}
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+function editQA(id) {
+  const item = allItems.find(i => i.id === id);
+  if (item) openModal(item);
+}
+
+async function saveQA() {
+  const id = document.getElementById('editId').value;
+  const body = {
+    question: document.getElementById('editQ').value.trim(),
+    answer: document.getElementById('editA').value.trim(),
+    category: document.getElementById('editCat').value,
+    keywords: document.getElementById('editKw').value.split(',').map(k=>k.trim()).filter(Boolean),
+    priority: parseInt(document.getElementById('editPri').value) || 1,
+  };
+  if (!body.question || !body.answer) { alert('질문과 답변을 입력해주세요.'); return; }
+
+  try {
+    if (id) {
+      body.id = id;
+      await fetch(API, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      showToast('수정 완료');
+    } else {
+      await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      showToast('추가 완료');
+    }
+    closeModal(); loadQA();
+  } catch(e) { alert('저장 실패: ' + e.message); }
+}
+
+async function deleteQA() {
+  const id = document.getElementById('editId').value;
+  if (!id || !confirm('이 Q&A를 비활성화하시겠습니까?')) return;
+  try {
+    await fetch(API + '?id=' + id, { method: 'DELETE' });
+    showToast('비활성화 완료', '#f59e0b');
+    closeModal(); loadQA();
+  } catch(e) { alert('실패: ' + e.message); }
+}
+
+// Conflict detection
+async function detectConflicts() {
+  document.getElementById('conflictList').innerHTML = '<div class="empty">분석 중... (최대 30초)</div>';
+  // Load all items
+  try {
+    const res = await fetch(API + '?limit=500&offset=0&active=false');
+    const data = await res.json();
+    const items = data.items || [];
+    const dupes = [], conflicts = [];
+
+    for (let i = 0; i < Math.min(items.length, 500); i++) {
+      for (let j = i+1; j < Math.min(items.length, 500); j++) {
+        const sim = wordSim(items[i].question, items[j].question);
+        if (sim > 0.6) {
+          const sameA = items[i].answer?.slice(0,80) === items[j].answer?.slice(0,80);
+          (sameA ? dupes : conflicts).push({ a: items[i], b: items[j], sim: Math.round(sim*100) });
+        }
+      }
+    }
+
+    let html = '<h3 style="margin-bottom:12px">⚠️ 충돌 (같은 질문, 다른 답변): ' + conflicts.length + '건</h3>';
+    conflicts.slice(0,50).forEach(d => {
+      html += '<div class="qa-item conflict"><div class="cat">유사도 ' + d.sim + '%</div>'
+        + '<div class="q">Q1: ' + esc(d.a.question).slice(0,150) + '</div>'
+        + '<div class="a">A1: ' + esc(d.a.answer).slice(0,150) + '</div>'
+        + '<div class="q" style="margin-top:8px">Q2: ' + esc(d.b.question).slice(0,150) + '</div>'
+        + '<div class="a">A2: ' + esc(d.b.answer).slice(0,150) + '</div></div>';
+    });
+    html += '<h3 style="margin:20px 0 12px">🔵 중복 (같은 질문+답변): ' + dupes.length + '건</h3>';
+    dupes.slice(0,30).forEach(d => {
+      html += '<div class="qa-item dup"><div class="cat">유사도 ' + d.sim + '% — 중복</div>'
+        + '<div class="q">' + esc(d.a.question).slice(0,150) + '</div>'
+        + '<div class="a">' + esc(d.a.answer).slice(0,150) + '</div></div>';
+    });
+    document.getElementById('conflictList').innerHTML = html || '<div class="empty">중복/충돌 없음</div>';
+  } catch(e) { document.getElementById('conflictList').innerHTML = '<div class="empty">분석 실패: ' + e.message + '</div>'; }
+}
+
+function wordSim(a, b) {
+  if (!a || !b) return 0;
+  const wa = a.toLowerCase().split(/\s+/), wb = b.toLowerCase().split(/\s+/);
+  const setB = new Set(wb);
+  const inter = wa.filter(w => setB.has(w)).length;
+  return inter / Math.max(wa.length, wb.length);
+}
+
+// Import
+async function handleImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('importStatus').innerHTML = '<div class="empty">파일 읽는 중...</div>';
+
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    const rules = data.qa_rules || data;
+    if (!Array.isArray(rules)) throw new Error('qa_rules 배열이 필요합니다');
+
+    document.getElementById('importStatus').innerHTML = '<div class="empty">업로드 중... (' + rules.length + '건, 500개씩 배치)</div>';
+
+    let total = 0;
+    for (let i = 0; i < rules.length; i += 500) {
+      const batch = rules.slice(i, i + 500);
+      const res = await fetch(API, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ rules: batch }),
+      });
+      const result = await res.json();
+      total += result.imported || 0;
+      document.getElementById('importStatus').innerHTML = '<div class="empty">진행 중... ' + total + '/' + rules.length + '</div>';
+    }
+
+    document.getElementById('importStatus').innerHTML = '<div style="text-align:center;padding:24px;color:#22c55e;font-size:14px">✅ ' + total + '건 임포트 완료!</div>';
+    showToast(total + '건 임포트 완료');
+    loadQA();
+  } catch(e) {
+    document.getElementById('importStatus').innerHTML = '<div class="empty" style="color:#ef4444">임포트 실패: ' + e.message + '</div>';
+  }
+}
+
+loadQA();
+</script>
+</body>
+</html>

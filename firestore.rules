@@ -1,0 +1,86 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Tetris online game rooms - public read/write for gameplay
+    match /tetris_rooms/{roomId} {
+      allow read, write: if true;
+      match /{subcollection}/{docId} {
+        allow read, write: if true;
+      }
+    }
+    // Tetris ranking
+    match /tetris_ranking/{docId} {
+      allow read: if true;
+      allow create: if true;
+    }
+    // Tetris global lobby chat
+    match /tetris_lobby_chat/{docId} {
+      allow read: if true;
+      allow create: if true;
+    }
+    // Battle Royale
+    match /br_rooms/{roomId} {
+      allow read, write: if true;
+      match /{sub}/{docId} {
+        allow read, write: if true;
+      }
+    }
+    match /br_lobby_chat/{docId} {
+      allow read: if true;
+      allow create: if true;
+    }
+    match /br_hall_of_fame/{docId} {
+      allow read: if true;
+      allow create: if true;
+    }
+
+    // Existing collections - keep default deny unless other rules exist
+    match /swks_users/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /swks_cohorts/{docId} {
+      allow read: if true;
+    }
+    match /swks_teams/{docId} {
+      allow read: if true;
+    }
+    match /swks_curriculum/{docId} {
+      allow read: if true;
+    }
+    match /swks_submissions/{docId} {
+      allow read, write: if request.auth != null;
+    }
+    match /swks_posts/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /swks_goals/{docId} {
+      allow read, write: if request.auth != null;
+    }
+    match /dchoi09_qa/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    // Diary entries - authenticated users own data only
+    match /diary_entries/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+    // KGU capstone applications - public create only
+    match /kgu_applications/{docId} {
+      allow create: if true;
+      allow read: if request.auth != null;
+    }
+    // Contact form submissions - public create only
+    match /contacts/{docId} {
+      allow create: if true;
+      allow read: if request.auth != null;
+    }
+    // Echoit landing inquiries - public create only
+    match /echoit_inquiries/{docId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+  }
+}

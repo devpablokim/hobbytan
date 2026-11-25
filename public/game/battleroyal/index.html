@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>⚔️ 배틀로얄 — HOBBYTAN AI</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--card:#111;--card2:#161616;--accent:#10b981;--accent2:#059669;--white:#fff;--gray:#888;--border:#222;--red:#ef4444;--gold:#f59e0b;--purple:#8b5cf6}
+body{background:var(--bg);color:var(--white);font-family:'Pretendard Variable',system-ui,sans-serif;height:100vh;height:100dvh;overflow:hidden;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+h1,h2,h3{font-weight:800}
+.btn{background:var(--accent);color:var(--bg);border:none;padding:14px 24px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin:4px 0;border-radius:4px}
+.btn:active{transform:scale(.97)}
+.btn-secondary{background:transparent;border:2px solid var(--accent);color:var(--accent)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-sm{padding:8px 14px;font-size:13px;width:auto}
+.btn-gold{background:var(--gold);color:var(--bg)}
+input[type=text],textarea{background:#1a1a1a;border:1px solid var(--border);color:var(--white);padding:10px;font-size:14px;width:100%;font-family:inherit;border-radius:4px}
+input::placeholder,textarea::placeholder{color:#555}
+textarea{resize:none;min-height:50px}
+
+/* LOBBY */
+#lobby{display:flex;height:100vh;height:100dvh}
+#lobby-left{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px;overflow-y:auto}
+#lobby-right{width:320px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100%;min-height:0}
+.lobby-box{background:var(--card);border:1px solid var(--border);padding:18px;width:100%;max-width:440px;text-align:center;border-radius:6px}
+.code-input{letter-spacing:4px!important;text-align:center!important}
+#error-msg{color:var(--red);font-size:12px;margin:4px 0;min-height:16px}
+.players-grid{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:10px 0}
+.p-slot{background:#1a1a1a;border:1px solid var(--border);padding:5px 8px;font-size:10px;min-width:55px;text-align:center;border-radius:4px}
+.p-slot.ready{border-color:var(--accent);color:var(--accent)}
+.p-slot.bot{border-color:#555;color:#999}
+.room-code-row{display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0}
+.room-code-text{font-size:22px;letter-spacing:5px;font-weight:800;color:var(--accent);-webkit-user-select:all;user-select:all;cursor:text}
+.copy-btn{background:var(--accent);color:var(--bg);border:none;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;border-radius:4px}
+
+/* CHAT */
+.chat-panel{display:flex;flex-direction:column;flex:1;min-height:0}
+.chat-header{padding:8px 10px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--accent)}
+.chat-msgs{flex:1;overflow-y:auto;padding:6px;display:flex;flex-direction:column;gap:2px;min-height:0}
+.chat-msg{font-size:14px;line-height:1.5;word-break:break-word}
+.chat-msg .cn{color:var(--gray);font-weight:700}
+.chat-msg .ct{color:#ccc}
+.chat-sys{color:var(--gray);font-style:italic;font-size:12px}
+.chat-input-row{display:flex;border-top:1px solid var(--border);padding:4px}
+.chat-input-row input{flex:1;background:#1a1a1a;border:1px solid var(--border);color:var(--white);padding:7px;font-size:12px;font-family:inherit;border-radius:4px 0 0 4px;text-align:left}
+.chat-input-row button{background:var(--accent);color:var(--bg);border:none;padding:7px 12px;font-weight:700;font-size:12px;cursor:pointer;border-radius:0 4px 4px 0}
+.invite-bar{padding:8px 10px;border-bottom:1px solid var(--border);text-align:center}
+.invite-bar .inv-code{font-size:18px;letter-spacing:4px;font-weight:800;color:var(--accent);-webkit-user-select:all;user-select:all}
+
+/* GAME */
+#game{display:none;height:100vh;height:100dvh}
+#game-container{display:flex;width:100%;height:100%}
+#game-main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+#game-sidebar{width:320px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow-y:auto}
+.game-hud{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);font-size:16px;flex-shrink:0;flex-wrap:wrap;gap:8px;font-weight:600}
+.hud-item{display:flex;align-items:center;gap:5px;font-size:16px}
+.timer-bar{width:100%;height:6px;background:#1a1a1a;flex-shrink:0}
+.timer-fill{height:100%;background:var(--accent);transition:width 1s linear}
+.timer-fill.warn{background:var(--red)}
+#map-container{flex:1;display:flex;justify-content:center;align-items:center;overflow:hidden;position:relative;background:#050505}
+#map-canvas{cursor:crosshair}
+.move-indicator{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--bg);padding:6px 16px;font-size:13px;font-weight:700;z-index:10;display:none;border-radius:20px}
+
+/* WEAPON CARD (bigger, more visual) */
+.weapon-card{background:linear-gradient(135deg,#1a1a1a,#111);border:1px solid var(--border);padding:12px;margin:6px;text-align:center;border-radius:8px;position:relative}
+.weapon-card .wemoji{font-size:56px}
+.weapon-card .wname{font-size:18px;font-weight:700;color:var(--accent);margin-top:4px}
+.weapon-card .wtype{font-size:11px;color:var(--gray);background:#1a1a1a;display:inline-block;padding:3px 10px;border-radius:10px;margin-top:2px}
+.weapon-card .wstats{display:flex;justify-content:center;gap:14px;margin-top:8px;font-size:13px}
+.weapon-card .wstat{display:flex;flex-direction:column;align-items:center}
+.weapon-card .wstat-val{font-weight:800;font-size:22px;color:var(--accent)}
+.weapon-card .wstat-label{font-size:10px;color:var(--gray)}
+.weapon-card .wspecial{font-size:12px;color:var(--gold);margin-top:6px;padding:5px 10px;background:rgba(245,158,11,.1);border-radius:4px;display:inline-block}
+
+/* INVENTORY */
+.inv-section{padding:6px;border-bottom:1px solid var(--border)}
+.inv-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+.inv-slots{display:flex;gap:4px;flex-wrap:wrap}
+.inv-slot{width:64px;height:64px;background:#1a1a1a;border:2px solid var(--border);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:11px}
+.inv-slot.empty{color:#333;font-size:28px}
+.inv-slot.selected{border:2px solid var(--accent);background:#0a1a0a}
+.inv-slot.equipped{border-color:var(--gold)}
+.inv-slot .slot-emoji{font-size:30px}
+.inv-slot .slot-name{font-size:9px;color:var(--gray);overflow:hidden;white-space:nowrap;max-width:60px;text-overflow:ellipsis}
+.craft-btn{margin-top:4px;padding:4px 10px;font-size:10px;font-weight:700;background:var(--purple);color:var(--white);border:none;border-radius:4px;cursor:pointer;display:none}
+.craft-btn.show{display:inline-block}
+
+/* Player list */
+.plist{border-bottom:1px solid var(--border);padding:6px;max-height:180px;overflow-y:auto}
+.plist-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:15px}
+.plist-row .pemoji{font-size:24px}
+.plist-row .pname{flex:1;font-weight:600}
+.plist-row .php{color:var(--accent);font-weight:700}
+.plist-row.dead{opacity:.4;text-decoration:line-through}
+
+/* BATTLE */
+#battle-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);z-index:500;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:16px;overflow-y:auto}
+#battle-overlay.show{display:flex}
+.battle-title{font-size:24px;font-weight:800;color:var(--red);margin-top:20px}
+.battle-fighters{display:flex;gap:16px;align-items:center;margin:8px 0;flex-wrap:wrap;justify-content:center}
+.battle-fighter{text-align:center;min-width:120px;background:var(--card);border:1px solid var(--border);padding:12px;border-radius:8px}
+.bf-emoji{font-size:48px}
+.bf-name{font-size:18px;font-weight:700;margin-top:6px}
+.bf-weapon{font-size:14px;color:var(--accent);margin-top:4px}
+.bf-hp{font-size:24px;font-weight:800;margin-top:6px;color:var(--accent)}
+.bf-vs{font-size:40px;font-weight:800;color:var(--red)}
+.strategy-section{width:100%;max-width:500px;margin:8px 0}
+.strategy-section label{font-size:12px;color:var(--accent);font-weight:700}
+.strategy-timer{font-size:11px;color:var(--gold);margin:4px 0}
+.battle-log{background:#111;border:1px solid var(--border);padding:14px;width:100%;max-width:600px;font-size:17px;line-height:1.8;max-height:350px;overflow-y:auto;border-radius:6px}
+.round-entry{margin:8px 0;padding:10px;background:#0a0a0a;border-left:3px solid var(--accent);border-radius:0 4px 4px 0;font-size:16px}
+.round-label{font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px}
+.battle-result{font-size:26px;font-weight:800;margin-top:10px}
+
+/* LOOT modal */
+#loot-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:550;justify-content:center;align-items:center;flex-direction:column;gap:12px}
+#loot-modal.show{display:flex}
+
+/* CRAFT modal */
+#craft-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:560;justify-content:center;align-items:center;flex-direction:column;gap:12px}
+#craft-modal.show{display:flex}
+.craft-result{font-size:48px;animation:craftBounce .5s ease}
+@keyframes craftBounce{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+
+/* WAIT */
+#wait-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:400;justify-content:center;align-items:center;flex-direction:column;gap:16px}
+#wait-overlay.show{display:flex}
+.blood-effect{font-size:60px;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+
+/* DEAD/WINNER */
+#dead-overlay,#winner-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:600;justify-content:center;align-items:center;flex-direction:column;gap:12px}
+#dead-overlay{background:rgba(0,0,0,.85)}
+#winner-overlay{background:rgba(0,0,0,.9);z-index:700}
+#dead-overlay.show,#winner-overlay.show{display:flex}
+
+/* ITEM PICKUP TOAST */
+.pickup-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--card);border:2px solid var(--gold);padding:10px 20px;border-radius:8px;z-index:300;animation:toastIn .3s ease;font-size:14px;font-weight:700;text-align:center}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* KILL FEED */
+#kill-feed{position:fixed;top:50px;right:10px;z-index:80;display:flex;flex-direction:column;gap:4px;pointer-events:none;max-width:280px}
+.kill-entry{background:rgba(239,68,68,.85);color:#fff;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:700;animation:killIn .3s ease,killOut .5s ease 3s forwards;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@keyframes killIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes killOut{to{opacity:0;transform:translateX(40px)}}
+
+/* SCREEN SHAKE */
+@keyframes shake{0%,100%{transform:translate(0)}10%{transform:translate(-4px,2px)}20%{transform:translate(4px,-2px)}30%{transform:translate(-3px,3px)}40%{transform:translate(3px,-1px)}50%{transform:translate(-2px,2px)}}
+.shaking{animation:shake .4s ease}
+
+/* TURN BANNER ANIM */
+@keyframes turnBannerIn{0%{opacity:0;transform:translate(-50%,-50%) scale(2)}30%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(.8)}}
+#turn-banner.show{display:block;animation:turnBannerIn 1.5s ease forwards}
+
+/* HP BAR (player list) */
+.hp-bar{width:50px;height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:4px}
+.hp-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.hp-fill.high{background:var(--accent)}
+.hp-fill.mid{background:var(--gold)}
+.hp-fill.low{background:var(--red)}
+
+/* STORM PULSE */
+@keyframes stormPulse{0%,100%{opacity:.2}50%{opacity:.4}}
+
+/* TUTORIAL OVERLAY */
+#tutorial-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:800;justify-content:center;align-items:center;flex-direction:column;gap:16px;padding:20px;text-align:center}
+#tutorial-overlay.show{display:flex}
+.tut-item{font-size:20px;line-height:1.6;color:var(--white)}
+.tut-item span{color:var(--accent);font-weight:700}
+.tut-dismiss{color:var(--gray);font-size:13px;margin-top:10px;cursor:pointer}
+.tut-dismiss:hover{color:var(--white)}
+
+/* HUD HINT */
+#hud-hint{color:var(--accent);font-size:13px;font-weight:600;animation:hintPulse 2s ease infinite}
+@keyframes hintPulse{0%,100%{opacity:.7}50%{opacity:1}}
+
+/* CRAFT PULSE */
+@keyframes craftPulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 8px var(--purple)}}
+.craft-btn.pulse{animation:craftPulse 1.5s ease infinite}
+
+/* TURN BANNER */
+#turn-banner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:34px;font-weight:800;color:var(--accent);text-shadow:0 0 20px rgba(16,185,129,.5);z-index:10;display:none;pointer-events:none;text-align:center}
+#countdown{font-size:96px;font-weight:800;color:var(--accent);display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999;text-shadow:0 0 40px rgba(16,185,129,.5)}
+
+/* Mobile */
+#mobile-menu-btn{display:none;position:fixed;bottom:10px;right:10px;z-index:100;background:var(--accent);border:none;color:var(--bg);width:48px;height:48px;font-size:20px;font-weight:800;cursor:pointer;border-radius:50%;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(16,185,129,.4);-webkit-tap-highlight-color:transparent}
+#mob-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:150}
+#mob-overlay.show{display:block}
+#mob-sidebar{display:none;position:fixed;top:0;right:-310px;width:290px;max-width:85vw;height:100%;background:var(--card);border-left:1px solid var(--border);z-index:200;transition:right .25s ease;flex-direction:column;overflow:hidden}
+#mob-sidebar .weapon-card{flex-shrink:0;max-height:140px;overflow:hidden}
+#mob-sidebar .inv-section{flex-shrink:0}
+#mob-sidebar .plist{flex-shrink:0;max-height:120px;overflow-y:auto}
+#mob-sidebar .chat-panel{flex:1;min-height:0;display:flex;flex-direction:column}
+#mob-sidebar .chat-msgs{flex:1;min-height:150px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#mob-sidebar.open{right:0}
+/* Move pad removed — mobile uses map tap */
+
+@media(max-width:768px){
+  #lobby{flex-direction:column}
+  #lobby-left{max-height:45vh;flex:none;gap:6px;padding:10px}
+  #lobby-right{width:100%;flex:1;border-left:none;border-top:1px solid var(--border)}
+  #game-sidebar{display:none}
+  #mobile-menu-btn{display:flex}
+  #mob-sidebar{display:flex}
+  .game-hud{padding:6px 10px;font-size:13px;gap:4px}
+  .hud-item{font-size:13px;gap:3px}
+  #map-container{touch-action:none}
+  .battle-title{font-size:20px}
+  .bf-emoji{font-size:36px}
+  .bf-name{font-size:15px}
+  .bf-hp{font-size:20px}
+  .bf-vs{font-size:30px}
+  .battle-log{font-size:14px;max-height:250px}
+  .round-entry{font-size:14px;padding:8px}
+  .strategy-section{max-width:90vw}
+  .strategy-section textarea{font-size:16px}
+  #craft-modal h2{font-size:20px}
+  .pickup-toast{bottom:220px;font-size:16px}
+}
+@media(min-width:769px){#mobile-menu-btn,#mob-sidebar,#mob-overlay{display:none!important}}
+</style>
+</head>
+<body>
+
+<!-- LOBBY -->
+<div id="lobby">
+  <div id="lobby-left">
+    <h1 style="font-size:36px;color:var(--accent)">⚔️ <span style="color:var(--white)">BATTLE</span> ROYALE</h1>
+    <p style="color:var(--gray);font-size:14px">HOBBYTAN AI — 최대 16인 턴제 배틀로얄 | AI 전투 내러티브</p>
+    <div class="lobby-box" id="nick-box">
+      <p style="color:var(--accent);font-weight:700;font-size:14px;margin-bottom:6px">닉네임을 입력하세요</p>
+      <input type="text" id="nick-input" placeholder="닉네임 (2~8자)" maxlength="8" autocomplete="off">
+      <button class="btn" onclick="setNick()">확인</button>
+    </div>
+    <div class="lobby-box" id="create-join" style="display:none">
+      <p style="color:var(--gray);margin-bottom:8px;font-size:12px">환영합니다, <span id="nick-display" style="color:var(--accent);font-weight:700"></span>!</p>
+      <button class="btn" onclick="createRoom()">⚔️ 방 만들기</button>
+      <p style="color:var(--gray);margin:6px 0;font-size:12px">또는</p>
+      <input type="text" id="room-input" class="code-input" placeholder="방 코드" maxlength="6" autocomplete="off">
+      <button class="btn btn-secondary" onclick="joinRoom()">참가하기</button>
+      <button class="btn btn-sm btn-gold" onclick="showHallOfFame()" style="margin-top:8px">🏛️ 명예의 전당</button>
+      <div id="error-msg"></div>
+    </div>
+    <div class="lobby-box" id="waiting-room" style="display:none">
+      <p style="font-size:12px;color:var(--gray)">방 코드</p>
+      <div class="room-code-row">
+        <span class="room-code-text" id="room-code"></span>
+        <button class="copy-btn" onclick="copyCode()">📋 복사</button>
+      </div>
+      <p style="color:var(--gray);font-size:10px;margin:4px 0">16명 미달 시 AI 봇 자동 참가</p>
+      <div class="players-grid" id="players-list"></div>
+      <button class="btn" id="ready-btn" onclick="toggleReady()">✅ READY</button>
+      <p id="status-msg" style="color:var(--gray);margin-top:4px;font-size:11px"></p>
+    </div>
+  </div>
+  <div id="lobby-right">
+    <div class="invite-bar" id="lobby-invite" style="display:none">
+      <div style="font-size:10px;color:var(--gray)">초대코드</div>
+      <div class="inv-code" id="lobby-inv-code"></div>
+      <button class="copy-btn" onclick="copyCode()" style="margin-top:4px">📋 복사</button>
+    </div>
+    <div class="chat-panel">
+      <div class="chat-header" id="lobby-chat-hdr">💬 글로벌 채팅</div>
+      <div class="chat-msgs" id="lobby-chat-msgs"></div>
+      <div class="chat-input-row">
+        <input type="text" id="lobby-chat-inp" placeholder="메시지..." maxlength="100" autocomplete="off">
+        <button onclick="sendLobbyChat()">전송</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="countdown"></div>
+
+<!-- GAME -->
+<div id="game">
+  <div id="game-container">
+    <div id="game-main">
+      <div class="game-hud">
+        <div class="hud-item">⚔️ <span id="hud-weapon">—</span></div>
+        <div class="hud-item">❤️ <span id="hud-hp">100</span></div>
+        <div class="hud-item">👥 <span id="hud-alive">0</span></div>
+        <div class="hud-item">🔄 턴 <span id="hud-turn">0</span></div>
+        <div class="hud-item">⏱️ <span id="hud-timer">20</span>s</div>
+        <div class="hud-item" id="hud-hint">🗺️ 맵을 탭하여 이동</div>
+        <button class="btn-sm btn-secondary" id="stay-btn" onclick="selMove(0,0)" style="padding:5px 12px;font-size:12px;font-weight:700;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;border-radius:4px">📍 대기</button>
+      </div>
+      <div class="timer-bar"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+      <div class="move-indicator" id="move-indicator"></div>
+      <div id="map-container">
+        <canvas id="map-canvas"></canvas>
+        <div id="turn-banner"></div>
+      </div>
+    </div>
+    <div id="game-sidebar">
+      <div class="weapon-card" id="sidebar-weapon"></div>
+      <div class="inv-section" id="sidebar-inv"></div>
+      <div class="plist" id="sidebar-players"></div>
+      <div class="chat-panel">
+        <div class="chat-header">💬 익명 채팅</div>
+        <div class="chat-msgs" id="game-chat-msgs"></div>
+        <div class="chat-input-row">
+          <input type="text" id="game-chat-inp" placeholder="익명 메시지..." maxlength="100" autocomplete="off">
+          <button onclick="sendGameChat()">전송</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile -->
+<button id="mobile-menu-btn" onclick="toggleMob()">📋</button>
+<div id="mob-overlay" onclick="toggleMob()"></div>
+<div id="mob-sidebar">
+  <button onclick="toggleMob()" style="background:none;border:none;color:var(--white);font-size:20px;padding:8px;text-align:right;width:100%">✕</button>
+  <div class="weapon-card" id="mob-weapon"></div>
+  <div class="inv-section" id="mob-inv"></div>
+  <div class="plist" id="mob-players"></div>
+  <div class="chat-panel">
+    <div class="chat-header">💬 익명 채팅</div>
+    <div class="chat-msgs" id="mob-chat-msgs"></div>
+    <div class="chat-input-row">
+      <input type="text" id="mob-chat-inp" placeholder="익명..." maxlength="100" autocomplete="off">
+      <button onclick="sendMobChat()">전송</button>
+    </div>
+  </div>
+</div>
+
+<!-- Kill Feed -->
+<div id="kill-feed"></div>
+
+<!-- Tutorial -->
+<div id="tutorial-overlay" onclick="closeTutorial()">
+  <h2 style="font-size:28px;color:var(--accent)">⚔️ 배틀로얄 가이드</h2>
+  <div class="tut-item">🗺️ <span>맵을 탭</span>해서 이동 (인접 1칸)</div>
+  <div class="tut-item">⚔️ 적과 <span>같은 칸</span>이면 자동 전투!</div>
+  <div class="tut-item">📦 바닥 아이템은 <span>자동 줍기</span></div>
+  <div class="tut-item">🔮 아이템 2개 이상 → <span>조합</span> 가능</div>
+  <div class="tut-item">⏱️ 매 턴 <span>20초</span> — 초과 시 제자리 대기</div>
+  <div class="tut-item">⚡ 전투에 안 걸리면 <span>보너스 이동</span> 가능!</div>
+  <div class="tut-item">🌀 10턴 후 <span>자기장</span> 축소 시작!</div>
+  <div class="tut-dismiss">탭하여 시작 →</div>
+</div>
+
+<!-- BATTLE -->
+<div id="battle-overlay">
+  <div class="battle-title">⚔️ 전투 발생!</div>
+  <div class="battle-fighters" id="battle-fighters"></div>
+  <div class="strategy-section" id="strategy-section">
+    <label>🗡️ 전투 전략을 입력하세요</label>
+    <div class="strategy-timer" id="strategy-timer">남은 시간: 30초</div>
+    <textarea id="strategy-input" placeholder="내 무기로 어떻게 싸울 것인지... (미입력 시 시스템 전투)" maxlength="200"></textarea>
+    <button class="btn btn-sm" onclick="submitStrategy()" style="margin-top:4px">전략 제출 ⚔️</button>
+  </div>
+  <div class="battle-log" id="battle-log" style="display:none"></div>
+  <div class="battle-result" id="battle-result" style="display:none"></div>
+  <button class="btn btn-sm" id="battle-close-btn" onclick="closeBattle()" style="display:none;max-width:200px">확인</button>
+</div>
+
+<!-- WAIT -->
+<div id="wait-overlay">
+  <div class="blood-effect">🩸</div>
+  <h2 style="font-size:20px;color:var(--red);text-align:center">어디선가 피바람이 불고 있습니다.<br>잠시 기다려주세요.</h2>
+  <p style="color:var(--gray);font-size:12px" id="wait-info">전투 진행 중...</p>
+</div>
+
+<!-- CRAFT -->
+<div id="craft-modal">
+  <h2 style="font-size:24px;color:var(--purple)">🔮 아이템 조합</h2>
+  <p style="color:var(--gray);font-size:13px;max-width:300px">2개 선택 → 성공 시 강화 합성 / 실패 시 💩<br><span id="craft-rate" style="color:var(--accent)"></span></p>
+  <div id="craft-items" style="display:flex;gap:12px;margin:10px 0"></div>
+  <div class="craft-result" id="craft-result-emoji" style="display:none"></div>
+  <p id="craft-result-text" style="font-size:16px;font-weight:700;display:none"></p>
+  <button class="btn btn-sm" id="craft-go-btn" onclick="doCraft()" style="max-width:200px">조합하기!</button>
+  <button class="btn btn-sm btn-secondary" onclick="closeCraft()" style="max-width:200px;margin-top:4px">취소</button>
+</div>
+
+<!-- DEAD -->
+<div id="dead-overlay">
+  <h2 style="font-size:36px;color:var(--red)">💀 전사했습니다</h2>
+  <p id="dead-msg" style="color:var(--gray);font-size:16px"></p>
+  <p style="color:var(--gray);font-size:12px">관전 모드: 전체 맵 공개</p>
+  <button class="btn" style="max-width:200px" onclick="document.getElementById('dead-overlay').classList.remove('show')">관전하기</button>
+</div>
+
+<!-- WINNER -->
+<div id="winner-overlay">
+  <h2 id="winner-title" style="font-size:48px;color:var(--gold)">🏆 승리!</h2>
+  <div id="winner-avatar" style="font-size:80px;margin:8px 0"></div>
+  <p id="winner-msg" style="color:var(--white);font-size:20px;font-weight:700"></p>
+  <p id="winner-stats" style="color:var(--gray);font-size:14px"></p>
+  <div id="winner-input-section" style="display:none;width:100%;max-width:350px;margin:10px 0">
+    <p style="color:var(--accent);font-size:14px;font-weight:700;margin-bottom:6px">🎤 우승 소감을 남겨주세요!</p>
+    <input type="text" id="winner-comment" placeholder="한마디..." maxlength="50" style="text-align:center;font-size:16px">
+    <button class="btn" onclick="saveToHallOfFame()" style="margin-top:8px">명예의 전당에 기록 ⭐</button>
+  </div>
+  <div id="winner-saved" style="display:none;color:var(--accent);font-size:16px;font-weight:700">⭐ 명예의 전당에 등록되었습니다!</div>
+  <button class="btn btn-secondary" style="max-width:300px;margin-top:8px" onclick="location.reload()">다시 하기</button>
+  <button class="btn btn-sm btn-secondary" style="max-width:200px" onclick="showHallOfFame()">🏛️ 명예의 전당</button>
+</div>
+
+<!-- Hall of Fame -->
+<div id="hof-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);z-index:750;justify-content:center;align-items:flex-start;padding:20px;overflow-y:auto">
+  <div style="width:100%;max-width:500px;margin:0 auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="font-size:28px;color:var(--gold)">🏛️ 명예의 전당</h2>
+      <button class="btn btn-sm btn-secondary" onclick="document.getElementById('hof-overlay').style.display='none'">✕ 닫기</button>
+    </div>
+    <div id="hof-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyDxnIFPnFdSVR6IKuBMRm5ZQynO0ORrlzI",authDomain:"hobbytan-ai.firebaseapp.com",projectId:"hobbytan-ai",storageBucket:"hobbytan-ai.firebasestorage.app",messagingSenderId:"820555571498",appId:"1:820555571498:web:eb5c2de98d3b6c18e43cb9"});
+const db=firebase.firestore();
+const MAP=12,MAX_P=16,TURN_TIME=20,STRAT_TIME=30,BONUS_TIME=10;
+// 자기장(storm) 시스템: 10턴 후부터 2턴마다 경계 1칸 축소
+let stormBorder=0; // 0=축소 없음, 1=외곽1칸 금지...
+let stormTicks={}; // {playerId: 자기장 밖 누적 턴수}
+const API_COMBAT="https://asia-northeast3-hobbytan-ai.cloudfunctions.net/brcombat";
+const API_BOT="https://asia-northeast3-hobbytan-ai.cloudfunctions.net/brbotaction";
+
+// ===== CHARACTERS (emoji avatars) =====
+const AVATARS=['🧑‍🦰','🧑‍🦱','🧑‍🦳','🧙','🧝','🧛','🧟','🤖','👽','🥷','🦸','🦹','🧑‍🚀','🧑‍🎤','🧑‍🍳','🧑‍✈️'];
+
+// ===== 140 WEAPONS + 💩 =====
+const W=[
+["기관총","🔫","원거리",35,5,8,"연사","3회 연속 공격"],["레이저 소총","🔫","원거리",40,5,7,"관통","방어 50% 무시"],
+["산탄총","🔫","원거리",45,3,5,"산탄","명중률 100%"],["저격소총","🎯","원거리",60,2,3,"헤드샷","30% 즉사"],
+["로켓런처","🚀","폭발",55,2,2,"폭발","범위 데미지"],["화염방사기","🔥","원거리",30,5,6,"화상","3턴 지속"],
+["전기충격기","⚡","근접",25,8,9,"마비","1턴 스킵"],["플라즈마 캐논","💫","원거리",65,3,2,"과부하","1턴 무방비"],
+["빔 사벨","⚔️","근접",45,10,7,"참격","방어 관통"],["카타나","🗡️","근접",40,8,9,"거합","선제공격"],
+["대검","⚔️","근접",50,12,4,"강타","방어-5"],["도끼","🪓","근접",42,6,6,"출혈","턴당 5"],
+["창","🔱","근접",38,7,7,"찌르기","사거리+1"],["망치","🔨","근접",48,10,3,"지진","속도-3"],
+["채찍","🪢","근접",25,4,10,"속박","이동 불가"],["클로","🐾","근접",30,6,10,"난사","4회 공격"],
+["다이너마이트","💣","폭발",50,0,4,"자폭","자신도 20"],["수류탄","💣","폭발",35,3,7,"범위","확정"],
+["지뢰","💣","폭발",55,5,1,"매복","방어시 2배"],["C4","💣","폭발",60,2,3,"원격","타이밍 폭발"],
+["마법 지팡이","🪄","마법",35,8,6,"마력","랜덤 원소"],["번개 스태프","⚡","마법",42,6,5,"낙뢰","속도-5"],
+["얼음 지팡이","❄️","마법",38,7,5,"빙결","50% 동결"],["불꽃 지팡이","🔥","마법",40,6,5,"연소","방어 무시"],
+["어둠의 지팡이","🌑","마법",45,5,4,"저주","공격-10"],["치유의 지팡이","💚","마법",20,12,6,"치유","HP 20 회복"],
+["텔레포트 룬","✨","마법",15,15,10,"순이동","회피 30%"],["시간의 모래","⏳","마법",30,10,8,"시간정지","첫턴 무적"],
+["마인드 블래스트","🧠","마법",50,3,4,"정신공격","방어 무시"],["네크로 지팡이","💀","마법",35,8,5,"부활","HP1 부활"],
+["바나나 껍질","🍌","장난감",5,0,10,"슬립","턴 스킵"],["물총","🔫","장난감",8,2,9,"젖음","전기 취약"],
+["비눗방울","🫧","장난감",3,5,10,"반사","30% 반사"],["고무 오리","🦆","장난감",10,15,6,"귀여움","공격-15"],
+["킥보드","🛴","장난감",15,3,10,"돌진","선제"],["종이비행기","✈️","장난감",2,0,10,"바람","회피 1회"],
+["풍선검","🎈","장난감",7,3,8,"펑!","1턴 스킵"],["요요","🪀","장난감",18,5,9,"연쇄","2회"],
+["물풍선","🎈","장난감",12,2,8,"스플래시","범위"],["장난감 칼","🗡️","장난감",15,4,7,"찌릿","마비"],
+["프라이팬","🍳","음식",30,15,5,"뒤집기","1회 반사"],["바게트","🥖","음식",22,8,7,"딱딱","공격+10"],
+["핫도그","🌭","음식",18,5,8,"케첩","출혈"],["초대형 사탕","🍭","음식",20,10,6,"달콤","HP 10"],
+["냄비 뚜껑","🛡️","음식",10,25,4,"방패","40% 감소"],["와사비","🟢","음식",15,0,10,"매움","명중-30%"],
+["피자","🍕","음식",16,8,7,"뜨거움","화상 2턴"],["수박","🍉","음식",28,12,3,"무거움","속도-5"],
+["아이스크림","🍦","음식",12,5,9,"프리즈","1턴 느림"],["독버섯","🍄","음식",8,3,7,"맹독","턴당 8 3턴"],
+["기타","🎸","악기",28,8,6,"음파","범위"],["드럼스틱","🥁","악기",22,5,8,"리듬","속도+3"],
+["트럼펫","🎺","악기",25,6,7,"굉음","명중-20%"],["바이올린","🎻","악기",30,7,5,"비애","공격-8"],
+["하모니카","🎵","악기",15,4,9,"멜로디","턴당 HP5"],["심벌즈","🥁","악기",35,10,4,"충격파","방어-10"],
+["리코더","🎵","악기",8,2,10,"삐이익","집중↓"],["턴테이블","🎧","악기",20,6,8,"드롭","랜덤"],
+["탬버린","🎵","악기",18,5,8,"흔들기","속도+2"],["삼각형","🔺","악기",5,3,10,"딩!","크리+30%"],
+["고양이","🐱","동물",25,8,10,"할퀴기","4회"],["독수리","🦅","동물",35,5,8,"급강하","선제크리"],
+["곰","🐻","동물",45,15,3,"포옹","속박"],["뱀","🐍","동물",20,4,9,"독니","3턴 독"],
+["벌떼","🐝","동물",15,2,10,"군집","5회"],["하마","🦛","동물",50,20,2,"돌진","관통"],
+["고릴라","🦍","동물",42,12,5,"드럼","공포"],["펭귄","🐧","동물",18,10,7,"슬라이딩","회피+20%"],
+["문어","🐙","동물",28,8,7,"먹물","명중-40%"],["치와와","🐕","동물",8,2,10,"짖기","방해"],
+["엑스칼리버","⚔️","전설",70,15,8,"성검","HP↓→ATK↑"],["토르의 망치","🔨","전설",65,18,5,"번개","+20확정"],
+["무한 건틀렛","✊","전설",55,20,6,"스냅","50%즉사"],["데스노트","📓","전설",0,0,10,"사신","즉사1회"],
+["타노스 칼","🗡️","전설",60,12,7,"이중검","2회"],["트라이포스","🔺","전설",50,15,8,"지혜","스탯+5"],
+["마스터볼","⚪","전설",10,10,10,"포획","무기탈취"],["인피니티 스톤","💎","전설",45,25,9,"무한","2배"],
+["성배","🏆","전설",30,30,7,"불사","풀HP부활"],["드래곤 슬레이어","🐉","전설",75,8,4,"용살","최대딜"],
+["포션","🧪","특수",10,5,8,"변이","무기변환"],["거울 방패","🪞","특수",5,30,5,"반사","50%반사"],
+["투명 망토","👻","특수",15,20,9,"은신","첫회피"],["시한폭탄","💣","특수",40,0,6,"카운트","3턴폭발"],
+["부메랑","🪃","특수",25,5,8,"회귀","재공격"],["그래플링 훅","🪝","특수",20,8,9,"당기기","이동제한"],
+["테이저건","⚡","특수",22,5,8,"전격","마비2턴"],["연막탄","💨","특수",5,15,10,"연막","회피+40%"],
+["부두 인형","🪆","특수",30,0,6,"저주","50%반사"],["블랙홀 총","🌀","특수",55,0,3,"흡수","방어0"],
+["축구공","⚽","장난감",20,5,8,"슛","넉백"],["야구 방망이","🏏","근접",35,8,6,"홈런","넉백2"],
+["테니스 라켓","🎾","근접",22,6,8,"스매시","속도보너스"],["골프채","⛳","근접",30,4,7,"드라이브","원거리"],
+["볼링공","🎳","특수",40,10,3,"스트라이크","넉다운"],["다트","🎯","원거리",18,2,10,"정밀","크리+25%"],
+["빗자루","🧹","근접",15,5,8,"쓸기","범위"],["지우개","🧽","특수",5,5,10,"삭제","특수무효"],
+["키보드","⌨️","근접",20,8,7,"타이핑","연타"],["마우스","🖱️","근접",12,3,10,"클릭","더블"],
+["우산","☂️","근접",18,12,7,"방어","비→2배"],["손전등","🔦","특수",10,3,9,"섬광","실명1턴"],
+["선풍기","💨","특수",15,5,7,"바람","명중-25%"],["소화기","🧯","특수",22,8,6,"분사","시야차단"],
+["스케이트보드","🛹","특수",18,3,10,"트릭","회피+30%"],["낚시대","🎣","특수",20,5,7,"낚기","끌기"],
+["돋보기","🔍","특수",8,2,9,"집중","크리+40%"],["페인트붓","🖌️","특수",12,4,8,"물감","차단"],
+["가위","✂️","근접",25,5,8,"절단","출혈"],["주사기","💉","특수",15,3,9,"주입","독/치유"],
+["전자레인지","📦","특수",35,15,2,"과열","지연폭발"],["슬리퍼","🩴","근접",10,2,10,"찰싹","사기↓"],
+["방패","🛡️","근접",8,35,4,"방벽","60%감소"],["쌍절곤","🥋","근접",38,6,9,"연격","3회"],
+["표창","⭐","원거리",20,4,10,"투척","2개"],["석궁","🏹","원거리",35,5,6,"관통","방어무시"],
+["활","🏹","원거리",28,4,8,"속사","2회"],["투석기","🪨","폭발",45,8,2,"포위","범위"],
+["화살비","🏹","원거리",30,3,5,"비","전체약함"],["독침","🪡","근접",12,2,10,"맹독","턴당10"],
+["사슬","⛓️","근접",22,10,6,"구속","속도-8"],["삽","⛏️","근접",20,8,5,"매복","방어시+15"],
+["톱","🪚","근접",32,4,6,"절단","출혈+방어↓"],["전기톱","🔧","근접",45,3,5,"학살","연속"],
+["레일건","🔫","원거리",70,0,2,"충전","확정딜"],["미니건","🔫","원거리",25,2,10,"난사","5회"],
+["화학무기","☣️","특수",20,5,4,"오염","독+공↓"],["냉동총","❄️","원거리",25,5,7,"동결","1턴동결"],
+["중력총","🌀","특수",30,8,5,"중력","속도0"],["음파총","📢","원거리",22,4,8,"공명","방어무시"],
+["나노봇","🤖","특수",28,12,7,"복구","턴당HP8"],["드론","🚁","특수",30,5,8,"정찰","위치공개"],
+["AI 로봇","🤖","특수",35,15,6,"계산","회피+20%"],["파워 글러브","🧤","근접",40,10,7,"강화","크리3배"],
+["제트팩","🚀","특수",15,5,10,"비행","이동+2"],["홀로그램","🔮","특수",0,20,10,"분신","50%회피"],
+["EMP","📡","특수",25,5,6,"전자전","특수봉인"],["자기장","🧲","특수",20,18,5,"자기장","원거리무효"],
+["핵폭탄","☢️","전설",100,0,1,"최후","양쪽즉사"],["라면","🍜","음식",14,6,8,"국물","화상+HP10"],
+["떡볶이","🌶️","음식",18,4,7,"매운맛","패닉"],["치킨","🍗","음식",22,10,6,"기름","회피+HP15"],
+["소주","🍶","음식",30,0,5,"취권","ATK+20 명중-30%"],["김치","🥬","음식",16,8,8,"발효","턴당HP5"],
+];
+// Special: 💩
+const POOP={id:999,name:"악취나는 응가",emoji:"💩",type:"저주",atk:1,def:0,spd:1,specName:"악취",specDesc:"상대 명중률 -50%"};
+
+function gw(i){if(i===999)return{...POOP};const w=W[i];return{id:i,name:w[0],emoji:w[1],type:w[2],atk:w[3],def:w[4],spd:w[5],specName:w[6],specDesc:w[7]}}
+function rw(){return gw(Math.floor(Math.random()*W.length))}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ===== STATE =====
+let myId=Math.random().toString(36).substr(2,8),myNick='',myAvatar='';
+let roomId=null,roomRef=null,gameStarted=false,countdownStarted=false;
+let players={},isReady=false,myWeapon=null,myHp=100,myAlive=true;
+let inventory=[];// [{id,name,emoji,...}] max 5
+let currentTurn=0,turnTimer=null,timerLeft=TURN_TIME;
+let pendingMove=null,chatMode='global',unsubChat=null;
+let inBattle=false,battleData=null,strategySubmitted=false,strategyTimerIv=null;
+let mapItems={}; // {x_y: weaponObj}
+let usedWeaponIds=new Set(); // unique items per game
+let canvas,ctx,TILE;
+let craftSelection=[];
+let isHost=false;
+let myKills=0;
+let combatants=new Set(); // who fought this turn
+let visitedTiles=new Set(); // my trail: 'x_y' keys
+let readyCheckIv=null; // interval for checking all-ready
+let isBonusPhase=false; // true during bonusMove
+
+// ===== BOT NAMES (loaded from names.json) =====
+let koreanNames=[];
+fetch('names.json').then(r=>r.json()).then(n=>{koreanNames=n}).catch(()=>{koreanNames=['민준','서윤','지호','수아','예준','하은','도윤','시우','서연','지민','주원','하린','우진','지유','현우']});
+function getRandomBotNames(count){
+  const shuffled=[...koreanNames].sort(()=>Math.random()-0.5);
+  return shuffled.slice(0,count);
+}
+
+// ===== BOT BEHAVIOR PROFILES =====
+const BOT_PERSONALITIES=['aggressive','cautious','explorer','camper','hunter'];
+function getBotPersonality(){return BOT_PERSONALITIES[Math.floor(Math.random()*BOT_PERSONALITIES.length)]}
+
+// ===== LOBBY =====
+function setNick(){const n=document.getElementById('nick-input').value.trim();if(n.length<2){alert('2자 이상');return}myNick=n;myAvatar=AVATARS[Math.floor(Math.random()*AVATARS.length)];document.getElementById('nick-box').style.display='none';document.getElementById('create-join').style.display='block';document.getElementById('nick-display').textContent=myAvatar+' '+n;startGlobalChat()}
+document.getElementById('nick-input').addEventListener('keydown',e=>{if(e.key==='Enter')setNick()});
+document.getElementById('room-input').addEventListener('keydown',e=>{if(e.key==='Enter')joinRoom()});
+function genCode(){return Math.random().toString(36).substr(2,6).toUpperCase()}
+function showError(m){document.getElementById('error-msg').textContent=m}
+
+function uniqueWeapon(){let w;do{w=rw()}while(usedWeaponIds.has(w.id)&&usedWeaponIds.size<W.length);usedWeaponIds.add(w.id);return w}
+
+async function createRoom(){
+  roomId=genCode();roomRef=db.collection('br_rooms').doc(roomId);isHost=true;
+  myWeapon=uniqueWeapon();inventory=[myWeapon];
+  const sx=Math.floor(Math.random()*MAP),sy=Math.floor(Math.random()*MAP);
+  await roomRef.set({state:'lobby',turn:0,phase:'idle',battlePair:null,host:myId,created:firebase.firestore.FieldValue.serverTimestamp()});
+  await roomRef.collection('players').doc(myId).set({name:myNick,avatar:myAvatar,ready:false,alive:true,hp:100,x:sx,y:sy,weapon:myWeapon.id,inv:JSON.stringify([myWeapon.id]),isBot:false,pendingDx:0,pendingDy:0,moveSubmitted:false,ts:Date.now()});
+  enterWaiting();
+}
+async function joinRoom(){
+  const code=document.getElementById('room-input').value.trim().toUpperCase();
+  if(!code){showError('코드 입력');return}
+  roomId=code;roomRef=db.collection('br_rooms').doc(roomId);
+  const snap=await roomRef.get();
+  if(!snap.exists){showError('방 없음');return}
+  if(snap.data().state!=='lobby'){showError('이미 진행중');return}
+  const ps=await roomRef.collection('players').get();
+  if(ps.size>=MAX_P){showError('꽉 참');return}
+  myWeapon=uniqueWeapon();inventory=[myWeapon];
+  const sx=Math.floor(Math.random()*MAP),sy=Math.floor(Math.random()*MAP);
+  await roomRef.collection('players').doc(myId).set({name:myNick,avatar:myAvatar,ready:false,alive:true,hp:100,x:sx,y:sy,weapon:myWeapon.id,inv:JSON.stringify([myWeapon.id]),isBot:false,pendingDx:0,pendingDy:0,moveSubmitted:false,ts:Date.now()});
+  enterWaiting();
+}
+
+function enterWaiting(){
+  document.getElementById('create-join').style.display='none';
+  document.getElementById('waiting-room').style.display='block';
+  document.getElementById('room-code').textContent=roomId;
+  document.getElementById('lobby-invite').style.display='block';
+  document.getElementById('lobby-inv-code').textContent=roomId;
+  switchToRoomChat();addSysChat(myNick+'님 입장');
+
+  roomRef.collection('players').onSnapshot(snap=>{
+    players={};snap.forEach(d=>players[d.id]=d.data());
+    if(!gameStarted)renderPlayers();
+    if(gameStarted){updateHUD();drawMap();checkEnd()}
+  });
+  roomRef.onSnapshot(snap=>{
+    if(!snap.exists)return;const d=snap.data();
+    if(d.host&&d.host!==myId)isHost=false;
+    if(d.state==='countdown'&&!countdownStarted)startCountdown();
+    if(d.state==='playing'&&!gameStarted)initGame();
+    if(d.state==='playing'&&gameStarted)onRoomUpdate(d);
+  });
+  window.addEventListener('beforeunload',()=>{if(roomRef)roomRef.collection('players').doc(myId).delete().catch(()=>{})});
+}
+
+function renderPlayers(){
+  const el=document.getElementById('players-list'),ids=Object.keys(players);
+  let html='';
+  for(let i=0;i<MAX_P;i++){
+    if(i<ids.length){const p=players[ids[i]],me=ids[i]===myId;
+      html+=`<div class="p-slot ${p.ready?'ready':''} ${p.isBot?'bot':''}"><div class="nick">${p.avatar||'🤖'} ${esc(p.name)}${me?' 👈':''}</div></div>`}
+    else html+=`<div class="p-slot" style="color:#333">🤖</div>`;
+  }
+  el.innerHTML=html;
+  document.getElementById('status-msg').textContent=`${ids.filter(id=>!players[id].isBot).length}명 — 모두 Ready 시 시작`;
+}
+
+async function toggleReady(){
+  isReady=!isReady;
+  await roomRef.collection('players').doc(myId).update({ready:isReady}).catch(()=>{});
+  const b=document.getElementById('ready-btn');
+  b.textContent=isReady?'❌ CANCEL':'✅ READY';b.className=isReady?'btn btn-danger':'btn';
+}
+
+// Host fills bots + starts
+setInterval(async()=>{
+  if(!roomRef||gameStarted||countdownStarted||!isHost)return;
+  const ids=Object.keys(players).filter(id=>!players[id].isBot);
+  if(ids.length<1||!ids.every(id=>players[id].ready))return;
+  const total=Object.keys(players).length;
+  if(total<MAX_P){
+    const botNames=getRandomBotNames(MAX_P-total);
+    for(let i=total;i<MAX_P;i++){
+      const bw=uniqueWeapon(),bx=Math.floor(Math.random()*MAP),by=Math.floor(Math.random()*MAP);
+      const personality=getBotPersonality();
+      await roomRef.collection('players').doc('bot_'+i).set({name:botNames[i-total]||'플레이어'+i,avatar:AVATARS[i%AVATARS.length],ready:true,alive:true,hp:100,x:bx,y:by,weapon:bw.id,inv:JSON.stringify([bw.id]),isBot:true,personality,pendingDx:0,pendingDy:0,moveSubmitted:false,ts:Date.now()});
+    }
+  }
+  // Spawn map items (15 random unique weapons — 12x12 맵 기준)
+  const items={};
+  for(let i=0;i<15;i++){const w=uniqueWeapon(),x=Math.floor(Math.random()*MAP),y=Math.floor(Math.random()*MAP);items[x+'_'+y]={id:w.id}}
+  await roomRef.update({state:'countdown',mapItems:JSON.stringify(items)});
+},1000);
+
+function startCountdown(){
+  countdownStarted=true;const el=document.getElementById('countdown');el.style.display='block';
+  let c=3;el.textContent=c;
+  const iv=setInterval(()=>{c--;if(c>0)el.textContent=c;else{el.textContent='⚔️';setTimeout(()=>el.style.display='none',500);clearInterval(iv);if(isHost)roomRef.update({state:'playing',turn:1,phase:'move'}).catch(()=>{})}},1000);
+}
+
+function copyCode(){navigator.clipboard.writeText(roomId||'').then(()=>alert('복사됨: '+roomId)).catch(()=>{})}
+
+// ===== GAME INIT =====
+function initGame(){
+  gameStarted=true;
+  document.getElementById('lobby').style.display='none';
+  document.getElementById('game').style.display='block';
+  if(window.innerWidth<=768){document.getElementById('mobile-menu-btn').style.display='flex'}
+  canvas=document.getElementById('map-canvas');
+  const avail=Math.min(window.innerWidth-(window.innerWidth>768?320:0)-10,window.innerHeight-60,900);
+  TILE=Math.max(32,Math.floor(avail/MAP));
+  canvas.width=MAP*TILE;canvas.height=MAP*TILE;
+  ctx=canvas.getContext('2d');
+  canvas.addEventListener('click',onMapClick);
+  showTutorial();
+  // Load map items
+  roomRef.get().then(s=>{if(s.exists&&s.data().mapItems)mapItems=JSON.parse(s.data().mapItems)});
+  updateHUD();drawMap();
+}
+
+let deadlockTimer=null;
+function stopReadyCheck(){if(readyCheckIv){clearInterval(readyCheckIv);readyCheckIv=null}}
+function startReadyCheck(isBonus){
+  stopReadyCheck();
+  if(!isHost)return;
+  readyCheckIv=setInterval(async()=>{
+    const snap=await roomRef.collection('players').get();
+    const aliveHumans=[];
+    snap.forEach(d=>{const p=d.data();if(!p.isBot&&p.alive){
+      if(isBonus&&combatants.has(d.id))return; // skip combatants in bonus
+      aliveHumans.push(p);
+    }});
+    if(aliveHumans.length===0||(aliveHumans.length>0&&aliveHumans.every(p=>p.moveSubmitted))){
+      stopReadyCheck();stopTurnTimer();
+      if(isBonus){if(!resolving){resolving=true;try{await resolveBonusTurn()}catch(e){await nextTurn().catch(()=>{})}finally{resolving=false}}}
+      else{if(!resolving){resolving=true;try{await resolveTurn()}catch(e){await nextTurn().catch(()=>{})}finally{resolving=false}}}
+    }
+  },500);
+}
+
+function onRoomUpdate(d){
+  currentTurn=d.turn||1;
+  if(d.mapItems)mapItems=JSON.parse(d.mapItems);
+  if(d.combatantIds)combatants=new Set(d.combatantIds);
+  if(deadlockTimer){clearTimeout(deadlockTimer);deadlockTimer=null}
+  if(d.phase==='move'){
+    isBonusPhase=false;
+    inBattle=false;resolving=false;
+    document.getElementById('wait-overlay').classList.remove('show');
+    document.getElementById('battle-overlay').classList.remove('show');
+    pendingMove=null;
+    document.getElementById('move-indicator').style.display='none';
+    startTurnTimer();startReadyCheck(false);
+    showTurnBanner(currentTurn);
+    const stayBtn=document.getElementById('stay-btn');if(stayBtn)stayBtn.style.display='inline-block';
+    if(stormBorder>0){const me=players[myId];if(me&&me.alive){const dL=Math.max(0,stormBorder-me.x),dR=Math.max(0,me.x-(MAP-stormBorder-1)),dT=Math.max(0,stormBorder-me.y),dB=Math.max(0,me.y-(MAP-stormBorder-1));if(Math.max(dL,dR,dT,dB)>0)setHudHint('⚠️ 자기장 밖! 안쪽으로 이동');else setHudHint('🗺️ 맵을 탭하여 이동')}}
+    else setHudHint('🗺️ 맵을 탭하여 이동');
+  }
+  if(d.phase==='resolve'||d.phase==='bonusResolve'){inBattle=false;stopTurnTimer();stopReadyCheck();setHudHint('⏳ 처리 중...');deadlockTimer=setTimeout(()=>{console.warn('Deadlock recovery: forcing nextTurn (isHost:'+isHost+')');nextTurn().catch(()=>{});inBattle=false;resolving=false},15000)}
+  if(d.phase==='battle'){
+    stopTurnTimer();stopReadyCheck();screenShake();setHudHint('⚔️ 전투 중!');
+    // Battle 데드락 방지: 15초 후 강제 복구
+    deadlockTimer=setTimeout(()=>{console.warn('Battle deadlock: forcing recovery (isHost:'+isHost+')');inBattle=false;resolving=false;document.getElementById('wait-overlay').classList.remove('show');document.getElementById('battle-overlay').classList.remove('show');nextTurn().catch(()=>{})},15000);
+    const bp=d.battlePair;
+    if(bp&&(bp.a===myId||bp.b===myId))showBattlePhase(bp);
+    else if(bp){document.getElementById('wait-overlay').classList.add('show');document.getElementById('wait-info').textContent=`${players[bp.a]?.name||'?'} vs ${players[bp.b]?.name||'?'}`}
+  }
+  if(d.phase==='bonusMove'){
+    isBonusPhase=true;
+    inBattle=false;resolving=false;
+    document.getElementById('wait-overlay').classList.remove('show');
+    document.getElementById('battle-overlay').classList.remove('show');
+    pendingMove=null;
+    document.getElementById('move-indicator').style.display='none';
+    // Host always manages bonus timer (even if combatant)
+    startTurnTimer(BONUS_TIME);
+    if(isHost)startReadyCheck(true);
+    if(combatants.has(myId)){
+      setHudHint('⏳ 비전투원 보너스 이동 중...');
+      const stayBtn=document.getElementById('stay-btn');if(stayBtn)stayBtn.style.display='none';
+    }else{
+      setHudHint('⚡ 보너스 이동! (비전투원)');
+      const stayBtn=document.getElementById('stay-btn');if(stayBtn)stayBtn.style.display='inline-block';
+      addSysChat('⚡ 전투에 참여하지 않은 플레이어에게 보너스 이동 기회!');
+    }
+  }
+  updateHUD();drawMap();
+}
+
+// ===== TIMER =====
+function startTurnTimer(customTime){stopTurnTimer();timerLeft=customTime||TURN_TIME;updTimer();turnTimer=setInterval(()=>{timerLeft--;updTimer();if(timerLeft<=0){stopTurnTimer();if(isBonusPhase)submitBonusMove();else submitMove()}},1000)}
+function stopTurnTimer(){if(turnTimer){clearInterval(turnTimer);turnTimer=null}}
+function updTimer(){document.getElementById('hud-timer').textContent=timerLeft;const f=document.getElementById('timer-fill');f.style.width=(timerLeft/TURN_TIME*100)+'%';f.className='timer-fill'+(timerLeft<=10?' warn':'')}
+
+// ===== MOVE =====
+function onMapClick(e){
+  if(inBattle||!myAlive)return;
+  if(isBonusPhase&&combatants.has(myId))return;
+  const rect=canvas.getBoundingClientRect();
+  const cx=e.touches?e.touches[0].clientX:e.clientX;
+  const cy=e.touches?e.touches[0].clientY:e.clientY;
+  const tx=Math.floor((cx-rect.left)/TILE),ty=Math.floor((cy-rect.top)/TILE);
+  const me=players[myId];if(!me)return;
+  const dx=tx-me.x,dy=ty-me.y;
+  if(Math.abs(dx)<=1&&Math.abs(dy)<=1)selMove(dx,dy);
+}
+function selMove(dx,dy){
+  if(inBattle||!myAlive)return;
+  if(isBonusPhase&&combatants.has(myId))return;
+  const me=players[myId];if(!me)return;
+  const nx=me.x+dx,ny=me.y+dy;
+  if(nx<0||nx>=MAP||ny<0||ny>=MAP)return;
+  pendingMove={dx,dy};
+  const ind=document.getElementById('move-indicator');
+  ind.textContent=dx===0&&dy===0?'📍 대기':`🎯 (${nx},${ny})`;ind.style.display='block';
+  roomRef.collection('players').doc(myId).update({pendingDx:dx,pendingDy:dy,moveSubmitted:true}).catch(()=>{});
+  drawMap();
+}
+
+let resolving=false;
+async function submitMove(){
+  if(!pendingMove)pendingMove={dx:0,dy:0};
+  await roomRef.collection('players').doc(myId).update({pendingDx:pendingMove.dx,pendingDy:pendingMove.dy,moveSubmitted:true}).catch(()=>{});
+  if(isHost&&!resolving){resolving=true;try{await resolveTurn()}catch(e){console.error('resolveTurn error:',e);await nextTurn().catch(()=>{})}finally{resolving=false}}
+}
+async function submitBonusMove(){
+  // Combatant: don't submit move, just trigger resolve if host
+  if(!combatants.has(myId)){
+    if(!pendingMove)pendingMove={dx:0,dy:0};
+    await roomRef.collection('players').doc(myId).update({pendingDx:pendingMove.dx,pendingDy:pendingMove.dy,moveSubmitted:true}).catch(()=>{});
+  }
+  if(isHost&&!resolving){resolving=true;try{await resolveBonusTurn()}catch(e){console.error('resolveBonusTurn error:',e);await nextTurn().catch(()=>{})}finally{resolving=false}}
+}
+
+function botFallbackMove(bot){
+  let dx=0,dy=0;
+  const personality=bot.personality||'aggressive';
+  // Priority 1: Storm escape — ALWAYS move toward safe center
+  if(stormBorder>0){
+    const dL=Math.max(0,stormBorder-bot.x),dR=Math.max(0,bot.x-(MAP-stormBorder-1)),dT=Math.max(0,stormBorder-bot.y),dB=Math.max(0,bot.y-(MAP-stormBorder-1));
+    if(Math.max(dL,dR,dT,dB)>0){
+      const cx=Math.floor(MAP/2),cy=Math.floor(MAP/2);
+      return{dx:Math.sign(cx-bot.x),dy:Math.sign(cy-bot.y)};
+    }
+  }
+  const visible=Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=1&&Math.abs(p.y-bot.y)<=1);
+  const cx=Math.floor(MAP/2),cy=Math.floor(MAP/2);
+  // Priority 2: Personality-based behavior
+  if(personality==='aggressive'){
+    // 100% chase, low HP doesn't matter
+    if(visible.length>0){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    // Move toward center aggressively
+    if(Math.random()<0.8){dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y)}
+    else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1]}
+  }else if(personality==='cautious'){
+    // Flee if low HP, chase only if high HP
+    if(visible.length>0&&bot.hp<40){
+      const t=visible[0];return{dx:-Math.sign(t.x-bot.x),dy:-Math.sign(t.y-bot.y)} // flee
+    }
+    if(visible.length>0&&bot.hp>=40){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    // Stay near edges, move slowly
+    if(Math.random()<0.4){dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y)}
+    else if(Math.random()<0.3){dx=0;dy=0} // stay put
+    else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1]}
+  }else if(personality==='explorer'){
+    // Prioritize unvisited areas, items. Chase only if bumped into
+    if(visible.length>0&&Math.random()<0.7){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    // Move toward items if visible
+    const nearItems=Object.keys(mapItems).map(k=>{const[x,y]=k.split('_').map(Number);return{x,y,dist:Math.abs(x-bot.x)+Math.abs(y-bot.y)}}).filter(i=>i.dist<=3).sort((a,b)=>a.dist-b.dist);
+    if(nearItems.length>0){const t=nearItems[0];dx=Math.sign(t.x-bot.x);dy=Math.sign(t.y-bot.y)}
+    else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1]}
+  }else if(personality==='camper'){
+    // Stay put mostly, attack only if enemy walks into adjacent
+    if(visible.length>0){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    // 60% stay, 40% move 1 cell
+    if(Math.random()<0.6)return{dx:0,dy:0};
+    const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1];
+  }else if(personality==='hunter'){
+    // Always move toward center (where players concentrate), 100% chase
+    if(visible.length>0){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y);
+    // Add slight randomness
+    if(Math.random()<0.2){const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1]}
+  }else{
+    if(visible.length>0){const t=visible[0];return{dx:Math.sign(t.x-bot.x),dy:Math.sign(t.y-bot.y)}}
+    if(Math.random()<0.6){dx=Math.sign(cx-bot.x);dy=Math.sign(cy-bot.y)}
+    else{const d=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]][Math.floor(Math.random()*8)];dx=d[0];dy=d[1]}
+  }
+  return{dx,dy};
+}
+
+async function doBotMoves(excludeIds=new Set()){
+  const botIds=Object.keys(players).filter(id=>players[id].isBot&&players[id].alive&&!excludeIds.has(id));
+  const botMovesPromise=Promise.allSettled(botIds.map(async bid=>{
+    const bot=players[bid];
+    let dx=0,dy=0;
+    try{
+      const ctrl=new AbortController();const tid=setTimeout(()=>ctrl.abort(),3000);
+      const safeCenter=Math.floor(MAP/2);
+      const nearbyItems=Object.keys(mapItems).filter(k=>{const[ix,iy]=k.split('_').map(Number);return Math.abs(ix-bot.x)<=2&&Math.abs(iy-bot.y)<=2}).map(k=>{const w=gw(mapItems[k].id);return w.name+'('+w.emoji+')'}).join(',')||'없음';
+      const aliveCount=Object.values(players).filter(p=>p.alive).length;
+      const r=await fetch(API_BOT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actionType:'move',botName:bot.name,botWeapon:gw(bot.weapon),botHp:bot.hp,mapSize:MAP,botX:bot.x,botY:bot.y,stormBorder,safeCenter,personality:bot.personality||'aggressive',turn:currentTurn,aliveCount,nearbyItems,nearbyPlayers:Object.values(players).filter(p=>p.alive&&p.name!==bot.name&&Math.abs(p.x-bot.x)<=1&&Math.abs(p.y-bot.y)<=1).map(p=>p.name).join(',')||'없음'}),signal:ctrl.signal});
+      clearTimeout(tid);
+      if(r.ok){const j=await r.json();dx=Math.max(-1,Math.min(1,j.dx||0));dy=Math.max(-1,Math.min(1,j.dy||0))}
+    }catch(e){const fb=botFallbackMove(bot);dx=fb.dx;dy=fb.dy}
+    return roomRef.collection('players').doc(bid).update({x:Math.max(0,Math.min(MAP-1,bot.x+dx)),y:Math.max(0,Math.min(MAP-1,bot.y+dy))}).catch(()=>{});
+  }));
+  await Promise.race([botMovesPromise,new Promise(r=>setTimeout(r,8000))]);
+}
+
+async function doItemPickup(ps){
+  // Re-read mapItems from Firestore (fix stale data bug)
+  const roomSnap=await roomRef.get();
+  if(roomSnap.exists&&roomSnap.data().mapItems)mapItems=JSON.parse(roomSnap.data().mapItems);
+  let changed=false;
+  for(const[id,p]of Object.entries(ps)){
+    if(!p.alive)continue;
+    const key=p.x+'_'+p.y;
+    if(mapItems[key]){
+      const inv=JSON.parse(p.inv||'[]');
+      if(inv.length<5){
+        inv.push(mapItems[key].id);
+        await roomRef.collection('players').doc(id).update({inv:JSON.stringify(inv)}).catch(()=>{});
+        if(id===myId){inventory.push(gw(mapItems[key].id));showPickup(gw(mapItems[key].id))}
+        const me=players[myId];
+        const canSee=!myAlive||!me||(Math.abs(p.x-me.x)<=1&&Math.abs(p.y-me.y)<=1);
+        const who=canSee?p.name:'???';
+        addSysChat(`📦 ${who}가 ${gw(mapItems[key].id).emoji} ${gw(mapItems[key].id).name}을(를) 발견!`);
+      }
+      delete mapItems[key];changed=true;
+    }
+  }
+  if(changed)await roomRef.update({mapItems:JSON.stringify(mapItems)}).catch(()=>{});
+}
+
+async function findAndStartBattle(ps,depth=0){
+  if(depth>10){console.warn('findAndStartBattle: max depth reached, skipping');return false}
+  try{
+    const alive=Object.entries(ps).filter(([,p])=>p.alive);
+    const cells={};
+    alive.forEach(([id,p])=>{const k=p.x+','+p.y;if(!cells[k])cells[k]=[];cells[k].push(id)});
+    for(const ids of Object.values(cells)){
+      if(ids.length>=2){
+        combatants.add(ids[0]);combatants.add(ids[1]);
+        console.log('[findAndStartBattle] Battle:',ids[0],ps[ids[0]]?.name,'vs',ids[1],ps[ids[1]]?.name,'depth:',depth);
+        await roomRef.update({phase:'battle',battlePair:{a:ids[0],b:ids[1]}});
+        if(ps[ids[0]].isBot&&ps[ids[1]].isBot){
+          await autoResolveBattle(ids[0],ids[1],ps);
+          const snap2=await roomRef.collection('players').get();
+          const ps2={};snap2.forEach(d=>ps2[d.id]=d.data());
+          return findAndStartBattle(ps2,depth+1);
+        }
+        return true;
+      }
+    }
+    return false;
+  }catch(e){
+    console.error('[findAndStartBattle] ERROR at depth',depth,':',e);
+    return false; // fallback: no battle, proceed to bonusMove/nextTurn
+  }
+}
+
+async function resolveTurn(){
+  // Bot moves
+  await doBotMoves();
+  // Human moves
+  const humanUpdates=Object.keys(players).filter(id=>!players[id].isBot&&players[id].alive).map(hid=>{
+    const p=players[hid],dx=p.pendingDx||0,dy=p.pendingDy||0;
+    return roomRef.collection('players').doc(hid).update({x:Math.max(0,Math.min(MAP-1,p.x+dx)),y:Math.max(0,Math.min(MAP-1,p.y+dy)),pendingDx:0,pendingDy:0,moveSubmitted:false}).catch(()=>{});
+  });
+  await Promise.allSettled(humanUpdates);
+  // Track my visited tile
+  const me=players[myId];if(me)visitedTiles.add(me.x+'_'+me.y);
+  await roomRef.update({phase:'resolve'});
+  // Item pickup (fresh from Firestore)
+  const snap=await roomRef.collection('players').get();
+  const ps={};snap.forEach(d=>ps[d.id]=d.data());
+  await doItemPickup(ps);
+  // Check collisions → battles
+  combatants=new Set();
+  const battleFound=await findAndStartBattle(ps);
+  if(!battleFound) await startBonusMovePhase();
+}
+
+async function startBonusMovePhase(){
+  // Players NOT in combat this turn get a bonus move
+  const aliveNonCombatants=Object.keys(players).filter(id=>players[id].alive&&!combatants.has(id));
+  if(aliveNonCombatants.length===0){await nextTurn();return}
+  // If no non-combatant HUMANS, just do bot moves immediately and skip to nextTurn
+  const nonCombatHumans=aliveNonCombatants.filter(id=>!players[id].isBot);
+  if(nonCombatHumans.length===0){
+    await doBotMoves(combatants);
+    const snap=await roomRef.collection('players').get();
+    const ps={};snap.forEach(d=>ps[d.id]=d.data());
+    await doItemPickup(ps);
+    await nextTurn();return;
+  }
+  // Reset pending moves for bonus
+  const resets=aliveNonCombatants.map(id=>roomRef.collection('players').doc(id).update({pendingDx:0,pendingDy:0,moveSubmitted:false}).catch(()=>{}));
+  await Promise.allSettled(resets);
+  await roomRef.update({phase:'bonusMove',battlePair:null,combatantIds:Array.from(combatants)});
+}
+
+async function resolveBonusTurn(){
+  // Bonus: non-combatant bots move
+  await doBotMoves(combatants);
+  // Bonus: non-combatant human moves
+  const humanUpdates=Object.keys(players).filter(id=>!players[id].isBot&&players[id].alive&&!combatants.has(id)).map(hid=>{
+    const p=players[hid],dx=p.pendingDx||0,dy=p.pendingDy||0;
+    return roomRef.collection('players').doc(hid).update({x:Math.max(0,Math.min(MAP-1,p.x+dx)),y:Math.max(0,Math.min(MAP-1,p.y+dy)),pendingDx:0,pendingDy:0,moveSubmitted:false}).catch(()=>{});
+  });
+  await Promise.allSettled(humanUpdates);
+  // Track my visited tile
+  const me=players[myId];if(me)visitedTiles.add(me.x+'_'+me.y);
+  await roomRef.update({phase:'bonusResolve'});
+  // Item pickup
+  const snap=await roomRef.collection('players').get();
+  const ps={};snap.forEach(d=>ps[d.id]=d.data());
+  await doItemPickup(ps);
+  // No new battles in bonus phase — go to next turn
+  await nextTurn();
+}
+
+function showPickup(w){
+  const t=document.createElement('div');t.className='pickup-toast';t.innerHTML=`📦 ${w.emoji} <b>${w.name}</b> 획득!`;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
+}
+function addKill(killer,victim,weapon){
+  const feed=document.getElementById('kill-feed');if(!feed)return;
+  const e=document.createElement('div');e.className='kill-entry';
+  e.textContent=`${killer} ${weapon} → ${victim} 💀`;
+  feed.appendChild(e);setTimeout(()=>e.remove(),3500);
+  if(feed.children.length>5)feed.firstChild.remove();
+}
+function showTurnBanner(turn){
+  const b=document.getElementById('turn-banner');
+  b.textContent=`⚔️ TURN ${turn}`;b.className='';
+  void b.offsetWidth;b.classList.add('show');
+}
+function screenShake(){
+  const c=document.getElementById('game-main');if(!c)return;
+  c.classList.add('shaking');setTimeout(()=>c.classList.remove('shaking'),400);
+}
+function showTutorial(){
+  if(localStorage.getItem('br_tut_seen'))return;
+  document.getElementById('tutorial-overlay').classList.add('show');
+}
+function closeTutorial(){
+  document.getElementById('tutorial-overlay').classList.remove('show');
+  localStorage.setItem('br_tut_seen','1');
+}
+function setHudHint(text){const h=document.getElementById('hud-hint');if(h)h.textContent=text}
+
+async function nextTurn(){
+  const nextT=(currentTurn||1)+1;
+  const snap=await roomRef.collection('players').get();
+  const alive=[];snap.forEach(d=>{if(d.data().alive)alive.push(d.id)});
+  if(alive.length<=1){
+    const w=alive.length===1?players[alive[0]]?.name:'없음';
+    await roomRef.update({state:'finished',winner:w});return;
+  }
+  // 자기장 축소: 10턴 후부터 2턴마다 경계 1칸 축소
+  if(nextT>=10&&nextT%2===0){
+    const maxBorder=Math.floor(MAP/2)-1;
+    if(stormBorder<maxBorder){
+      stormBorder++;
+      addSysChat(`🌀 자기장 축소! 외곽 ${stormBorder}칸이 위험 지역입니다!`);
+    }
+  }
+  // 자기장 밖 플레이어에게 매 턴 거리 비례 + 누적 데미지
+  if(stormBorder>0){
+      for(const[id,p]of Object.entries(players)){
+        if(!p.alive)continue;
+        // 안전지대까지의 거리 계산 (각 방향별 최대 초과량)
+        const dL=Math.max(0,stormBorder-p.x);
+        const dR=Math.max(0,p.x-(MAP-stormBorder-1));
+        const dT=Math.max(0,stormBorder-p.y);
+        const dB=Math.max(0,p.y-(MAP-stormBorder-1));
+        const dist=Math.max(dL,dR,dT,dB);
+        if(dist>0){
+          // 누적 카운터 증가
+          if(!stormTicks[id])stormTicks[id]=0;
+          stormTicks[id]++;
+          // 데미지 = 기본10 + 거리당5 + 누적턴당3
+          const dmg=10+dist*5+stormTicks[id]*3;
+          const newHp=Math.max(0,p.hp-dmg);
+          await roomRef.collection('players').doc(id).update({hp:newHp,alive:newHp>0}).catch(()=>{});
+          if(newHp<=0){addSysChat(`🌀 ${p.name}이(가) 자기장에 의해 전사! (-${dmg})`);addKill('🌀자기장',p.name,'⚡')}
+          else addSysChat(`🌀 ${p.name} 자기장 피해 -${dmg} (거리:${dist}, 누적:${stormTicks[id]}턴) HP:${newHp}`);
+        }else{
+          // 안전지대 복귀 시 누적 초기화
+          if(stormTicks[id])stormTicks[id]=0;
+        }
+      }
+  }
+  // Random item spawn (30% chance)
+  if(Math.random()<0.3){
+    const x=stormBorder+Math.floor(Math.random()*(MAP-stormBorder*2));
+    const y=stormBorder+Math.floor(Math.random()*(MAP-stormBorder*2));
+    const k=x+'_'+y;
+    if(!mapItems[k]){const w=uniqueWeapon();mapItems[k]={id:w.id};addSysChat(`✨ 어딘가에 새 아이템이 나타났습니다!`)}
+  }
+  // Reset moveSubmitted for all alive players
+  const resetSnap=await roomRef.collection('players').get();
+  const resets=[];resetSnap.forEach(d=>{if(d.data().alive)resets.push(roomRef.collection('players').doc(d.id).update({moveSubmitted:false,pendingDx:0,pendingDy:0}).catch(()=>{}))});
+  await Promise.allSettled(resets);
+  await roomRef.update({phase:'move',turn:nextT,battlePair:null,combatantIds:[],mapItems:JSON.stringify(mapItems)});
+}
+
+async function autoResolveBattle(aId,bId,ps){
+  try{
+  const a=ps[aId],b=ps[bId],aw=gw(a.weapon),bw=gw(b.weapon);
+  let aHp=a.hp,bHp=b.hp;
+  const logs=[];let rd=0;
+  // Fight until one HP reaches 0 (max 10 rounds safety)
+  while(aHp>0&&bHp>0&&rd<10){rd++;
+    const aCrit=Math.random()<0.2;const bCrit=Math.random()<0.2;
+    const miracle=Math.random()<0.25;const who=Math.random()>.5?'A':'B';
+    let aDmg=Math.max(8,aw.atk-Math.floor(bw.def/3)+Math.floor(Math.random()*12));
+    let bDmg=Math.max(8,bw.atk-Math.floor(aw.def/3)+Math.floor(Math.random()*12));
+    if(aCrit)aDmg=Math.floor(aDmg*1.8);
+    if(bCrit)bDmg=Math.floor(bDmg*1.8);
+    if(miracle&&who==='A'){aDmg=Math.floor(aDmg*2);bDmg=Math.floor(bDmg/2)}
+    if(miracle&&who==='B'){bDmg=Math.floor(bDmg*2);aDmg=Math.floor(aDmg/2)}
+    bHp=Math.max(0,bHp-aDmg);
+    aHp=Math.max(0,aHp-bDmg);
+    logs.push(`R${rd}: ${a.name}→${aDmg}${aCrit?'💥':''}${miracle&&who==='A'?'🌟':''} | ${b.name}→${bDmg}${bCrit?'💥':''}${miracle&&who==='B'?'🌟':''}`);
+  }
+  console.log('[autoResolveBattle]',a.name,'HP:',a.hp,'→',aHp,'|',b.name,'HP:',b.hp,'→',bHp);
+  await roomRef.collection('players').doc(aId).update({hp:aHp,alive:aHp>0});
+  await roomRef.collection('players').doc(bId).update({hp:bHp,alive:bHp>0});
+  const winner=bHp<=0?a.name:aHp<=0?b.name:'무승부';
+  addSysChat(`⚔️ ${a.name}(${aw.emoji}) vs ${b.name}(${bw.emoji}) → ${winner} 승리! [${rd}라운드]`);
+  logs.forEach(l=>addSysChat(l));
+  if(aHp<=0){addSysChat(`💀 ${a.name} 전사!`);addKill(b.name,a.name,bw.emoji)}
+  if(bHp<=0){addSysChat(`💀 ${b.name} 전사!`);addKill(a.name,b.name,aw.emoji)}
+  // 승자가 패자 무기 획득
+  if(aHp<=0&&bHp>0){
+    const bInv=JSON.parse(b.inv||'[]');if(bInv.length<5){bInv.push(a.weapon);await roomRef.collection('players').doc(bId).update({inv:JSON.stringify(bInv)}).catch(()=>{});}
+  }else if(bHp<=0&&aHp>0){
+    const aInv=JSON.parse(a.inv||'[]');if(aInv.length<5){aInv.push(b.weapon);await roomRef.collection('players').doc(aId).update({inv:JSON.stringify(aInv)}).catch(()=>{});}
+  }
+  }catch(e){console.error('[autoResolveBattle] ERROR:',e)}
+}
+
+// ===== BATTLE PHASE =====
+function showBattlePhase(bp){
+  inBattle=true;strategySubmitted=false;
+  document.getElementById('battle-overlay').classList.add('show');
+  const isA=bp.a===myId;const oppId=isA?bp.b:bp.a;const opp=players[oppId];const oppW=gw(opp.weapon);
+  document.getElementById('battle-fighters').innerHTML=`
+    <div class="battle-fighter"><div class="bf-emoji">${myAvatar}</div><div class="bf-name">${esc(myNick)} (나)</div><div class="bf-weapon">${myWeapon.emoji} ${myWeapon.name}</div><div class="bf-hp">❤️ ${myHp}</div></div>
+    <div class="bf-vs">VS</div>
+    <div class="battle-fighter"><div class="bf-emoji">${opp.avatar||'🤖'}</div><div class="bf-name">${esc(opp.name)}</div><div class="bf-weapon">${oppW.emoji} ${oppW.name}</div><div class="bf-hp">❤️ ${opp.hp}</div></div>`;
+  document.getElementById('strategy-section').style.display='block';
+  document.getElementById('battle-log').style.display='none';
+  document.getElementById('battle-result').style.display='none';
+  document.getElementById('battle-close-btn').style.display='none';
+  document.getElementById('strategy-input').value='';
+  let sLeft=STRAT_TIME;
+  document.getElementById('strategy-timer').textContent='남은 시간: '+sLeft+'초';
+  strategyTimerIv=setInterval(()=>{sLeft--;document.getElementById('strategy-timer').textContent='남은 시간: '+sLeft+'초';if(sLeft<=0){clearInterval(strategyTimerIv);if(!strategySubmitted)submitStrategy()}},1000);
+  battleData={bp,oppId,isA};
+}
+
+async function submitStrategy(){
+  if(strategySubmitted)return;strategySubmitted=true;
+  if(strategyTimerIv){clearInterval(strategyTimerIv);strategyTimerIv=null}
+  const strategy=document.getElementById('strategy-input').value.trim();
+  document.getElementById('strategy-section').style.display='none';
+  const log=document.getElementById('battle-log');log.style.display='block';
+  log.innerHTML='<div style="color:var(--accent);text-align:center;padding:20px">⚔️ AI가 3합 전투를 생성 중...</div>';
+  const opp=players[battleData.oppId],oppW=gw(opp.weapon);
+  let oppStrategy='';
+  if(opp.isBot){try{const r=await fetch(API_BOT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actionType:'combat_strategy',botName:opp.name,botWeapon:oppW,botHp:opp.hp,opponentWeapon:myWeapon,opponentHp:myHp})});if(r.ok){const j=await r.json();oppStrategy=j.strategy||''}}catch(e){}}
+  const pA=battleData.isA?{name:myNick,weapon:myWeapon,hp:myHp,strategy}:{name:opp.name,weapon:oppW,hp:opp.hp,strategy:oppStrategy};
+  const pB=battleData.isA?{name:opp.name,weapon:oppW,hp:opp.hp,strategy:oppStrategy}:{name:myNick,weapon:myWeapon,hp:myHp,strategy};
+  let result;
+  try{const r=await fetch(API_COMBAT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({playerA:pA,playerB:pB})});if(r.ok)result=await r.json();else throw new Error('err')}
+  catch(e){
+    // Fallback: fight until one HP reaches 0
+    let aHp=pA.hp,bHp=pB.hp,rounds=[],rd=0;
+    while(aHp>0&&bHp>0&&rd<10){rd++;
+      const ad=Math.max(3,pA.weapon.atk-Math.floor(pB.weapon.def/2)+Math.floor(Math.random()*15)-5);
+      const bd=Math.max(3,pB.weapon.atk-Math.floor(pA.weapon.def/2)+Math.floor(Math.random()*15)-5);
+      // Miracle event (20%)
+      const miracle=Math.random()<0.2;const who=Math.random()>.5?'A':'B';
+      const events=['신이 도와주었다!','상대가 미끄러졌다!','갑자기 기절했다!','무기가 각성했다!'];
+      const ev=events[Math.floor(Math.random()*events.length)];
+      let rText='';
+      if(miracle&&who==='A'){rText=`${pA.name}의 공격! ${ad*2} 데미지! (${ev})`;bHp-=ad*2;aHp-=Math.floor(bd/2)}
+      else if(miracle&&who==='B'){rText=`${pB.name}의 반격! ${bd*2} 데미지! (${ev})`;aHp-=bd*2;bHp-=Math.floor(ad/2)}
+      else{rText=`${pA.name}: ${ad}딜, ${pB.name}: ${bd}딜`;aHp-=bd;bHp-=ad}
+      rounds.push({round:rd,text:rText});
+    }
+    const w=bHp<=0?'A':'B';
+    result={rounds,winner:w,damageToA:pA.hp-Math.max(0,aHp),damageToB:pB.hp-Math.max(0,bHp),summary:(w==='A'?pA.name:pB.name)+' 승리!'}
+  }
+  log.innerHTML='';
+  for(let i=0;i<(result.rounds||[]).length;i++){
+    await new Promise(r=>setTimeout(r,1500));
+    log.innerHTML+=`<div class="round-entry"><div class="round-label">ROUND ${result.rounds[i].round||i+1}</div>${esc(result.rounds[i].text)}</div>`;log.scrollTop=log.scrollHeight;
+  }
+  const iAmA=battleData.isA;
+  const iWon=(iAmA&&result.winner==='A')||(!iAmA&&result.winner==='B');
+  // Winner survives with remaining HP, loser dies
+  const nMyHp=iWon?Math.max(1,myHp-(iAmA?(result.damageToA||0):(result.damageToB||0))):0;
+  const nOppHp=iWon?0:Math.max(1,opp.hp-(iAmA?(result.damageToB||0):(result.damageToA||0)));
+  await roomRef.collection('players').doc(myId).update({hp:nMyHp,alive:nMyHp>0});
+  await roomRef.collection('players').doc(battleData.oppId).update({hp:nOppHp,alive:nOppHp>0});
+  myHp=nMyHp;
+  const re=document.getElementById('battle-result');re.style.display='block';
+  re.innerHTML=iWon?`<span style="color:var(--accent)">🏆 승리! ${esc(result.summary||'')}</span>`:`<span style="color:var(--red)">💀 패배... ${esc(result.summary||'')}</span>`;
+  document.getElementById('battle-close-btn').style.display='block';
+  addSysChat(`⚔️ ${pA.name}(${pA.weapon.emoji}) vs ${pB.name}(${pB.weapon.emoji}) → ${result.winner==='A'?pA.name:pB.name} 승리!`);
+  // Loot: winner gets loser's weapon
+  if(iWon&&inventory.length<5){const lootW=oppW;inventory.push(lootW);showPickup(lootW);
+    await roomRef.collection('players').doc(myId).update({inv:JSON.stringify(inventory.map(w=>w.id))}).catch(()=>{})}
+  if(!iWon){myAlive=false;addKill(opp.name,myNick,oppW.emoji);setTimeout(()=>{document.getElementById('dead-overlay').classList.add('show');document.getElementById('dead-msg').textContent=opp.name+'에게 당했습니다'},2000)}
+  else{myKills++;addKill(myNick,opp.name,myWeapon.emoji)}
+  if(isHost)setTimeout(async()=>{
+    // After human battle, check for more battles
+    const snap2=await roomRef.collection('players').get();
+    const ps2={};snap2.forEach(d=>ps2[d.id]=d.data());
+    const moreBattles=await findAndStartBattle(ps2);
+    if(!moreBattles)await startBonusMovePhase();
+  },4000);
+}
+
+function closeBattle(){document.getElementById('battle-overlay').classList.remove('show');inBattle=false;drawMap()}
+
+async function saveToHallOfFame(){
+  const comment=document.getElementById('winner-comment').value.trim()||'...';
+  try{
+    await db.collection('br_hall_of_fame').add({
+      name:myNick,avatar:myAvatar,comment,hp:myHp,kills:myKills,turn:currentTurn,
+      weapon:myWeapon?myWeapon.name:'',weaponEmoji:myWeapon?myWeapon.emoji:'',
+      date:new Date().toISOString(),ts:Date.now()
+    });
+    document.getElementById('winner-input-section').style.display='none';
+    document.getElementById('winner-saved').style.display='block';
+  }catch(e){console.error(e);alert('저장 실패')}
+}
+
+async function showHallOfFame(){
+  const ol=document.getElementById('hof-overlay');ol.style.display='flex';
+  const list=document.getElementById('hof-list');list.innerHTML='<p style="color:var(--gray)">로딩 중...</p>';
+  try{
+    const snap=await db.collection('br_hall_of_fame').orderBy('ts','desc').limit(20).get();
+    if(snap.empty){list.innerHTML='<p style="color:var(--gray)">아직 기록이 없습니다. 첫 번째 챔피언이 되어보세요!</p>';return}
+    list.innerHTML=snap.docs.map((d,i)=>{const h=d.data();const rank=i===0?'👑':i===1?'🥈':i===2?'🥉':`${i+1}`;
+      return`<div style="background:var(--card);border:1px solid ${i<3?'var(--gold)':'var(--border)'};padding:14px;border-radius:8px;display:flex;align-items:center;gap:12px">
+        <span style="font-size:24px;min-width:36px;text-align:center">${rank}</span>
+        <span style="font-size:36px">${h.avatar||'🏆'}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:800;font-size:16px;color:var(--white)">${esc(h.name)}</div>
+          <div style="color:var(--accent);font-size:13px">"${esc(h.comment||'...')}"</div>
+          <div style="color:var(--gray);font-size:11px">HP:${h.hp} | 킬:${h.kills} | ${h.weaponEmoji||''} ${h.weapon||''} | ${new Date(h.date).toLocaleDateString('ko-KR')}</div>
+        </div></div>`}).join('');
+  }catch(e){list.innerHTML='<p style="color:var(--red)">로딩 실패</p>'}
+}
+
+function checkEnd(){
+  const alive=Object.entries(players).filter(([,p])=>p.alive);
+  if(alive.length<=1&&gameStarted){
+    const w=alive[0];const isMe=w&&w[0]===myId;
+    const wp=w?w[1]:null;
+    document.getElementById('winner-overlay').classList.add('show');
+    document.getElementById('winner-title').textContent=isMe?'🏆 축하합니다!':'게임 종료';
+    document.getElementById('winner-avatar').textContent=wp?wp.avatar||'🏆':'💀';
+    document.getElementById('winner-msg').textContent=isMe?`${myNick}, 최후의 생존자!`:`승자: ${wp?wp.name:'없음'}`;
+    document.getElementById('winner-stats').textContent=isMe?`HP: ${myHp} | 킬: ${myKills} | 턴: ${currentTurn}`:``;
+    if(isMe){document.getElementById('winner-input-section').style.display='block'}
+    stopTurnTimer();
+  }
+}
+
+// ===== CRAFT =====
+function openCraft(){
+  if(inventory.length<2){alert('아이템 2개 이상 필요');return}
+  craftSelection=[];
+  document.getElementById('craft-modal').classList.add('show');
+  document.getElementById('craft-result-emoji').style.display='none';
+  document.getElementById('craft-result-text').style.display='none';
+  document.getElementById('craft-go-btn').style.display='inline-block';
+  renderCraftItems();
+}
+function renderCraftItems(){
+  document.getElementById('craft-items').innerHTML=inventory.map((w,i)=>`<div class="inv-slot ${craftSelection.includes(i)?'selected':''}" onclick="toggleCraftSel(${i})" style="cursor:pointer;min-width:70px;min-height:70px"><div class="slot-emoji">${w.emoji}</div><div class="slot-name">${w.name}</div></div>`).join('');
+  const btn=document.getElementById('craft-go-btn');
+  if(btn)btn.style.opacity=craftSelection.length===2?'1':'0.4';
+  const rateEl=document.getElementById('craft-rate');
+  if(rateEl&&craftSelection.length===2){const a=inventory[craftSelection[0]],b=inventory[craftSelection[1]];const r=getCraftRate(a,b);rateEl.textContent=`성공률: ${Math.round(r*100)}%`}
+  else if(rateEl)rateEl.textContent='';
+}
+function toggleCraftSel(i){
+  const idx=craftSelection.indexOf(i);
+  if(idx>=0)craftSelection.splice(idx,1);else if(craftSelection.length<2)craftSelection.push(i);
+  renderCraftItems();
+}
+function getCraftRate(a,b){
+  if(a.type==='전설'||b.type==='전설')return 0.40;
+  if(a.type==='장난감'||b.type==='장난감')return 0.65;
+  if(a.type===b.type)return 0.70;
+  return 0.55;
+}
+async function doCraft(){
+  if(craftSelection.length!==2){alert('2개 선택');return}
+  document.getElementById('craft-go-btn').style.display='none';
+  const a=inventory[craftSelection[0]],b=inventory[craftSelection[1]];
+  const rate=getCraftRate(a,b);
+  const success=Math.random()<rate;
+  const re=document.getElementById('craft-result-emoji'),rt=document.getElementById('craft-result-text');
+  if(success){
+    const newW={id:900+Math.floor(Math.random()*99),name:a.name.substring(0,3)+b.name.substring(0,3),emoji:Math.random()>.5?a.emoji:b.emoji,type:'조합',atk:Math.floor((a.atk+b.atk)*1.2),def:Math.floor((a.def+b.def)*1.1),spd:Math.floor((a.spd+b.spd)/2),specName:a.specName+'+'+b.specName,specDesc:'조합 특수능력'};
+    re.textContent='✨';re.style.display='block';
+    rt.innerHTML=`<span style="color:var(--accent)">조합 성공! ${newW.emoji} ${newW.name} (ATK:${newW.atk})</span>`;rt.style.display='block';
+    inventory=inventory.filter((_,i)=>!craftSelection.includes(i));inventory.push(newW);
+    myWeapon=newW;
+    await roomRef.collection('players').doc(myId).update({weapon:newW.id,inv:JSON.stringify(inventory.map(w=>w.id))}).catch(()=>{});
+  }else{
+    re.textContent='💩';re.style.display='block';
+    rt.innerHTML=`<span style="color:var(--red)">조합 실패! 💩 악취나는 응가로 변환...</span>`;rt.style.display='block';
+    inventory=inventory.filter((_,i)=>!craftSelection.includes(i));inventory.push(POOP);
+    myWeapon=POOP;
+    await roomRef.collection('players').doc(myId).update({weapon:999,inv:JSON.stringify(inventory.map(w=>w.id))}).catch(()=>{});
+  }
+  setTimeout(()=>{closeCraft();updateHUD();drawMap()},2000);
+}
+function closeCraft(){document.getElementById('craft-modal').classList.remove('show');craftSelection=[]}
+
+// ===== MAP =====
+function drawMap(){
+  if(!ctx)return;const me=players[myId];
+  ctx.fillStyle='#050505';ctx.fillRect(0,0,MAP*TILE,MAP*TILE);
+  for(let y=0;y<MAP;y++)for(let x=0;x<MAP;x++){
+    const vis=!myAlive||(me&&Math.abs(x-me.x)<=1&&Math.abs(y-me.y)<=1);
+    const visited=visitedTiles.has(x+'_'+y);
+    ctx.fillStyle=vis?'#181818':visited?'#0d1210':'#080808';ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+    if(!vis&&visited){ctx.fillStyle='rgba(16,185,129,0.06)';ctx.fillRect(x*TILE,y*TILE,TILE,TILE)}
+    ctx.strokeStyle=vis?'#222':visited?'#162016':'#0c0c0c';ctx.strokeRect(x*TILE,y*TILE,TILE,TILE);
+    // Map items
+    const k=x+'_'+y;
+    if(mapItems[k]&&vis){ctx.font=`${TILE*0.7}px serif`;ctx.textAlign='center';ctx.fillText(gw(mapItems[k].id).emoji,x*TILE+TILE/2,y*TILE+TILE*0.72)}
+  }
+  // Players (big emoji avatars)
+  Object.entries(players).forEach(([id,p])=>{
+    if(!p.alive)return;
+    const vis=!myAlive||!me||(Math.abs(p.x-me.x)<=1&&Math.abs(p.y-me.y)<=1);
+    if(!vis)return;
+    const isMe=id===myId;
+    // Background circle
+    ctx.fillStyle=isMe?'rgba(16,185,129,0.3)':p.isBot?'rgba(100,100,100,0.3)':'rgba(239,68,68,0.3)';
+    ctx.beginPath();ctx.arc(p.x*TILE+TILE/2,p.y*TILE+TILE/2,TILE/2.2,0,Math.PI*2);ctx.fill();
+    // Avatar emoji (big)
+    ctx.font=`${TILE*0.65}px serif`;ctx.textAlign='center';
+    ctx.fillText(p.avatar||'🤖',p.x*TILE+TILE/2,p.y*TILE+TILE*0.6);
+    // Name below
+    ctx.fillStyle=isMe?'#10b981':'#ccc';ctx.font=`bold ${Math.max(8,TILE/3.2)}px sans-serif`;
+    ctx.fillText(p.name.substring(0,4),p.x*TILE+TILE/2,p.y*TILE+TILE-2);
+    // Weapon emoji (top-right corner, bigger)
+    ctx.font=`${TILE*0.38}px serif`;
+    ctx.fillText(gw(p.weapon).emoji,p.x*TILE+TILE-2,p.y*TILE+12);
+  });
+  // Move preview
+  if(pendingMove&&me&&myAlive){
+    const nx=me.x+pendingMove.dx,ny=me.y+pendingMove.dy;
+    ctx.strokeStyle='rgba(16,185,129,0.8)';ctx.lineWidth=2;ctx.strokeRect(nx*TILE+2,ny*TILE+2,TILE-4,TILE-4);ctx.lineWidth=1;
+  }
+  // 자기장 시각화
+  if(stormBorder>0){
+    for(let y=0;y<MAP;y++)for(let x=0;x<MAP;x++){
+      if(x<stormBorder||x>=MAP-stormBorder||y<stormBorder||y>=MAP-stormBorder){
+        const sdL=Math.max(0,stormBorder-x),sdR=Math.max(0,x-(MAP-stormBorder-1)),sdT=Math.max(0,stormBorder-y),sdB=Math.max(0,y-(MAP-stormBorder-1));
+        const sd=Math.max(sdL,sdR,sdT,sdB);const sAlpha=Math.min(0.6,0.15+sd*0.08);
+        ctx.fillStyle=`rgba(239,68,68,${sAlpha})`;ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+      }
+    }
+    // 자기장 경계선
+    ctx.strokeStyle='rgba(239,68,68,0.6)';ctx.lineWidth=2;
+    ctx.strokeRect(stormBorder*TILE,stormBorder*TILE,(MAP-stormBorder*2)*TILE,(MAP-stormBorder*2)*TILE);
+    ctx.lineWidth=1;
+  }
+  // Moveable hints
+  if(me&&myAlive&&!inBattle){for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=me.x+dx,ny=me.y+dy;if(nx>=0&&nx<MAP&&ny>=0&&ny<MAP){ctx.fillStyle='rgba(16,185,129,0.08)';ctx.fillRect(nx*TILE,ny*TILE,TILE,TILE);ctx.strokeStyle='rgba(16,185,129,0.25)';ctx.strokeRect(nx*TILE+1,ny*TILE+1,TILE-2,TILE-2)}}}
+}
+
+// ===== HUD =====
+function updateHUD(){
+  if(myWeapon)document.getElementById('hud-weapon').textContent=myWeapon.emoji+' '+myWeapon.name;
+  document.getElementById('hud-hp').textContent=myHp;
+  document.getElementById('hud-alive').textContent=Object.values(players).filter(p=>p.alive).length+'명';
+  document.getElementById('hud-turn').textContent=currentTurn;
+  // Weapon card
+  if(myWeapon){
+    const wh=`<div class="wemoji">${myWeapon.emoji}</div><div class="wname">${myWeapon.name}</div><div class="wtype">${myWeapon.type}</div><div class="wstats"><div class="wstat"><div class="wstat-val">${myWeapon.atk}</div><div class="wstat-label">ATK</div></div><div class="wstat"><div class="wstat-val">${myWeapon.def}</div><div class="wstat-label">DEF</div></div><div class="wstat"><div class="wstat-val">${myWeapon.spd}</div><div class="wstat-label">SPD</div></div></div><div class="wspecial">✨ ${myWeapon.specName}: ${myWeapon.specDesc}</div>`;
+    ['sidebar-weapon','mob-weapon'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=wh});
+  }
+  // Inventory
+  const invH=`<div class="inv-title"><span>🎒 인벤토리 (${inventory.length}/5)</span><button class="craft-btn ${inventory.length>=2?'show pulse':''}" onclick="openCraft()">🔮 조합</button></div><div class="inv-slots">${inventory.map((w,i)=>`<div class="inv-slot ${w.id===myWeapon?.id?'equipped':''}" onclick="equipItem(${i})" title="${w.name}\nATK:${w.atk} DEF:${w.def} SPD:${w.spd}"><div class="slot-emoji">${w.emoji}</div><div class="slot-name">${w.name}</div></div>`).join('')}${Array(Math.max(0,5-inventory.length)).fill('<div class="inv-slot empty">+</div>').join('')}</div>`;
+  ['sidebar-inv','mob-inv'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=invH});
+  // Players
+  const me=players[myId];
+  const ph=Object.entries(players).map(([id,p])=>{
+    const canSee=!myAlive||!me||id===myId||(Math.abs(p.x-me.x)<=1&&Math.abs(p.y-me.y)<=1);
+    const w=gw(p.weapon);
+    if(!canSee&&p.alive)return`<div class="plist-row"><span class="pemoji">${p.avatar||'🤖'}</span><span class="pname">${esc(p.name)}</span><span style="font-size:9px;color:var(--gray)">???</span><span class="php" style="color:var(--gray)">❤️???</span></div>`;
+    const hpPct=Math.max(0,Math.min(100,p.hp));const hpClass=hpPct>60?'high':hpPct>30?'mid':'low';
+    return`<div class="plist-row ${p.alive?'':'dead'}"><span class="pemoji">${p.avatar||'🤖'}</span><span class="pname">${esc(p.name)}</span><span style="font-size:9px">${w.emoji}</span><span class="php">${p.hp}</span><div class="hp-bar"><div class="hp-fill ${hpClass}" style="width:${hpPct}%"></div></div></div>`;
+  }).join('');
+  ['sidebar-players','mob-players'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=ph});
+}
+function equipItem(i){if(inventory[i]){myWeapon=inventory[i];roomRef.collection('players').doc(myId).update({weapon:myWeapon.id}).catch(()=>{});updateHUD()}}
+
+// ===== CHAT (anonymous) =====
+function startGlobalChat(){chatMode='global';unsubChat=db.collection('br_lobby_chat').orderBy('ts','asc').limitToLast(50).onSnapshot(s=>{s.docChanges().forEach(c=>{if(c.type==='added'){const m=c.doc.data();appChat(m.name,m.text,m.sys)}})})}
+function switchToRoomChat(){if(unsubChat)unsubChat();chatMode='room';document.getElementById('lobby-chat-hdr').textContent='💬 방 채팅 ('+roomId+')';document.getElementById('lobby-chat-msgs').innerHTML='';unsubChat=roomRef.collection('chat').orderBy('ts','asc').limitToLast(50).onSnapshot(s=>{s.docChanges().forEach(c=>{if(c.type==='added'){const m=c.doc.data();appChat(m.name,m.text,m.sys)}})})}
+function appChat(name,text,sys){const dn=gameStarted&&!sys?'???':name;const h=sys?`<div class="chat-msg chat-sys">${esc(text)}</div>`:`<div class="chat-msg"><span class="cn">${esc(dn)}</span> <span class="ct">${esc(text)}</span></div>`;['lobby-chat-msgs','game-chat-msgs','mob-chat-msgs'].forEach(id=>{const el=document.getElementById(id);if(el){el.insertAdjacentHTML('beforeend',h);el.scrollTop=el.scrollHeight}})}
+function snd(t){if(!t)return;const col=chatMode==='room'&&roomRef?roomRef.collection('chat'):db.collection('br_lobby_chat');col.add({name:myNick,text:t,sys:false,ts:Date.now()}).catch(()=>{})}
+function addSysChat(t){if(roomRef)roomRef.collection('chat').add({name:'',text:t,sys:true,ts:Date.now()}).catch(()=>{})}
+function sendLobbyChat(){const i=document.getElementById('lobby-chat-inp');snd(i.value.trim());i.value=''}
+function sendGameChat(){const i=document.getElementById('game-chat-inp');snd(i.value.trim());i.value=''}
+function sendMobChat(){const i=document.getElementById('mob-chat-inp');snd(i.value.trim());i.value=''}
+document.getElementById('lobby-chat-inp').addEventListener('keydown',e=>{if(e.key==='Enter')sendLobbyChat()});
+document.getElementById('game-chat-inp').addEventListener('keydown',e=>{if(e.key==='Enter')sendGameChat()});
+document.getElementById('mob-chat-inp').addEventListener('keydown',e=>{if(e.key==='Enter')sendMobChat()});
+function toggleMob(){document.getElementById('mob-sidebar').classList.toggle('open');document.getElementById('mob-overlay').classList.toggle('show')}
+document.addEventListener('keydown',e=>{if(inBattle||!myAlive||!gameStarted)return;const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]};if(m[e.key]){selMove(m[e.key][0],m[e.key][1]);e.preventDefault()}});
+(function(){const r=new URLSearchParams(location.search).get('room');if(r)setTimeout(()=>{const i=document.getElementById('room-input');if(i)i.value=r},300)})();
+document.getElementById('nick-input').focus();
+</script>
+</body>
+</html>

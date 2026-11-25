@@ -7,15 +7,21 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ value, label, size = 'md' }: ProgressBarProps) {
-  const color = value >= 100 ? 'bg-emerald-500' : value > 0 ? 'bg-amber-500' : 'bg-gray-300';
-  const h = size === 'sm' ? 'h-2' : 'h-3';
+  const height = size === 'sm' ? 'h-1.5' : 'h-2.5';
+  const clampedValue = Math.min(100, Math.max(0, value));
 
   return (
-    <div className="w-full">
-      {label && <div className="flex justify-between text-xs text-gray-600 mb-1"><span>{label}</span><span>{value}%</span></div>}
-      <div className={`w-full ${h} bg-gray-200 rounded-full overflow-hidden`}>
-        <div className={`${h} ${color} rounded-full transition-all duration-300`} style={{ width: `${Math.min(value, 100)}%` }} />
+    <div className="flex items-center gap-3">
+      {label && <span className="text-xs text-neutral-500 w-12 shrink-0">{label}</span>}
+      <div className={`flex-1 ${height} bg-[#1a1a1a] border border-[#262626] overflow-hidden`}>
+        <div
+          className={`${height} transition-all duration-500 ${
+            clampedValue >= 100 ? 'bg-emerald-500' : clampedValue > 0 ? 'bg-emerald-500/70' : 'bg-transparent'
+          }`}
+          style={{ width: `${clampedValue}%` }}
+        />
       </div>
+      <span className="text-xs text-neutral-500 w-10 text-right shrink-0">{clampedValue}%</span>
     </div>
   );
 }

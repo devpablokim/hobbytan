@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>학사구조개편 보고서 OCR — HOBBYTAN</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;background:#f8fafc;color:#1e293b;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+:root{--pri:#1e40af;--pri2:#2563eb;--bd:#e2e8f0;--tx:#1e293b;--tx2:#475569;--tx3:#94a3b8;--bg:#fff;--bg2:#f8fafc;--warn:#f59e0b}
+
+header{background:#fff;border-bottom:1px solid var(--bd);padding:16px 24px;position:sticky;top:0;z-index:10}
+.head-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{font-size:18px;font-weight:800;color:var(--tx);letter-spacing:-0.3px}
+.brand small{font-weight:500;color:var(--tx3);font-size:12px;margin-left:8px}
+.dl-group{display:flex;gap:8px;flex-wrap:wrap}
+.dl{padding:8px 16px;background:var(--pri);color:#fff;border-radius:8px;font-size:13px;font-weight:600;transition:background .2s}
+.dl:hover{background:var(--pri2)}
+.dl.alt{background:#fff;color:var(--pri);border:1px solid var(--pri)}
+.dl.alt:hover{background:var(--bg2)}
+
+.tabs{background:#fff;border-bottom:1px solid var(--bd);padding:0 24px}
+.tab-inner{max-width:1280px;margin:0 auto;display:flex;gap:4px;overflow-x:auto}
+.tab{padding:14px 24px;font-size:14px;font-weight:600;color:var(--tx2);background:transparent;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.tab.active{color:var(--pri);border-bottom-color:var(--pri)}
+.tab:hover{color:var(--pri)}
+
+.warn{max-width:1280px;margin:16px auto 0;padding:12px 20px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;color:#92400e;font-size:13px;display:flex;align-items:center;gap:10px}
+
+main{max-width:1280px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+
+.pane{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:20px;min-height:400px}
+.pane-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.pane-title{font-size:13px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1px}
+
+/* Image */
+.img-wrap{display:flex;align-items:center;justify-content:center;min-height:400px;background:var(--bg2);border-radius:8px;cursor:zoom-in;overflow:hidden}
+.img-wrap img{max-width:100%;max-height:70vh;display:block}
+.img-placeholder{text-align:center;padding:40px 20px;color:var(--tx3)}
+.img-placeholder .ico{font-size:40px;margin-bottom:12px;opacity:.5}
+.img-placeholder .msg{font-size:14px;font-weight:600;color:var(--tx2);margin-bottom:6px}
+.img-placeholder .hint{font-size:12px}
+.img-placeholder code{background:#fff;padding:2px 8px;border:1px solid var(--bd);border-radius:4px;font-size:11px}
+
+/* Markdown */
+.md{font-size:14px;color:var(--tx)}
+.md h1{font-size:24px;font-weight:800;margin:0 0 16px;color:var(--pri)}
+.md h2{font-size:19px;font-weight:700;margin:24px 0 12px;color:var(--tx);padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.md h3{font-size:16px;font-weight:700;margin:18px 0 8px;color:var(--tx)}
+.md h4{font-size:14px;font-weight:700;margin:14px 0 6px}
+.md p{margin:8px 0;color:var(--tx2)}
+.md ul,.md ol{margin:8px 0;padding-left:22px;color:var(--tx2)}
+.md li{margin:4px 0}
+.md strong{color:var(--tx);font-weight:700}
+.md hr{border:none;border-top:1px solid var(--bd);margin:20px 0}
+.md table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+.md th{background:var(--pri);color:#fff;padding:10px 12px;text-align:left;font-weight:700;border:1px solid var(--pri)}
+.md td{padding:8px 12px;border:1px solid var(--bd);color:var(--tx2)}
+.md tr:nth-child(even) td{background:var(--bg2)}
+.md blockquote{border-left:3px solid var(--pri);padding:8px 16px;margin:12px 0;background:var(--bg2);color:var(--tx2);font-size:13px}
+
+/* Lightbox */
+.lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;align-items:center;justify-content:center;cursor:zoom-out;padding:20px}
+.lb.open{display:flex}
+.lb img{max-width:95vw;max-height:95vh}
+.lb-close{position:absolute;top:20px;right:20px;color:#fff;font-size:32px;background:none;border:none}
+
+footer{text-align:center;padding:24px;font-size:12px;color:var(--tx3);border-top:1px solid var(--bd);background:#fff;margin-top:40px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-inner">
+    <div class="brand">📄 학사구조개편 보고서 OCR <small>HOBBYTAN AI</small></div>
+    <div class="dl-group">
+      <a class="dl alt" href="data/report.md" download>MD 다운로드</a>
+      <a class="dl" href="data/report.json" download>JSON 다운로드</a>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tab-inner" id="tabs"></div>
+</nav>
+
+<div class="warn" id="warn">⚠️ 원본이 180도 회전 + 해상도 제한으로 OCR 결과 일부 수치는 추정치입니다.</div>
+
+<main>
+  <section class="pane">
+    <div class="pane-header"><div class="pane-title">원본 이미지</div><div class="pane-title" id="pageNumLabel">Page 1</div></div>
+    <div class="img-wrap" id="imgWrap"></div>
+  </section>
+  <section class="pane">
+    <div class="pane-header"><div class="pane-title">OCR 결과</div><div class="pane-title" id="pageTitleLabel"></div></div>
+    <div class="md" id="mdContent">로딩 중...</div>
+  </section>
+</main>
+
+<div class="lb" id="lb"><button class="lb-close" id="lbClose">×</button><img id="lbImg" alt=""></div>
+
+<footer>본 뷰어는 <strong>HOBBYTAN AI</strong>가 제작했습니다. &copy; 2026 HOBBYTAN AI</footer>
+
+<script>
+const TOTAL_PAGES = 4;
+let currentPage = 1;
+let mdSections = [];
+let jsonData = null;
+
+// Split markdown by "## Page N"
+async function loadData() {
+  try {
+    const [mdRes, jsonRes] = await Promise.all([
+      fetch('data/report.md'),
+      fetch('data/report.json')
+    ]);
+    const mdText = await mdRes.text();
+    jsonData = await jsonRes.json();
+
+    // Split by "## Page" headers
+    const parts = mdText.split(/(?=^## Page \d)/m);
+    mdSections = [parts[0]]; // intro
+    for (let i = 1; i < parts.length; i++) mdSections.push(parts[i]);
+
+    renderTabs();
+    showPage(1);
+  } catch (e) {
+    document.getElementById('mdContent').innerHTML = '<p style="color:#dc2626">데이터 로드 실패: '+e.message+'</p>';
+  }
+}
+
+function renderTabs() {
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = '';
+  for (let i = 1; i <= TOTAL_PAGES; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (i === currentPage ? ' active' : '');
+    btn.textContent = 'Page ' + i;
+    btn.onclick = () => showPage(i);
+    tabs.appendChild(btn);
+  }
+}
+
+function showPage(n) {
+  currentPage = n;
+  renderTabs();
+  document.getElementById('pageNumLabel').textContent = 'Page ' + n;
+
+  // Page title from JSON
+  const pageData = jsonData?.pages?.find(p => p.page === n);
+  document.getElementById('pageTitleLabel').textContent = pageData?.title || '';
+
+  // Image
+  const imgWrap = document.getElementById('imgWrap');
+  const imgPath = 'images/page' + n + '.jpg';
+  const img = new Image();
+  img.onload = () => {
+    imgWrap.innerHTML = '';
+    img.onclick = () => openLightbox(imgPath);
+    imgWrap.appendChild(img);
+  };
+  img.onerror = () => {
+    imgWrap.innerHTML = '<div class="img-placeholder"><div class="ico">🖼️</div><div class="msg">원본 이미지 준비 중</div><div class="hint">파일 경로: <code>images/page'+n+'.jpg</code></div></div>';
+  };
+  img.src = imgPath;
+
+  // Markdown — find the section for this page
+  const mdEl = document.getElementById('mdContent');
+  const section = mdSections.find(s => s.startsWith('## Page ' + n));
+  if (section) {
+    mdEl.innerHTML = marked.parse(section);
+  } else {
+    mdEl.innerHTML = '<p>페이지 데이터를 찾을 수 없습니다.</p>';
+  }
+}
+
+function openLightbox(src) {
+  const lb = document.getElementById('lb');
+  document.getElementById('lbImg').src = src;
+  lb.classList.add('open');
+}
+document.getElementById('lb').onclick = () => document.getElementById('lb').classList.remove('open');
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('lb').classList.remove('open');
+  if (e.key === 'ArrowRight' && currentPage < TOTAL_PAGES) showPage(currentPage + 1);
+  if (e.key === 'ArrowLeft' && currentPage > 1) showPage(currentPage - 1);
+});
+
+loadData();
+</script>
+
+</body>
+</html>

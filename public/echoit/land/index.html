@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>에코아이티 — ERP에서 AX까지, 19년 엔터프라이즈 혁신의 궤적</title>
+<meta name="description" content="SAP ERP 19년 위에 RPA·AI·클라우드를 결합한 대한민국 엔터프라이즈 AX 통합 파트너. ㈜에코아이티.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#0f172a;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%}
+a{color:inherit;text-decoration:none}
+:root{--navy:#1e40af;--royal:#2563eb;--bg:#f8fafc;--bd:#e2e8f0;--mut:#64748b}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+section{padding:96px 0;border-bottom:1px solid var(--bd)}
+section:nth-child(even){background:var(--bg)}
+h1,h2,h3,h4{color:#0f172a;font-weight:800;letter-spacing:-0.02em}
+h2{font-size:36px;margin-bottom:16px}
+h3{font-size:22px;margin-bottom:12px}
+.eyebrow{display:inline-block;font-size:13px;font-weight:700;color:var(--royal);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.lead{font-size:18px;color:var(--mut);margin-bottom:48px;max-width:760px}
+.btn{display:inline-block;padding:14px 28px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn-p{background:var(--navy);color:#fff}
+.btn-s{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.grid{display:grid;gap:24px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+.g6{grid-template-columns:repeat(3,1fr)}
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:28px;transition:box-shadow .2s,transform .2s}
+.card:hover{box-shadow:0 10px 30px rgba(30,64,175,.08);transform:translateY(-3px)}
+
+/* §1 hero */
+.hero{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%);color:#fff;padding:120px 0 96px;border:none}
+.hero h1{color:#fff;font-size:52px;line-height:1.2;margin-bottom:20px}
+.hero .sub{font-size:20px;color:#dbeafe;margin-bottom:36px;max-width:780px}
+.badges{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin:48px 0 36px}
+.metric{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:24px;text-align:center}
+.metric .v{font-size:32px;font-weight:800;color:#fff;display:block}
+.metric .l{font-size:13px;color:#bfdbfe;margin-top:6px;display:block}
+.hero .ctas{display:flex;gap:14px;flex-wrap:wrap}
+.hero .btn-p{background:#fff;color:var(--navy)}
+.hero .btn-s{background:transparent;color:#fff;border-color:#fff}
+
+/* §2 ecosystem diagram */
+.eco{position:relative;height:520px;max-width:760px;margin:48px auto 0}
+.eco .node{position:absolute;background:#fff;border:2px solid var(--bd);border-radius:12px;padding:16px 20px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.05);min-width:160px}
+.eco .node strong{display:block;color:var(--navy);font-size:15px;margin-bottom:4px}
+.eco .node span{font-size:12px;color:var(--mut)}
+.eco .center{left:50%;top:50%;transform:translate(-50%,-50%);background:var(--navy);color:#fff;border-color:var(--navy);min-width:200px;padding:24px}
+.eco .center strong{color:#fff;font-size:20px}
+.eco .center span{color:#bfdbfe}
+.eco .n1{top:0;left:50%;transform:translateX(-50%)}
+.eco .n2{top:25%;right:0}
+.eco .n3{bottom:25%;right:0}
+.eco .n4{bottom:0;left:50%;transform:translateX(-50%)}
+.eco .n5{top:25%;left:0}
+.eco svg{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+
+/* §3 countdown */
+.countdown{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;border-radius:12px;padding:48px;text-align:center;margin-bottom:48px}
+.countdown .big{font-size:72px;font-weight:800;color:#fff;line-height:1}
+.countdown .lbl{font-size:18px;color:#dbeafe;margin-top:12px}
+
+/* §4 trend metrics */
+.tmetric{text-align:center;padding:32px 20px}
+.tmetric .v{font-size:36px;font-weight:800;color:var(--navy);display:block}
+.tmetric .l{font-size:14px;color:var(--mut);margin-top:8px;display:block}
+
+/* §6 matrix */
+.matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.matrix>div{padding:32px 24px;border-right:1px solid var(--bd)}
+.matrix>div:last-child{border-right:none;background:#eff6ff}
+.matrix h4{font-size:17px;color:var(--navy);margin-bottom:12px}
+.matrix ul{list-style:none;font-size:14px;color:var(--mut)}
+.matrix li{padding:6px 0;border-bottom:1px dashed var(--bd)}
+.matrix li:last-child{border:none}
+
+/* §10 biz cards */
+.biz{position:relative;overflow:hidden}
+.biz::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--royal)}
+.biz.c1::before{background:#1e40af}
+.biz.c2::before{background:#2563eb}
+.biz.c3::before{background:#3b82f6}
+.biz.c4::before{background:#0ea5e9}
+.biz.c5::before{background:#06b6d4}
+.biz.c6::before{background:#0891b2}
+
+/* §13 timeline */
+.tl{position:relative;padding-left:32px;border-left:3px solid var(--royal)}
+.tl-item{position:relative;padding:0 0 32px 24px}
+.tl-item::before{content:"";position:absolute;left:-34px;top:6px;width:14px;height:14px;background:var(--navy);border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--navy)}
+.tl-item h4{color:var(--navy);font-size:18px}
+.tl-item p{color:var(--mut);font-size:14px}
+
+/* §15 forms */
+.form-card{background:#fff;border:2px solid var(--bd);border-radius:12px;padding:28px}
+.form-card.featured{border-color:var(--navy)}
+.form-card h3{color:var(--navy)}
+.form-card input,.form-card textarea{width:100%;padding:12px 14px;border:1px solid var(--bd);border-radius:8px;font-family:inherit;font-size:14px;margin-bottom:10px}
+.form-card textarea{min-height:80px;resize:vertical}
+.form-card .btn{width:100%;margin-top:8px}
+.form-msg{font-size:13px;margin-top:8px;color:var(--royal);min-height:18px}
+
+/* floating CTA */
+.float-cta{position:fixed;right:24px;bottom:24px;background:var(--navy);color:#fff;padding:16px 24px;border-radius:999px;font-weight:700;box-shadow:0 10px 30px rgba(30,64,175,.4);z-index:100;cursor:pointer;border:none;font-size:15px;font-family:inherit}
+.float-cta:hover{background:var(--royal)}
+
+/* footer */
+footer{background:#0f172a;color:#94a3b8;padding:48px 0;text-align:center;font-size:14px}
+footer a{color:#dbeafe}
+
+/* responsive */
+@media(max-width:860px){
+  .g2,.g3,.g4,.g5,.g6,.metrics,.matrix{grid-template-columns:1fr}
+  .matrix>div{border-right:none;border-bottom:1px solid var(--bd)}
+  .hero h1{font-size:34px}
+  .hero .sub{font-size:16px}
+  h2{font-size:28px}
+  section{padding:64px 0}
+  .countdown .big{font-size:48px}
+  .eco{height:auto;display:grid;gap:12px}
+  .eco .node{position:static;transform:none}
+  .eco svg{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- §1 HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">SINCE 2008</span>
+      <span class="badge">고용노동부 강소기업</span>
+    </div>
+    <h1>ERP에서 AX까지<br>19년 엔터프라이즈 혁신의 궤적</h1>
+    <p class="sub">SAP ERP 19년 위에 RPA·AI·클라우드를 결합. 대한민국 엔터프라이즈 AX의 통합 파트너.</p>
+    <div class="metrics">
+      <div class="metric"><span class="v">502억</span><span class="l">2024 매출</span></div>
+      <div class="metric"><span class="v">120+</span><span class="l">RPA 전문 인력</span></div>
+      <div class="metric"><span class="v">19년</span><span class="l">엔터프라이즈 업력</span></div>
+      <div class="metric"><span class="v">5사</span><span class="l">AX 파트너십</span></div>
+      <div class="metric"><span class="v">200+</span><span class="l">프로젝트 누적</span></div>
+    </div>
+    <div class="ctas">
+      <a href="#cta" class="btn btn-p">AX 진단 신청</a>
+      <a href="#cta" class="btn btn-s">사업 문의</a>
+    </div>
+  </div>
+</section>
+
+<!-- §2 ECOSYSTEM -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§2 · AX Ecosystem</span>
+    <h2>AX 플랫폼 오케스트레이터</h2>
+    <p class="lead">단일 벤더로 SAP·RPA·AI·NPU·클라우드 전 영역 통합 제공 — 에코아이티는 대한민국 AX 생태계의 중심에 있습니다.</p>
+    <div class="eco">
+      <svg viewBox="0 0 760 520" preserveAspectRatio="none">
+        <line x1="380" y1="260" x2="380" y2="50" stroke="#cbd5e1" stroke-width="2"/>
+        <line x1="380" y1="260" x2="700" y2="180" stroke="#cbd5e1" stroke-width="2"/>
+        <line x1="380" y1="260" x2="700" y2="370" stroke="#cbd5e1" stroke-width="2"/>
+        <line x1="380" y1="260" x2="380" y2="480" stroke="#cbd5e1" stroke-width="2"/>
+        <line x1="380" y1="260" x2="60" y2="180" stroke="#cbd5e1" stroke-width="2"/>
+      </svg>
+      <div class="node center"><strong>ECHOIT</strong><span>AX Orchestrator</span></div>
+      <div class="node n1"><strong>업스테이지</strong><span>생성형 AI / LLM</span></div>
+      <div class="node n2"><strong>퓨리오사AI</strong><span>NPU 레니게이드</span></div>
+      <div class="node n3"><strong>미스릴</strong><span>산업안전 VLM 가디언-알파</span></div>
+      <div class="node n4"><strong>한컴AI</strong><span>OCR·문서 (공식 총판)</span></div>
+      <div class="node n5"><strong>이데아텍</strong><span>클라우드</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 URGENCY -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§3 · Why Now</span>
+    <h2>왜 지금 AX인가</h2>
+    <p class="lead">엔터프라이즈 IT의 가장 큰 변곡점이 다가오고 있습니다. 이 결정의 골든타임을 놓치면 비용은 두 배가 됩니다.</p>
+    <div class="countdown">
+      <div class="big">D-32개월</div>
+      <div class="lbl">2027년 SAP ECC 지원 종료까지</div>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <h3>2027 데드라인</h3>
+        <p>SAP ECC 표준 지원이 종료됩니다. S/4HANA 전환 프로젝트는 평균 18~24개월. 지금 시작해야 늦지 않습니다.</p>
+      </div>
+      <div class="card">
+        <h3>한국 AX 골든타임</h3>
+        <p>대기업·중견기업의 차세대 ERP 발주가 2026~2027년에 집중됩니다. 한국 SAP S/4HANA 전환 수요가 폭증 중입니다.</p>
+      </div>
+      <div class="card">
+        <h3>생성형 AI 도입률 폭증</h3>
+        <p>엔터프라이즈 LLM·RPA 융합 도입률이 해마다 두 배. 지금 도입하지 않으면 경쟁 격차가 빠르게 벌어집니다.</p>
+      </div>
+    </div>
+    <p style="margin-top:32px;color:var(--mut);font-size:14px">📊 글로벌 ERP 시장 $232B · 한국 SAP S/4HANA 전환 수요 급증</p>
+  </div>
+</section>
+
+<!-- §4 TREND -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§4 · Market Trend</span>
+    <h2>시장 트렌드</h2>
+    <div class="grid g4" style="margin-bottom:48px">
+      <div class="card tmetric"><span class="v">$232B</span><span class="l">글로벌 ERP 시장</span></div>
+      <div class="card tmetric"><span class="v">$13.7B</span><span class="l">RPA 시장 (CAGR 29.7%)</span></div>
+      <div class="card tmetric"><span class="v">$184B</span><span class="l">엔터프라이즈 AI</span></div>
+      <div class="card tmetric"><span class="v">+45%</span><span class="l">Low-Code 성장</span></div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><h3>SAP S/4HANA 전환 가속</h3><p>ECC 종료 압박과 차세대 ERP 수요로 한국 대기업·중견기업의 마이그레이션이 본격화되고 있습니다.</p></div>
+      <div class="card"><h3>하이퍼오토메이션</h3><p>RPA + AI + 프로세스마이닝이 결합된 통합 자동화가 엔터프라이즈 표준으로 자리잡고 있습니다.</p></div>
+      <div class="card"><h3>한컴AI + 업스테이지</h3><p>한컴AI 총판과 업스테이지 LLM 결합으로 엔터프라이즈 AX 원스톱이 가능해졌습니다.</p></div>
+      <div class="card"><h3>국산 NPU 추론 인프라</h3><p>퓨리오사AI 레니게이드 기반 저비용 고효율 추론 인프라가 산업·공공 영역에 본격 확산됩니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- §5 STRENGTH -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§5 · Core Strength</span>
+    <h2>핵심 경쟁력 5</h2>
+    <div class="grid g3">
+      <div class="card"><h3>① SAP ERP 19년</h3><p>한화에어로스페이스 ONE-ERP, LG에너지솔루션 등 대형 SAP 프로젝트 누적. 국내 최상위 SAP 전문성.</p></div>
+      <div class="card"><h3>② RPA 120명 조직</h3><p>업계 최대 RPA 전문 인력. 수만 시간+ 자동화 누적 운영 경험.</p></div>
+      <div class="card"><h3>③ 한컴AI 공식 총판</h3><p>OCR·문서 AI 공식 총판. 2026 한컴AI 파트너 데이 주관.</p></div>
+      <div class="card"><h3>④ AX 플랫폼</h3><p>업스테이지(LLM)·퓨리오사AI(NPU) MOU. 단일 벤더 통합 AX 제공.</p></div>
+      <div class="card"><h3>⑤ 산업안전 AI</h3><p>미스릴 가디언-알파 + SAP 연동. 산업안전 영역 AX 선도.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- §6 MATRIX -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§6 · Positioning</span>
+    <h2>시장 포지셔닝 매트릭스</h2>
+    <p class="lead">대기업 SI는 비싸고, 토종 ERP는 글로벌 SAP가 부족한 중견기업의 SAP+AX 통합 파트너.</p>
+    <div class="matrix">
+      <div>
+        <h4>대형 SI 카테고리</h4>
+        <ul><li>글로벌 풀스택</li><li>매출 1조원+</li><li>의사결정 느림</li><li>고단가</li></ul>
+      </div>
+      <div>
+        <h4>토종 ERP 카테고리</h4>
+        <ul><li>중소기업 ERP 중심</li><li>글로벌 SAP 부족</li><li>저단가</li><li>AX 통합 한계</li></ul>
+      </div>
+      <div>
+        <h4>에코아이티 (전문 SI)</h4>
+        <ul><li>SAP 19년 + AX 통합</li><li>빠른 의사결정</li><li>합리적 단가</li><li>5사 AI 파트너십</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §7 INDUSTRY PACKAGES -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§7 · Industry Packages</span>
+    <h2>산업별 솔루션 패키지</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>제조</h3>
+        <p><strong>대상</strong> 대기업 제조사<br><strong>솔루션</strong> SAP S/4HANA + RPA + AX<br><strong>효과</strong> 통합 ERP·자동화·AI 분석<br><strong>사례</strong> 한화에어로스페이스 ONE-ERP</p>
+        <button class="btn btn-p" data-pkg="제조" onclick="openPkg(this)">패키지 문의</button>
+      </div>
+      <div class="card">
+        <h3>에너지·배터리</h3>
+        <p><strong>대상</strong> 배터리·에너지 제조<br><strong>솔루션</strong> 차세대 ERP + AI 분석<br><strong>효과</strong> 글로벌 ERP 표준화·예측 분석<br><strong>사례</strong> LG에너지솔루션</p>
+        <button class="btn btn-p" data-pkg="에너지·배터리" onclick="openPkg(this)">패키지 문의</button>
+      </div>
+      <div class="card">
+        <h3>공공·국방</h3>
+        <p><strong>대상</strong> 공공기관·국방<br><strong>솔루션</strong> 퓨리오사 NPU + 미스릴 가디언-알파<br><strong>효과</strong> 산업안전 + 공공 AX<br><strong>사례</strong> 산업안전 AI 실증</p>
+        <button class="btn btn-p" data-pkg="공공·국방" onclick="openPkg(this)">패키지 문의</button>
+      </div>
+      <div class="card">
+        <h3>금융·유통</h3>
+        <p><strong>대상</strong> 금융·리테일<br><strong>솔루션</strong> 한컴AI OCR + 업스테이지 LLM<br><strong>효과</strong> 문서·계약 자동화<br><strong>사례</strong> 엔터프라이즈 문서 AI</p>
+        <button class="btn btn-p" data-pkg="금융·유통" onclick="openPkg(this)">패키지 문의</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §8 LEADERSHIP -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§8 · Leadership</span>
+    <h2>리더십</h2>
+    <div class="grid g2">
+      <div class="card"><h3>홍성호 대표이사</h3><p>㈜에코아이티 단독 대표. SAP ERP·RPA·AX 19년 엔터프라이즈 혁신을 이끌어 온 리더.</p></div>
+      <div class="card"><h3>한상기 박사 · CAIO</h3><p>'AI 전쟁 2.0' 공저자. 2026 한컴AI 파트너 데이 특강 연사. 에코아이티 AX 비전을 총괄.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- §9 TRUST STACK -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§9 · Trust Stack</span>
+    <h2>Trust Stack 4 레이어</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>L1 · 대형 고객사</h3>
+        <p>한화에어로스페이스 · LG에너지솔루션 · 서울반도체 · 공공기관 다수</p>
+      </div>
+      <div class="card">
+        <h3>L2 · 인증·수상</h3>
+        <p>고용노동부 강소기업 · 한컴AI 공식 총판 · SAP 파트너</p>
+      </div>
+      <div class="card">
+        <h3>L3 · 미디어</h3>
+        <p>디지털인사이트 표지 · 전자신문 · 이데일리 · 머니투데이 외 보도자료 4건</p>
+      </div>
+      <div class="card">
+        <h3>L4 · AI 파트너십 5사</h3>
+        <p>한컴AI · 업스테이지 · 퓨리오사AI · 미스릴 · 이데아텍</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §10 BUSINESS -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§10 · Business</span>
+    <h2>사업 영역 6대</h2>
+    <div class="grid g3">
+      <div class="card biz c1"><h3>SAP ERP</h3><p>S/4HANA 구축·전환·운영. 19년 엔터프라이즈 SAP 전문성.</p></div>
+      <div class="card biz c2"><h3>RPA</h3><p>120명 전문 인력 기반 하이퍼오토메이션. 업계 최대 조직.</p></div>
+      <div class="card biz c3"><h3>한컴AI</h3><p>OCR·문서 AI 공식 총판. 엔터프라이즈 문서 자동화.</p></div>
+      <div class="card biz c4"><h3>Mendix Low-Code</h3><p>엔터프라이즈 로우코드 앱 개발 플랫폼.</p></div>
+      <div class="card biz c5"><h3>Salesforce</h3><p>CRM·세일즈 클라우드 구축 및 운영.</p></div>
+      <div class="card biz c6"><h3>ITO·클라우드</h3><p>이데아텍 협력 클라우드 인프라 통합 운영.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- §11 PRESS -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§11 · Press</span>
+    <h2>최신 보도</h2>
+    <div class="grid g2">
+      <a class="card" href="https://www.etnews.com/20260331000410" target="_blank" rel="noopener"><h3>에코아이티 × 업스테이지 MOU</h3><p>전자신문 · 2026.03.31</p></a>
+      <a class="card" href="https://www.edaily.co.kr/News/Read?newsId=03594886645388896&mediaCodeNo=257" target="_blank" rel="noopener"><h3>2026 한컴AI 파트너 데이</h3><p>이데일리 · 2026.03.31</p></a>
+      <a class="card" href="https://www.mt.co.kr/future/2026/03/17/2026031713562192616" target="_blank" rel="noopener"><h3>에코아이티 × 퓨리오사AI MOU</h3><p>머니투데이 · 2026.03.17</p></a>
+      <a class="card" href="https://www.mt.co.kr/industry/2026/01/26/2026012614035128007" target="_blank" rel="noopener"><h3>에코아이티 × 미스릴 MOU</h3><p>머니투데이 · 2026.01.26</p></a>
+      <div class="card"><h3>디지털인사이트</h3><p>"탁월한 선구안으로 SAP ERP·RPA 시장을 이끌다"</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- §12 CHAE -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§12 · C.H.A.E</span>
+    <h2>핵심 가치 C.H.A.E</h2>
+    <div class="grid g4">
+      <div class="card"><h3>C · Customer</h3><p>고객의 비즈니스 성공을 최우선으로.</p></div>
+      <div class="card"><h3>H · Human</h3><p>사람 중심의 조직 문화와 전문가 양성.</p></div>
+      <div class="card"><h3>A · Challenge & Action</h3><p>도전과 실행으로 변화를 만듭니다.</p></div>
+      <div class="card"><h3>E · Expertise</h3><p>19년 축적된 엔터프라이즈 전문성.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- §13 TIMELINE -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§13 · History</span>
+    <h2>연혁</h2>
+    <div class="tl">
+      <div class="tl-item"><h4>2008 · 설립</h4><p>SAP ERP 전문 SI로 출발.</p></div>
+      <div class="tl-item"><h4>2010s · RPA 120명 조직 구축</h4><p>업계 최대 RPA 전문 인력.</p></div>
+      <div class="tl-item"><h4>2020s · Mendix · Salesforce · 한컴AI 총판</h4><p>엔터프라이즈 영역 확장.</p></div>
+      <div class="tl-item"><h4>2024 · 이데아텍 클라우드 + 에코스페이스 신사옥</h4><p>강남 본사 이전 및 클라우드 통합.</p></div>
+      <div class="tl-item"><h4>2026.01 · 미스릴 MOU</h4><p>산업안전 VLM 가디언-알파 협력.</p></div>
+      <div class="tl-item"><h4>2026.03 · 퓨리오사AI · 업스테이지 MOU + 한컴AI 파트너 데이</h4><p>AX 플랫폼 오케스트레이터 포지셔닝 확립.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- §14 COMPANY -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">§14 · Company</span>
+    <h2>기업 개요</h2>
+    <div class="card">
+      <p style="font-size:16px;line-height:2">
+        <strong>회사명</strong> ㈜에코아이티 (ECHOIT)<br>
+        <strong>설립</strong> 2008년<br>
+        <strong>대표</strong> 홍성호 (단독 대표)<br>
+        <strong>매출</strong> 502억 원 (2024)<br>
+        <strong>주소</strong> 서울 강남구 강남대로146길 25 에코스페이스<br>
+        <strong>웹사이트</strong> <a href="https://echoit.co.kr" target="_blank" style="color:var(--royal)">echoit.co.kr</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- §15 CTA FUNNEL -->
+<section id="cta">
+  <div class="wrap">
+    <span class="eyebrow">§15 · Get Started</span>
+    <h2>지금 시작하세요</h2>
+    <p class="lead">3단계 퍼널로 당신의 AX 여정을 함께합니다.</p>
+    <div class="grid g3">
+      <form class="form-card" onsubmit="submitForm(event,'diagnosis')">
+        <h3>L1 · AX 진단 무료 신청</h3>
+        <p style="font-size:13px;color:var(--mut);margin-bottom:16px">이메일만 남기시면 무료 진단 자료를 보내드립니다.</p>
+        <input type="email" name="email" required placeholder="이메일">
+        <button class="btn btn-s" type="submit">무료 진단 신청</button>
+        <div class="form-msg"></div>
+      </form>
+      <form class="form-card featured" onsubmit="submitForm(event,'demo')">
+        <h3>L2 · 한컴AI 솔루션 데모</h3>
+        <p style="font-size:13px;color:var(--mut);margin-bottom:16px">OCR·문서 AI 데모를 직접 확인해보세요.</p>
+        <input type="email" name="email" required placeholder="이메일">
+        <input type="text" name="company" required placeholder="회사명">
+        <button class="btn btn-p" type="submit">데모 요청</button>
+        <div class="form-msg"></div>
+      </form>
+      <form class="form-card" onsubmit="submitForm(event,'consulting')">
+        <h3>L3 · S/4HANA 컨설팅 미팅</h3>
+        <p style="font-size:13px;color:var(--mut);margin-bottom:16px">전문가와 1:1 컨설팅 미팅을 진행합니다.</p>
+        <input type="email" name="email" required placeholder="이메일">
+        <input type="text" name="company" required placeholder="회사명">
+        <input type="text" name="role" required placeholder="직책">
+        <textarea name="message" placeholder="문의 내용"></textarea>
+        <button class="btn btn-s" type="submit">미팅 신청</button>
+        <div class="form-msg"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<button class="float-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">AX 진단 신청 →</button>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 ㈜에코아이티 (ECHOIT) · <a href="https://echoit.co.kr" target="_blank">echoit.co.kr</a></p>
+    <p style="margin-top:8px;font-size:12px;color:#64748b">Crafted by HOBBYTAN AI 🔥</p>
+  </div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyDxnIFPnFdSVR6IKuBMRm5ZQynO0ORrlzI",authDomain:"hobbytan-ai.firebaseapp.com",projectId:"hobbytan-ai",storageBucket:"hobbytan-ai.firebasestorage.app",messagingSenderId:"820555571498",appId:"1:820555571498:web:eb5c2de98d3b6c18e43cb9"});
+const db=firebase.firestore();
+
+function submitForm(e,type){
+  e.preventDefault();
+  const f=e.target;
+  const msg=f.querySelector('.form-msg');
+  const data={type,createdAt:firebase.firestore.FieldValue.serverTimestamp()};
+  ['email','company','role','message'].forEach(k=>{
+    const el=f.querySelector('[name='+k+']');
+    if(el && el.value.trim()) data[k]=el.value.trim();
+  });
+  msg.textContent='전송 중...';
+  msg.style.color='#64748b';
+  db.collection('echoit_inquiries').add(data).then(()=>{
+    msg.textContent='✓ 신청이 완료되었습니다. 곧 연락드리겠습니다.';
+    msg.style.color='#16a34a';
+    f.reset();
+  }).catch(err=>{
+    msg.textContent='전송 실패: '+err.message;
+    msg.style.color='#dc2626';
+  });
+}
+
+function openPkg(btn){
+  const pkg=btn.getAttribute('data-pkg');
+  document.getElementById('cta').scrollIntoView({behavior:'smooth'});
+  setTimeout(()=>{
+    const f=document.querySelectorAll('#cta form')[1];
+    if(f){
+      const ta=f.querySelector('textarea')||f.querySelector('[name=company]');
+      if(f.querySelector('[name=company]')) f.querySelector('[name=company]').focus();
+    }
+  },600);
+}
+</script>
+</body>
+</html>

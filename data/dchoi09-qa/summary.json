@@ -1,0 +1,27 @@
+{
+  "total_qa_pairs": 9109,
+  "total_duplicates": 0,
+  "categories": {
+    "기타": 1954,
+    "주문": 2327,
+    "배송": 2305,
+    "가구": 321,
+    "전집": 677,
+    "결제": 583,
+    "픽업": 760,
+    "환불": 10,
+    "프로모션": 84,
+    "이유식": 88
+  },
+  "source_files": [
+    "KakaoTalk_Chat_Dchoi09 NoCal_2026-02-27-17-03-44.csv",
+    "KakaoTalk_Chat_Dchoi09 Texas_2026-02-27-16-58-24.csv",
+    "KakaoTalk_Chat_Dchoi09 공구 알림방 (대화금지🚫)_2026-02-27-16-59-21.csv",
+    "KakaoTalk_Chat_Noriter Project USA공구_2026-02-27-17-00-02.csv",
+    "KakaoTalk_Chat_Dchoi09 nj_ny_ct_pa_2026-02-27-16-59-03.csv",
+    "KakaoTalk_Chat_dchoi맘 수다방_2026-02-27-16-58-48.csv",
+    "KakaoTalk_Chat_Dchoi09 질답 대화방_2026-02-27-16-57-11.csv",
+    "KakaoTalk_Chat_dchoi09 신생아방 USA_2026-02-27-16-57-59.csv",
+    "socal 톡방 데이터 2.27.csv"
+  ]
+}

@@ -26,6 +26,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
+.env.*
 .env*.local
 
 # vercel
@@ -42,3 +44,13 @@ next-env.d.ts
 .light-preview/
 .production-deploy/
 .web-review-*/
+
+hobbytan-council-open/
+.next/
+test-build/node_modules/
+.env.local
+config.js
+remotion/out/
+remotion/node_modules/
+functions/node_modules/
+functions/.env
