@@ -18,10 +18,29 @@ const companyProfilePath = '/downloads/HOBBYTAN_AI_Company_Profile_2026.pdf';
 // --contact: also publish the light-design /contact page (prerendered .next/server/app/contact.html)
 // and allow replacing exactly that one existing path. Without the flag nothing below changes.
 const includeContact = process.argv.includes('--contact');
-const replaceablePaths = ['/index.html', '/index.txt', ...(includeContact ? ['/contact.html'] : [])];
+// --en: also publish the English pages (/en, /en/contact). Korean pages built with the
+// browser-language redirect point at them, so such a build may only ship together with them.
+const includeEnglish = process.argv.includes('--en');
+const englishPages = [['en.html', '/en.html', 'https://hobbytan.com/en'], ['en/contact.html', '/en/contact.html', 'https://hobbytan.com/en/contact']];
+const replaceablePaths = ['/index.html', '/index.txt', ...(includeContact ? ['/contact.html'] : []), ...(includeEnglish ? englishPages.map(([, publicPath]) => publicPath) : [])];
 
 async function main() {
   if (includeContact && companyProfileOnly) throw new Error('--contact cannot be combined with --company-profile-only.');
+  if (includeEnglish && !includeContact) throw new Error('--en needs --contact: the Korean /contact page redirects to /en/contact.');
+  if (includeEnglish) {
+    for (const [file, , canonical] of englishPages) {
+      const englishHtml = await readFile(path.join(root, '.next/server/app', file), 'utf8');
+      const englishChecks = {
+        englishDocument: englishHtml.includes('document.documentElement.lang=\\"en\\"') || englishHtml.includes('document.documentElement.lang="en"'),
+        canonical: englishHtml.includes(`<link rel="canonical" href="${canonical}"/>`),
+        koreanAlternate: englishHtml.includes('hrefLang="ko"'),
+        noRedirect: !englishHtml.includes('location.replace('),
+        indexable: !englishHtml.includes('content="noindex') && !englishHtml.includes('content="nofollow'),
+      };
+      const failed = Object.entries(englishChecks).filter(([, ok]) => !ok).map(([name]) => name);
+      if (failed.length) throw new Error(`Build the reviewed English page ${file} first (failed: ${failed.join(', ')}).`);
+    }
+  }
   if (includeContact) {
     // The contact page posts to the pinned SSR backend, so it must be the reviewed light page.
     const contactHtml = await readFile(path.join(root, '.next/server/app/contact.html'), 'utf8');
@@ -64,6 +83,9 @@ async function main() {
     if (!html.includes('data-theme="light"') || !html.includes('dashboards-v2/logistics-desktop.jpg') || html.includes('content="noindex')) {
       throw new Error('Build the reviewed, indexable main homepage first.');
     }
+    if (html.includes('location.replace(') && !includeEnglish) {
+      throw new Error('This homepage sends non-Korean browsers to /en; deploy it with --contact --en.');
+    }
   }
   const files = Object.fromEntries(previousFiles.map(file => [file.path, file.hash]));
   const blobs = new Map(); const changed = [];
@@ -105,6 +127,7 @@ async function main() {
     await add(path.join(root, '.next/server/app/index.html'), '/index.html');
     await add(path.join(root, '.next/server/app/index.rsc'), '/index.txt');
     if (includeContact) await add(path.join(root, '.next/server/app/contact.html'), '/contact.html');
+    if (includeEnglish) for (const [file, publicPath] of englishPages) await add(path.join(root, '.next/server/app', file), publicPath);
     await addTree(path.join(root, '.next/static'), '/_next/static');
     await addTree(path.join(root, 'public/light-assets'), '/light-assets');
     await addTree(path.join(root, 'public/downloads'), '/downloads');
@@ -121,9 +144,9 @@ async function main() {
     throw new Error('Unexpected live noindex or main/contact redirect; inspect before deploying.');
   }
   await mkdir(recordDir, { recursive: true });
-  const plan = { previousVersion: previous.version.name, previousRelease: previous.name, previousFileCount: previousFiles.length, fileCount: Object.keys(files).length, changed, updateCompanyProfile, companyProfileOnly, ...(includeContact ? { includeContact } : {}), config };
+  const plan = { previousVersion: previous.version.name, previousRelease: previous.name, previousFileCount: previousFiles.length, fileCount: Object.keys(files).length, changed, updateCompanyProfile, companyProfileOnly, ...(includeContact ? { includeContact } : {}), ...(includeEnglish ? { includeEnglish } : {}), config };
   await writeFile(path.join(recordDir, 'main-plan.json'), JSON.stringify(plan, null, 2));
-  console.log(JSON.stringify({ previousVersion: plan.previousVersion, existingFilesPreserved: previousFiles.filter(file => !changed.includes(file.path)).length, changedFiles: changed.length, totalFiles: plan.fileCount, backend: config.rewrites, deploy, ...(includeContact ? { includeContact, changed } : {}) }, null, 2));
+  console.log(JSON.stringify({ previousVersion: plan.previousVersion, existingFilesPreserved: previousFiles.filter(file => !changed.includes(file.path)).length, changedFiles: changed.length, totalFiles: plan.fileCount, backend: config.rewrites, deploy, ...(includeContact ? { includeContact, changed } : {}), ...(includeEnglish ? { includeEnglish } : {}) }, null, 2));
   if (!deploy) return;
 
   const version = await request(`${site}/versions`, { method: 'POST', data: { config } });
@@ -147,7 +170,7 @@ async function main() {
   await request(version.name, { method: 'PATCH', params: { updateMask: 'status' }, data: { status: 'FINALIZED' } });
   const latest = (await request(`${site}/releases`, { params: { pageSize: 1 } })).releases[0];
   if (latest.name !== previous.name) throw new Error('Live release changed during preparation; review before publishing.');
-  const release = await request(`${site}/releases`, { method: 'POST', params: { versionName: version.name }, data: { message: companyProfileOnly ? 'Update company profile PDF; preserve existing homepage, backend and routes.' : includeContact ? 'Update consulting homepage and light /contact page; preserve existing backend and routes.' : 'Update consulting homepage and public downloads; preserve existing backend and routes.' } });
+  const release = await request(`${site}/releases`, { method: 'POST', params: { versionName: version.name }, data: { message: companyProfileOnly ? 'Update company profile PDF; preserve existing homepage, backend and routes.' : includeEnglish ? 'Update consulting homepage, /contact and English /en pages; preserve existing backend and routes.' : includeContact ? 'Update consulting homepage and light /contact page; preserve existing backend and routes.' : 'Update consulting homepage and public downloads; preserve existing backend and routes.' } });
   await writeFile(path.join(recordDir, 'main-release.json'), JSON.stringify({ previousVersion: previous.version.name, release: release.name, version: version.name, releaseTime: release.releaseTime, uploadCount, totalFiles: entries.length }, null, 2));
   console.log(JSON.stringify({ release: release.name, version: version.name, uploadCount, url: 'https://hobbytan.com' }, null, 2));
 }

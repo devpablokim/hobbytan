@@ -4,6 +4,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import { Pause, Play } from "lucide-react";
 import styles from "./WorkshopProof.module.css";
+import type { Locale } from "../light/i18n";
 
 // Company names and metrics supplied by the site owner; not independently audited.
 // Logo files supplied by the owner: hobbytan-web-buildnew/public/assets/clients.
@@ -69,39 +70,64 @@ function usePrefersReducedMotion() {
 
 type WorkshopProofProps = {
   variant?: 'default' | 'editorial';
+  locale?: Locale; // editorial variant only
 };
 
-export default function WorkshopProof({ variant = 'default' }: WorkshopProofProps) {
+const editorialCopy = {
+  ko: {
+    label: '슈퍼AI워크샵 수료 실적',
+    metrics: [['누적 수료 인원', '80명 이상'], ['수료율', '80%'], ['강의 만족도', '90% 이상']],
+    companies: '수료생 소속 기업',
+    count: (n: number) => `${n}곳`,
+    play: '기업 로고 움직임 재생',
+    pause: '기업 로고 움직임 일시정지',
+    playShort: '재생',
+    pauseShort: '일시정지',
+    list: '슈퍼AI워크샵 수료생 소속 기업',
+  },
+  en: {
+    label: 'Super AI Workshop results',
+    metrics: [['Graduates to date', '80+'], ['Completion rate', '80%'], ['Course satisfaction', '90%+']],
+    companies: 'Where our graduates work',
+    count: (n: number) => `${n} companies`,
+    play: 'Play logo animation',
+    pause: 'Pause logo animation',
+    playShort: 'Play',
+    pauseShort: 'Pause',
+    list: 'Companies of Super AI Workshop graduates',
+  },
+};
+
+export default function WorkshopProof({ variant = 'default', locale = 'ko' }: WorkshopProofProps) {
   const [paused, setPaused] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
 
   if (variant === 'editorial') {
+    const t = editorialCopy[locale];
     return (
-      <section className={styles.editorial} id="workshop-graduates" aria-label="슈퍼AI워크샵 수료 실적">
+      <section className={styles.editorial} id="workshop-graduates" aria-label={t.label}>
         <dl className={styles.editorialMetrics}>
-          <div><dt>누적 수료 인원</dt><dd>80명 이상</dd></div>
-          <div><dt>수료율</dt><dd>80%</dd></div>
-          <div><dt>강의 만족도</dt><dd>90% 이상</dd></div>
+          {t.metrics.map(([term, value]) => <div key={term}><dt>{term}</dt><dd>{value}</dd></div>)}
         </dl>
         <div className={styles.clients} data-paused={paused}>
           <div className={styles.clientsHead}>
-            <h3 id="graduate-companies-title">수료생 소속 기업 <span>{companies.length}곳</span></h3>
+            <h3 id="graduate-companies-title">{t.companies} <span>{t.count(companies.length)}</span></h3>
             {!reducedMotion && (
               <button
                 type="button"
                 className={styles.clientsPause}
                 aria-controls="graduate-logo-rows"
                 aria-pressed={paused}
-                aria-label={paused ? '기업 로고 움직임 재생' : '기업 로고 움직임 일시정지'}
+                aria-label={paused ? t.play : t.pause}
                 onClick={() => setPaused(value => !value)}
               >
                 {paused ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}
-                <span>{paused ? '재생' : '일시정지'}</span>
+                <span>{paused ? t.playShort : t.pauseShort}</span>
               </button>
             )}
           </div>
           {reducedMotion ? (
-            <ul className={styles.clientGrid} aria-label="슈퍼AI워크샵 수료생 소속 기업">
+            <ul className={styles.clientGrid} aria-label={t.list}>
               {companies.map(company => (
                 <li key={company.name} data-company-name={company.name}>
                   <Logo company={company} className={styles.clientLogo} />
@@ -113,7 +139,7 @@ export default function WorkshopProof({ variant = 'default' }: WorkshopProofProp
               {rows.map((row, index) => (
                 <div className={styles.clientWindow} key={index}>
                   <div className={`${styles.clientTrack} ${index === 1 ? styles.clientTrackReverse : ''}`}>
-                    <ul className={styles.clientList} aria-label={`슈퍼AI워크샵 수료생 소속 기업 ${index + 1}/${rows.length}`}>
+                    <ul className={styles.clientList} aria-label={`${t.list} ${index + 1}/${rows.length}`}>
                       {row.map(company => (
                         <li key={company.name} data-company-name={company.name}>
                           <Logo company={company} className={styles.clientLogo} />

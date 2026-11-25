@@ -25,6 +25,11 @@
 .quickNav a[aria-current]::after{content:"";height:2px;background:var(--accent);position:absolute;bottom:1px;left:0;right:0}
 .headerCta{display:flex;align-items:center;gap:12px;min-height:44px;font-size:16px;border-left:1px solid var(--line);padding-left:28px}
 .menuButton{display:none}
+/* KO/EN switch: in the header from 601px up; on phones it lives in the full-screen menu. */
+.langSwitch{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;font-size:14px;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.langSwitch:hover{color:var(--accent)}
+@media(max-width:1000px){.langSwitch{margin-left:auto}.langSwitch+.headerCta{margin-left:0}}
+@media(max-width:600px){.langSwitch{display:none}.langSwitch+.headerCta{margin-left:auto}}
 .hero{position:relative;isolation:isolate;overflow:hidden;padding-top:100px;padding-bottom:62px}
 .heroImage{object-fit:cover;object-position:center;filter:grayscale(1);transform:scale(1.12);z-index:-3}
 .heroVeil{position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,#fffffff2 0%,#ffffffbb 36%,#ffffff20 75%)}
