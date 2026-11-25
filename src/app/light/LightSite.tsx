@@ -14,11 +14,25 @@ const copy = {
   ko: {
     skip: "본문으로 건너뛰기", brandLabel: "하비탄 AI 처음으로", mainMenu: "주요 메뉴", cta: "상담 문의", openMenu: "전체 메뉴 열기",
     railLabel: "페이지 내 위치와 이동", railItem: (label: string) => `${label} 섹션으로 이동`,
-    heroEyebrow: "AI 전환 컨설팅과 기업 실무 교육", heroTitle: ["기업의 AI 전환을 설계하고,", "현장에서 완성합니다."],
-    heroDescription: ["AI 전환 전략을 실제 업무 도구로 구현합니다.", "고객의 팀이 직접 운영하고 개선하도록 교육합니다."],
+    heroEyebrow: "AI 연구 · 자체 서비스 · AX 컨설팅", heroTitle: ["AI 서비스를 연구하고,", "직접 만들어 운영합니다."],
+    heroDescription: ["게임과 마케팅 AI 같은 자체 서비스를 운영하며 쌓은 기술로,", "기업의 AI 전환(AX)을 설계하고 구현합니다."],
     consult: "AI 전환 상담하기", courses: "강의 종류 보기", profile: "기업소개서",
     inception: "하비탄AI는 NVIDIA Inception program의 공식 멤버 기업입니다.",
-    servicesEyebrow: "서비스", servicesTitle: ["우리 조직에 필요한", "단계부터 시작합니다."],
+    productsEyebrow: "서비스", productsTitle: ["직접 운영하는 서비스부터", "기업의 AI 전환까지."],
+    productsIntro: ["자체 서비스를 만들고 운영하며 쌓은 기술과 경험을", "기업 프로젝트와 교육에 그대로 가져옵니다."],
+    productGroups: [
+      { title: "자체 서비스", items: [
+        { tag: "모바일 게임", status: "얼리 액세스", name: "리벌스 파머", sub: "Rebirth Farmer", description: "AI 코딩 에이전트로 개발하고, 게임 아트는 자체 모델로 만든 농장 RPG입니다. 시세가 바뀌는 거래소와 던전, 주간 랭킹을 운영합니다.", link: { href: "/rebirth-farmer", label: "게임 소개 보기" } },
+        { tag: "마케팅 AI", status: "운영 중", name: "Promha", sub: "프롬프트 해커", description: "마케터를 위한 AI 서비스입니다. 제품 카드뉴스나 마케팅 소재의 링크를 넣으면 스토리라인과 구성, 생성 프롬프트를 분석해 우리 제품의 상세 정보에 맞춰 다시 설계합니다." },
+        { tag: "모바일 게임", status: "개발 중", name: "위치 기반 매칭 게임", sub: "이름 공개 전", description: "배달 플랫폼이 고객과 공급자, 배달원을 연결하는 방식에서 착안한 위치 기반 모바일 게임입니다." },
+      ] },
+      { title: "기업 서비스와 연구", items: [
+        { tag: "기업 서비스", name: "AX 컨설팅·개발", sub: "AI Transformation", description: "업무 진단부터 AI 기능 구현, 운영 이관까지 기업의 AI 전환을 함께합니다. 요약·분석·예측·수집·챗봇·자동 발주 기능이 고객사 업무에서 쓰이고 있습니다.", link: { href: "#services", label: "진행 단계 보기" } },
+        { tag: "교육", name: "슈퍼AI워크샵", sub: "Super AI Workshop", description: "조직의 AI 활용을 이끌 사내 슈퍼유저를 키우는 실무 교육입니다. 직접 도구를 만들고 결과를 검증하며 배웁니다.", link: { href: "#education", label: "수료 실적 보기" } },
+        { tag: "연구", name: "AI 연구", sub: "Research", description: "자체 GPU 장비로 모델 학습(LoRA)과 이미지 생성 파이프라인, 모델 실험을 진행합니다. 연구 결과는 자체 서비스와 고객 프로젝트에 함께 쓰입니다." },
+      ] },
+    ],
+    servicesEyebrow: "AX 컨설팅", servicesTitle: ["우리 조직에 필요한", "단계부터 시작합니다."],
     servicesIntro: ["AI를 어디에 쓸지 정하는 일부터 내부 운영까지.", "현재의 업무와 역량에 맞춰 필요한 범위를 설계합니다."], more: "상세 보기",
     services: [
     { title: "AI 전환 전략", description: "AI를 적용할 업무와 우선순위를 정합니다.", items: ["현재 업무와 AI 활용 수준 진단", "우선 적용 과제와 기대 효과 정의", "실행 계획과 완료 기준 수립"] },
@@ -56,11 +70,25 @@ const copy = {
   en: {
     skip: "Skip to content", brandLabel: "HOBBYTAN AI home", mainMenu: "Main menu", cta: "Contact", openMenu: "Open menu",
     railLabel: "Page sections", railItem: (label: string) => `Go to ${label}`,
-    heroEyebrow: "AI transformation consulting and hands-on corporate training", heroTitle: ["We design your AI transformation", "and make it work on the ground."],
-    heroDescription: ["We turn AI strategy into working tools for real tasks.", "Then we train your team to run and improve them on their own."],
+    heroEyebrow: "AI research · Our own products · AX consulting", heroTitle: ["We research AI services,", "then build and run them ourselves."],
+    heroDescription: ["We run our own products, from a mobile game to an AI tool for marketers.", "With the same technology, we design and build AI transformation (AX) for companies."],
     consult: "Book an AI consultation", courses: "View courses", profile: "Company profile (KR)",
     inception: "HOBBYTAN AI is an official member of the NVIDIA Inception program.",
-    servicesEyebrow: "Services", servicesTitle: ["Start with the step", "your organization needs."],
+    productsEyebrow: "Services", productsTitle: ["From products we run ourselves", "to AI transformation for businesses."],
+    productsIntro: ["What we learn building and running our own products", "goes straight into our client projects and training."],
+    productGroups: [
+      { title: "Our own products", items: [
+        { tag: "Mobile game", status: "Early access", name: "Rebirth Farmer", sub: "Farming RPG", description: "A farming RPG built with AI coding agents, with game art made by our own models. Players trade on a live market, explore dungeons and compete in weekly rankings.", link: { href: "/rebirth-farmer", label: "Game page (Korean)" } },
+        { tag: "Marketing AI", status: "Live", name: "Promha", sub: "Prompt Hacker", description: "An AI service for marketers. Paste a link to a product card news or marketing creative, and Promha studies its storyline, structure and generation prompts, then redesigns them around your own product's detail sheet." },
+        { tag: "Mobile game", status: "In development", name: "Location-based matching game", sub: "Name coming soon", description: "A location-based mobile game inspired by how delivery platforms match customers, suppliers and couriers." },
+      ] },
+      { title: "For businesses, and research", items: [
+        { tag: "Business service", name: "AX consulting & development", sub: "AI transformation", description: "We work with companies from workflow assessment to building AI functions and handing them over. Summarization, analysis, forecasting, data collection, chatbots and automated ordering are already part of our clients' daily work.", link: { href: "#services", label: "See the steps" } },
+        { tag: "Training", name: "Super AI Workshop", sub: "Corporate AI training", description: "Hands-on training that grows the in-house super users who lead your organization's use of AI. Participants learn by building tools and checking the results.", link: { href: "#education", label: "See results" } },
+        { tag: "Research", name: "AI research", sub: "Models and pipelines", description: "We train models (LoRA), build image-generation pipelines and run model experiments on our own GPUs. What we learn goes into our products and client projects alike." },
+      ] },
+    ],
+    servicesEyebrow: "AX consulting", servicesTitle: ["Start with the step", "your organization needs."],
     servicesIntro: ["From deciding where to use AI to running it in-house.", "We scope the work around your current operations and skills."], more: "Details",
     services: [
       { title: "AI transformation strategy", description: "Decide which work to apply AI to, and in what order.", items: ["Assess current workflows and AI adoption", "Define priority projects and expected impact", "Set an execution plan and completion criteria"] },
@@ -169,6 +197,15 @@ export default function LightSite({ locale = "ko" }: { locale?: Locale }) {
         {/* NVIDIA brand rules: color badge unchanged, never wider than our header logo (184px desktop, 144px mobile); "program" lowercase in a sentence. */}
         <div className={s.inception}><Image src="/light-assets/nvidia-inception-program-badge.svg" alt="NVIDIA Inception Program" width={168} height={73} unoptimized /><p>{t.inception}</p></div>
         </div>
+      </section>
+      <section className={`${s.section} ${s.container}`} id="products" aria-labelledby="products-title">
+        <div className={s.sectionHead}><p className={s.eyebrow}>{t.productsEyebrow}</p><h2 id="products-title">{t.productsTitle[0]}<br/>{" "}{t.productsTitle[1]}</h2><p className={s.sectionIntro}>{t.productsIntro[0]}<br/>{" "}{t.productsIntro[1]}</p></div>
+        {t.productGroups.map(group => <div key={group.title} className={s.offerGroup}><h3>{group.title}</h3><div className={s.offerGrid}>{group.items.map(item => <article key={item.name} className={s.offer}>
+          <div className={s.offerMeta}><span>{item.tag}</span>{"status" in item && <span className={s.offerStatus}>{item.status}</span>}</div>
+          <h4>{item.name}<small>{item.sub}</small></h4>
+          <p>{item.description}</p>
+          {"link" in item && item.link && <a className={s.offerLink} href={item.link.href} hrefLang={locale === "en" && item.link.href.startsWith("/") ? "ko" : undefined}>{item.link.label} <ArrowUpRight size={17}/></a>}
+        </article>)}</div></div>)}
       </section>
       <section className={`${s.section} ${s.container}`} id="services" aria-labelledby="services-title">
         <span id="featured" className={s.anchor}/>

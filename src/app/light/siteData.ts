@@ -7,7 +7,8 @@ type Section = { id: string; label: string };
 export const sectionsByLocale: Record<Locale, Section[]> = {
   ko: [
     { id: "top", label: "소개" },
-    { id: "services", label: "서비스" },
+    { id: "products", label: "서비스" },
+    { id: "services", label: "AX 컨설팅" },
     { id: "experience", label: "업무 예시" },
     { id: "education", label: "교육 성과" },
     { id: "approach", label: "진행 방식" },
@@ -16,7 +17,8 @@ export const sectionsByLocale: Record<Locale, Section[]> = {
   ],
   en: [
     { id: "top", label: "About" },
-    { id: "services", label: "Services" },
+    { id: "products", label: "Services" },
+    { id: "services", label: "AX consulting" },
     { id: "experience", label: "Use cases" },
     { id: "education", label: "Results" },
     { id: "approach", label: "How we work" },

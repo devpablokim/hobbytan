@@ -20,7 +20,7 @@ export default function ContactHeader({ locale = "ko" }: { locale?: Locale }) {
   const home = homeHref[locale];
   const sectionHref = (id: string) => home === "/" ? `/#${id}` : `${home}#${id}`; // "/#id", "/en#id"
   const homeSections = sectionsByLocale[locale].slice(1, 5);
-  const menuSections = sectionsByLocale[locale].slice(1, 6);
+  const menuSections = sectionsByLocale[locale].slice(1, 7);
   const programLink = programLinkByLocale[locale];
   const other: Locale = locale === "ko" ? "en" : "ko";
   const [menuOpen, setMenuOpen] = useState(false);

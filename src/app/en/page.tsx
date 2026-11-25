@@ -10,13 +10,13 @@ const wantedSans = localFont({
 });
 
 const ogImage = "https://hobbytan.com/light-assets/og/hobbytan-og-20261009.jpg";
-const title = "HOBBYTAN AI | AI Transformation Consulting & Super AI Workshop";
-const description = "HOBBYTAN AI designs your AI transformation and trains in-house super users, so your team can build, run and improve its own AI tools.";
+const title = "HOBBYTAN AI | AI Products, AX Consulting & Super AI Workshop";
+const description = "HOBBYTAN AI researches AI services and builds and runs its own, including the game Rebirth Farmer and Promha for marketers. With the same technology we offer AX consulting and the Super AI Workshop.";
 
 export const metadata: Metadata = {
   title,
   description,
-  keywords: ["HOBBYTAN AI", "AI transformation consulting", "AX consulting", "corporate AI training", "Super AI Workshop", "AI super users"],
+  keywords: ["HOBBYTAN AI", "AI company", "Rebirth Farmer", "Promha", "AI transformation consulting", "AX consulting", "corporate AI training", "Super AI Workshop"],
   robots: { index: true, follow: true },
   alternates: { canonical: "https://hobbytan.com/en", languages: languageAlternates("/", "/en") },
   openGraph: {

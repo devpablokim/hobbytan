@@ -10,14 +10,14 @@ const copy = {
     navLabel: "정책과 바로가기",
     links: [["/shop", "강의 신청", true], ["/shop/terms", "이용약관", false], ["/shop/privacy", "개인정보처리방침", true], ["/shop/refund", "환불정책", false], ["/rebirth-farmer", "리벌스 파머", false]] as [string, string, boolean][],
     businessTitle: "사업자 정보",
-    tagline: "AI 전환 전략 · 슈퍼AI워크샵 · 업무 도구 구현",
+    tagline: "AI 연구 · 자체 서비스 · AX 컨설팅 · 슈퍼AI워크샵",
   },
   en: {
     download: "Company profile (Korean PDF)",
     navLabel: "Policies and links",
     links: [["/shop", "Courses", true], ["/shop/terms", "Terms of Use", false], ["/shop/privacy", "Privacy Policy", true], ["/shop/refund", "Refund Policy", false], ["/rebirth-farmer", "Rebirth Farmer", false]] as [string, string, boolean][],
     businessTitle: "Business information",
-    tagline: "AI transformation strategy · Super AI Workshop · Workflow tools",
+    tagline: "AI research · Own products · AX consulting · Super AI Workshop",
   },
 };
 

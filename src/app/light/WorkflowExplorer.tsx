@@ -45,6 +45,7 @@ const copy = {
     running: (stage: string) => `${stage} 과정을 보여드리고 있습니다.`,
     run: "예시 실행", confirm: "확인하고 계속", rerun: "다시 실행",
     keeps: "우리 팀에 남는 역량",
+    captures: "/light-assets/dashboards-v2",
     note: "가상 데이터로 구성한 업무 예시이며, 실제 발주나 발송으로 이어지지 않습니다.",
     dialogLabel: (field: string) => `${field} 대시보드 확대 보기`,
     desktop: "PC", mobile: "모바일", close: "확대 화면 닫기",
@@ -67,7 +68,8 @@ const copy = {
     running: (stage: string) => `Showing the ${stage.toLowerCase()} step.`,
     run: "Run example", confirm: "Review and continue", rerun: "Run again",
     keeps: "What your team keeps",
-    note: "These examples use fictional data, are shown in Korean, and never trigger real orders or shipments.",
+    captures: "/light-assets/dashboards-en",
+    note: "These examples use fictional data and never trigger real orders or shipments.",
     dialogLabel: (field: string) => `Enlarged ${field.toLowerCase()} dashboard`,
     desktop: "Desktop", mobile: "Mobile", close: "Close enlarged view",
     viewport: "Enlarged dashboard. Use the arrow keys to move around.",
@@ -128,10 +130,10 @@ export default function WorkflowExplorer({ locale = "ko" }: { locale?: Locale })
       <figure className={s.dashboardPreview} key={example.slug}>
         <div className={`${s.previewBar} ${w.previewBar}`}><span>{t.screen(example.field)}</span><button onClick={showPreview} aria-label={t.enlargeLabel(example.field)} aria-haspopup="dialog"><Maximize2 size={18}/>{t.enlarge}</button></div>
         <button className={s.previewImageButton} onClick={showPreview} aria-label={t.enlargeLabel(example.field)} aria-haspopup="dialog">
-          <picture><source media="(max-width:600px)" srcSet={`/light-assets/dashboards-v2/${example.slug}-mobile.jpg`} />
+          <picture><source media="(max-width:600px)" srcSet={`${t.captures}/${example.slug}-mobile.jpg`} />
             {/* Browser-rendered captures keep illustrative data separate from the real service. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className={s.dashboardCapture} src={`/light-assets/dashboards-v2/${example.slug}-desktop.jpg`} alt={t.captureAlt(example.field)} width={1280} height={900} loading="lazy" decoding="async" />
+            <img className={s.dashboardCapture} src={`${t.captures}/${example.slug}-desktop.jpg`} alt={t.captureAlt(example.field)} width={1280} height={900} loading="lazy" decoding="async" />
           </picture>
         </button>
       </figure>
@@ -145,7 +147,7 @@ export default function WorkflowExplorer({ locale = "ko" }: { locale?: Locale })
       <div className={`${s.previewDialogHead} ${w.dialogHead}`}><div><h2>{t.screen(example.field)}</h2></div><div className={`${s.previewViewToggle} ${w.viewToggle}`}><button aria-pressed={desktopView} onClick={()=>setDesktopView(true)}>{t.desktop}</button><button aria-pressed={!desktopView} onClick={()=>setDesktopView(false)}>{t.mobile}</button></div><button className={s.previewClose} onClick={closePreview} aria-label={t.close}><X size={23}/></button></div>
       <div className={`${s.previewViewport} ${w.viewport}`} data-desktop={desktopView} tabIndex={0} role="region" aria-label={t.viewport}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img loading="lazy" decoding="async" src={`/light-assets/dashboards-v2/${example.slug}-${desktopView?'desktop':'mobile'}.jpg`} alt={t.fullAlt(example.field)}/>
+        <img loading="lazy" decoding="async" src={`${t.captures}/${example.slug}-${desktopView?'desktop':'mobile'}.jpg`} alt={t.fullAlt(example.field)}/>
       </div><p className={`${s.previewDialogNote} ${w.dialogNote}`}>{desktopView?t.scrollSideways:t.scrollDown}</p>
     </dialog>
   </div>;
