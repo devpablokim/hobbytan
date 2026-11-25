@@ -37,3 +37,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Generated design preview
+.light-preview/
+.production-deploy/
+.web-review-*/

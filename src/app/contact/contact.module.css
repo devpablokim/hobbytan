@@ -1,0 +1,94 @@
+/* /contact in the light site design. Base tokens (--ink, --muted, --line, --paper, --accent),
+   header, footer, menu dialog and typography come from ../light/site.module.css (.page);
+   everything here is scoped under .root, which sits on the same element as .page. */
+.root{--danger:#b42318;--field-line:#c3c8d0}
+.root a.ctaCurrent{color:var(--accent);font-weight:600}
+.layout{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:88px;align-items:start;padding-block:92px 112px}
+
+/* Intro column */
+.root .intro h1{font-size:clamp(38px,4.3vw,58px);line-height:1.3;letter-spacing:-.055em;margin-top:24px}
+.root .intro h1 span{color:#68717f}
+.root .lead{font-size:19px;line-height:1.85;color:var(--muted);margin-top:28px}
+.root .lead strong{font-weight:500;color:var(--ink)}
+.root .infoList{margin:46px 0 0;border-top:1px solid var(--line)}
+.root .infoList>div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding-block:18px;border-bottom:1px solid var(--line);align-items:baseline}
+.root .infoList dt{font-size:16px;color:var(--muted)}
+.root .infoList dd{margin:0;font-size:17px;font-weight:500;color:var(--ink);overflow-wrap:anywhere}
+.root .infoList a{display:inline-flex;align-items:center;min-height:44px;margin-block:-12px;border-bottom:1px solid #a1a7b1}
+.root .infoList a:hover{color:var(--accent);border-color:var(--accent)}
+.root .programLine{margin-top:38px;display:flex;align-items:center;flex-wrap:wrap;gap:6px 22px}
+.root .programLine p{font-size:16px;color:var(--muted)}
+.root .textLink{display:inline-flex;align-items:center;gap:12px;min-height:48px;font-size:16px;font-weight:600;color:var(--ink);border-bottom:1px solid #a1a7b1}
+.root .textLink:hover{color:var(--accent);border-color:var(--accent)}
+
+/* Form panel */
+.panel{background:var(--paper);padding:46px 46px 42px;scroll-margin-top:calc(var(--site-header-height) + 24px)}
+.root .panel h2{font-size:28px;line-height:1.4;letter-spacing:-.045em}
+.root .requiredNote{font-size:15px;color:var(--muted);margin-top:8px}
+.requiredNote b,.required{color:var(--accent);font-weight:600}
+.form{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:24px 20px}
+.field{display:flex;flex-direction:column;min-width:0}
+.wide{grid-column:1/-1}
+.root .field label{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:9px;display:flex;align-items:baseline;gap:4px}
+.root .field label .optional{font-weight:400;color:var(--muted);font-size:14px;margin-left:4px}
+.root .input{width:100%;min-height:52px;padding:12px 16px;background:#fff;border:1px solid var(--field-line);border-radius:0;color:var(--ink);font:inherit;font-size:16px;line-height:1.5;letter-spacing:-.01em;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none;scroll-margin-top:calc(var(--site-header-height) + 56px)}
+.root .input::placeholder{color:#8a909a;opacity:1}
+.root .input:hover{border-color:#8f96a1}
+.root .input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.root .input[aria-invalid="true"]{border-color:var(--danger);box-shadow:inset 3px 0 0 var(--danger)}
+.root textarea.input{min-height:188px;resize:vertical;line-height:1.75}
+.root .hint{font-size:14px;line-height:1.6;color:var(--muted);margin-top:8px}
+.root .error{display:flex;align-items:flex-start;gap:7px;font-size:14px;line-height:1.55;font-weight:500;color:var(--danger);margin-top:8px}
+.root .error svg{margin-top:2px}
+.counter{font-variant-numeric:tabular-nums}
+.honeypot{position:absolute!important;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
+
+/* Consent */
+.consent{grid-column:1/-1;background:#fff;border:1px solid var(--line);padding:20px 22px 18px}
+.consent[data-invalid="true"]{border-color:var(--danger);box-shadow:inset 3px 0 0 var(--danger)}
+.root .checkLabel{display:flex;align-items:center;gap:14px;min-height:44px;font-size:16px;font-weight:600;color:var(--ink);cursor:pointer}
+.root .checkLabel input{scroll-margin-top:calc(var(--site-header-height) + 40px);width:22px;height:22px;margin:0;flex-shrink:0;accent-color:var(--accent);cursor:pointer}
+.root .checkLabel input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.root .consentList{margin:10px 0 0;padding-top:12px;border-top:1px solid #eceef2;display:grid;gap:4px;font-size:14px;line-height:1.65}
+.root .consentList>div{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px}
+.root .consentList dt{color:var(--muted)}
+.root .consentList dd{margin:0;color:#3f4650;word-break:keep-all;overflow-wrap:anywhere}
+.root .consentNote{font-size:14px;line-height:1.65;color:var(--muted);margin-top:10px}
+.root .consentNote a{color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:4px;display:inline-flex;align-items:center;min-height:32px}
+.root .consentNote a:hover{color:var(--accent)}
+
+/* Status (API / network errors) */
+.status{min-height:0}
+.root .statusBox{margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;padding:16px 18px;background:#fff4f2;border:1px solid #f1c4bd;border-left:3px solid var(--danger);color:#7a1d12;font-size:15px;line-height:1.65}
+.root .statusBox svg{color:var(--danger);margin-top:3px}
+.root .statusBox p{color:inherit}
+.root .statusBox strong{display:block;font-weight:600;color:#5c140b}
+
+/* Submit */
+.actions{grid-column:1/-1;display:flex;flex-direction:column}
+.root .submit{display:inline-flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:58px;padding:14px 24px;background:var(--accent);color:#fff;border:0;border-radius:0;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.root .submit:hover:not(:disabled){background:#2349cd}
+.root .submit:disabled{background:#5a7cf2;cursor:progress}
+.root .submit:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.root .submitNote{font-size:14px;color:var(--muted);text-align:center;margin-top:12px}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Success */
+.success{display:flex;flex-direction:column;align-items:flex-start;padding-block:10px 4px}
+.root .successIcon{width:56px;height:56px;display:grid;place-items:center;background:#e6ecff;color:var(--accent);margin-bottom:26px}
+.root .success h2{font-size:32px;line-height:1.35}
+.root .success h2:focus{outline:none}
+.root .success h2:focus-visible{outline:2px solid var(--accent);outline-offset:6px}
+.root .success p{font-size:17px;line-height:1.85;color:var(--muted);margin-top:16px}
+.root .success p strong{color:var(--ink);font-weight:600}
+.root .successActions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;width:100%}
+.root .successActions a{flex:1 1 200px}
+.root .secondaryLink{display:inline-flex;align-items:center;justify-content:space-between;gap:42px;min-height:56px;padding:14px 23px;background:#fff;color:var(--ink);border:1px solid #b9bfc8;font-size:17px;font-weight:600}
+.root .secondaryLink:hover{border-color:var(--accent);color:var(--accent)}
+
+@media(max-width:1199px){.root .lead br:last-of-type{display:none}.layout{gap:56px}.panel{padding:40px 36px 36px}}
+@media(max-width:1000px){.layout{grid-template-columns:1fr;gap:52px;padding-block:68px 88px}.root .intro h1{font-size:clamp(36px,5.6vw,52px)}}
+@media(max-width:600px){.layout{gap:40px;padding-block:46px 64px}.root .intro h1{font-size:clamp(31px,8.3vw,40px);line-height:1.38;margin-top:18px}.root .lead{font-size:17px;margin-top:22px}.root .infoList{margin-top:34px}.root .infoList>div{grid-template-columns:112px minmax(0,1fr);gap:12px;padding-block:16px}.root .infoList dt{font-size:15px}.root .infoList dd{font-size:16px}.root .programLine{margin-top:28px}.panel{margin-inline:-20px;padding:34px 20px 30px}.root .panel h2{font-size:24px}.form{grid-template-columns:1fr;gap:22px;margin-top:26px}.consent{padding:16px 16px 14px}.root .checkLabel{font-size:15px;gap:12px}.root .consentList>div{grid-template-columns:64px minmax(0,1fr);gap:10px}.root .success h2{font-size:27px}.root .success p{font-size:16px}.root .successActions{flex-direction:column}.root .successActions a{flex:none;width:100%}}
+@media(max-width:360px){.root .infoList>div{grid-template-columns:1fr;gap:2px}}
+@media(prefers-reduced-motion:reduce){.spin{animation:none}}

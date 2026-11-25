@@ -7,6 +7,16 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "headers": [
+      {
+        "source": "/downloads/HOBBYTAN_AI_Company_Profile_2026.pdf",
+        "headers": [
+          { "key": "Content-Type", "value": "application/pdf" },
+          { "key": "Content-Disposition", "value": "attachment; filename=\"HOBBYTAN_AI_Company_Profile_2026.pdf\"; filename*=UTF-8''HOBBYTAN_AI_%EA%B8%B0%EC%97%85%EC%86%8C%EA%B0%9C%EC%84%9C_2026.pdf" },
+          { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        ]
+      }
+    ],
     "frameworksBackend": {
       "region": "asia-northeast3",
       "runtime": "nodejs20"

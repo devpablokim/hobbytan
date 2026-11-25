@@ -1,0 +1,181 @@
+.workflow {
+  min-width: 0;
+}
+
+.workflow .intro h3 {
+  margin-top: 0;
+  font-size: clamp(28px, 2.6vw, 36px);
+  line-height: 1.4;
+}
+
+.workflow .intro p,
+.workflow .ownership p,
+.workflow .control p {
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.workflow .previewBar {
+  min-height: 60px;
+  padding: 8px 18px;
+  background: #f6f6f3;
+  color: #33332f;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+.previewBar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 0 8px 12px;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.workflow .tour > summary {
+  font-size: 18px;
+  line-height: 1.6;
+  min-height: 72px;
+}
+
+.workflow .stepTop {
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.workflow .stepTop .stageLabel,
+.workflow .stepState,
+.workflow .control button,
+.workflow .ownership > span {
+  font-size: 16px;
+}
+
+.workflow .steps strong {
+  font-size: 18px;
+}
+
+.workflow .ownership {
+  flex-direction: column;
+  gap: 8px;
+  border-inline: 0;
+  border-bottom: 0;
+}
+
+.workflow .note {
+  font-size: 16px !important;
+  line-height: 1.75;
+  color: #62625c !important;
+}
+
+.dialog .dialogHead h2 {
+  margin: 0;
+}
+
+.dialog[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.dialog .viewport {
+  height: auto;
+  min-height: 0;
+}
+
+.dialog .viewToggle button {
+  min-height: 44px;
+  font-size: 16px;
+}
+
+.dialog .dialogNote {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  font-size: 16px !important;
+  line-height: 1.5;
+  color: #53534d !important;
+}
+
+@media (max-width: 800px) {
+  .workflow .tabs {
+    position: sticky;
+    top: var(--site-header-height, 72px);
+    z-index: 45;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0;
+    width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #bdbdb5 #f5f5f1;
+    border: 1px solid var(--line);
+    background: #f5f5f1;
+    scroll-padding-inline: 8px;
+  }
+
+  .workflow .tabs button {
+    flex: 0 0 auto;
+    min-width: 72px;
+    min-height: 56px;
+    padding: 12px 18px;
+    border: 0;
+    border-right: 1px solid var(--line);
+    font-size: 17px;
+    white-space: nowrap;
+  }
+
+  .workflow .tabs button:last-child {
+    border-right: 0;
+  }
+
+  .workflow .panel {
+    padding: 28px 20px;
+    scroll-margin-top: calc(var(--site-header-height, 72px) + 76px);
+  }
+
+  .workflow .intro h3 {
+    font-size: 28px;
+    line-height: 1.4;
+    margin-bottom: 16px;
+  }
+
+  .workflow .previewBar {
+    padding-inline: 14px;
+  }
+
+  .workflow .tour > summary > span {
+    max-width: none;
+  }
+
+  .dialog .dialogHead {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 84px;
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .dialog .dialogHead h2 {
+    font-size: 18px;
+  }
+
+  .dialog .viewToggle button {
+    padding-inline: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .workflow .panel {
+    padding: 24px 17px;
+  }
+
+  .workflow .intro p,
+  .workflow .ownership p,
+  .workflow .control p {
+    font-size: 16px;
+  }
+}
